@@ -1,0 +1,18 @@
+package com.cheney.service;
+
+import com.cheney.entity.User;
+import com.cheney.utils.jwt.JwtPrincipal;
+
+public interface UserService extends BaseService<User, Long> {
+
+    /**
+     * 通过username查找user
+     */
+    User findByUsername(String username);
+
+    /**
+     * 登陆认证
+     */
+    JwtPrincipal authenticated(String username, String password);
+
+}
