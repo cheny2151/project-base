@@ -1,10 +1,14 @@
 package com.cheney.controller.user.common;
 
+import com.cheney.javaconfig.redis.RedisKey;
+import com.cheney.redis.RedisClient;
 import com.cheney.service.UserService;
 import com.cheney.system.message.JsonMessage;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +25,10 @@ public class AuthController {
 
     @Resource(name = "userServiceImpl")
     private UserService userService;
+    @Resource(name = "jdkRedisClient")
+    private RedisClient<UserDetails> redisClient;
+    @Value("${jwt.indate}")
+    private int indate;
 
     /**
      * 登陆
@@ -39,9 +47,11 @@ public class AuthController {
         }
         JwtPrincipal jwtPrincipal = userService.authenticated(username, password);
         if (jwtPrincipal != null) {
+            String token = JwtUtils.generateToken(jwtPrincipal);
+            redisClient.setValue(String.format(RedisKey.AUTH_TOKEN_KEY, token), jwtPrincipal, indate);
             return JsonMessage.success(
                     "user", JsonMessage.extract(jwtPrincipal, "username", "authorities"),
-                    "token", JwtUtils.generateToken(jwtPrincipal)
+                    "token", token
             );
         }
         return JsonMessage.error("登陆失败");

@@ -36,6 +36,7 @@ public class WebConfigDispatcherServletInitializer extends AbstractAnnotationCon
         ds.setThrowExceptionIfNoHandlerFound(true);
         ServletRegistration.Dynamic servlet = servletContext.addServlet("cherry", ds);
         servlet.addMapping("/");
+//        servlet.addMapping("*.service");
         servlet.setLoadOnStartup(1);
 
         //order Listener

@@ -3,9 +3,13 @@ package com.cheney.service.impl;
 import com.cheney.dao.BaseDao;
 import com.cheney.entity.BaseEntity;
 import com.cheney.service.BaseService;
+import com.cheney.system.filter.Filter;
+import com.cheney.system.page.Page;
+import com.cheney.system.page.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 @Transactional
@@ -55,6 +59,26 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     @Override
     public void flush() {
         baseDao.flush();
+    }
+
+    @Override
+    public List<T> findList(Filter filter) {
+        return baseDao.findList(filter);
+    }
+
+    @Override
+    public List<T> findList(Collection<Filter> filters) {
+        return baseDao.findList(filters);
+    }
+
+    @Override
+    public long count(Filter filter) {
+        return baseDao.count(filter);
+    }
+
+    @Override
+    public Page<T> findPage(Pageable<T> pageable) {
+        return baseDao.findPage(pageable);
     }
 
 }

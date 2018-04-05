@@ -10,6 +10,8 @@ import javax.persistence.Table;
 @Table(name = "auth_role")
 public class Role extends BaseEntity {
 
+    private static final long serialVersionUID = -960190065903091695L;
+
     /**
      * 用户认证枚举
      */
@@ -17,7 +19,24 @@ public class Role extends BaseEntity {
 
         ADMIN,
 
-        USER,
+        BLOGGER
+
+    }
+
+    /**
+     * 角色枚举
+     */
+    public enum OriginType {
+
+        /**
+         * 管理员
+         */
+        admin,
+
+        /**
+         * 博主
+         */
+        blogger
 
     }
 

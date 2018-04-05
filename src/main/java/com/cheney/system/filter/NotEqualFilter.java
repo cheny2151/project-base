@@ -5,24 +5,31 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
-public class NotEqualFilter<T> extends Filter<T> {
+public class NotEqualFilter extends Filter {
 
-    NotEqualFilter(String property, Object value, boolean ignoreCase, Class<T> javaType) {
-        super(property, value, ignoreCase, javaType);
+    private Boolean ignoreCase;
+
+    NotEqualFilter(String property, Object value, boolean ignoreCase) {
+        super(property, value);
+        this.ignoreCase = ignoreCase;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addRestrictions(CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Predicate restriction = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
-        Path<?> path = getPath(criteriaQuery);
+    public Predicate addRestriction(Predicate restriction, Path<?> path, CriteriaBuilder criteriaBuilder) {
         if (ignoreCase && value instanceof String && String.class.isAssignableFrom(path.getJavaType())) {
             restriction = criteriaBuilder.and(restriction, criteriaBuilder.notEqual(criteriaBuilder.lower((Path<String>) path), ((String) value).toLowerCase()));
         } else {
             restriction = criteriaBuilder.and(restriction, criteriaBuilder.notEqual(path, value));
         }
-        criteriaQuery.where(restriction);
+        return restriction;
     }
 
+    public Boolean getIgnoreCase() {
+        return ignoreCase;
+    }
 
+    public void setIgnoreCase(Boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
 }

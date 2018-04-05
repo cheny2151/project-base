@@ -1,9 +1,9 @@
 package com.cheney.dao;
 
-import com.cheney.entity.User;
+import com.cheney.entity.AuthUser;
 
-public interface UserDao extends BaseDao<User, Long> {
+public interface UserDao extends BaseDao<AuthUser, Long> {
 
-    User findByUsername(String username);
+    AuthUser findByUsername(String username);
 
 }

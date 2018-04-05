@@ -30,16 +30,6 @@ public class JwtUtils {
     private static final JwtParser JWT_PARSER = new DefaultJwtParser();
 
     /**
-     * 用户名key
-     */
-    private static final String USER_NAME_KEY = "sub";
-
-    /**
-     * 签证过期时间key
-     */
-    private static final String CREATE_DATE_KEY = "iat";
-
-    /**
      * 签证有效时间(day)
      */
     private static int IN_DATE;

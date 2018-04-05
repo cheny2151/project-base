@@ -2,18 +2,20 @@ package com.cheney.dao.impl;
 
 import com.cheney.dao.BaseDao;
 import com.cheney.entity.BaseEntity;
+import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.FilterHandler;
+import com.cheney.system.page.Page;
+import com.cheney.system.page.Pageable;
+import com.cheney.utils.sql.SqlFactory;
 import org.springframework.util.Assert;
 
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.*;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -41,6 +43,10 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
         return id == null ? null : entityManager.find(entityType, id);
     }
 
+    public T find(ID id, LockModeType type) {
+        return entityManager.find(entityType, id, type);
+    }
+
     @Override
     public List<T> findAll() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -66,13 +72,7 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
     public void remove(ID ID) {
         T entity;
         if ((entity = find(ID)) != null) {
-            System.out.println(entity.getId());
-            try {
-                entityManager.remove(entity);
-                System.out.println("------------");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            entityManager.remove(entity);
         }
     }
 
@@ -99,11 +99,86 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
         entityManager.flush();
     }
 
+    @Override
+    public void lock(T entity, LockModeType type) {
+        entityManager.lock(entity, type);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public ID getIdentifier(T entity) {
         Assert.notNull(entity, "not null entity");
         return (ID) entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity);
+    }
+
+    @Override
+    @SuppressWarnings("Duplicates")
+    public List<T> findList(Filter filter) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
+        Root<T> root = criteriaQuery.from(entityType);
+        FilterHandler.filterQuery(criteriaQuery, root, filter);
+        return entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT).getResultList();
+    }
+
+    @Override
+    @SuppressWarnings("Duplicates")
+    public List<T> findList(Collection<Filter> filters) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
+        Root<T> root = criteriaQuery.from(entityType);
+        FilterHandler.filterQuery(criteriaQuery, root, filters);
+        return entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT).getResultList();
+    }
+
+    @Override
+    public long count(Filter filter) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(entityType);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        FilterHandler.filterQuery(criteriaQuery, root, filter);
+        return entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT).getSingleResult();
+    }
+
+    @Override
+    public Page<T> findPage(Pageable<T> pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
+        Root<T> root = criteriaQuery.from(entityType);
+        return findPageBase(criteriaBuilder, criteriaQuery, root, pageable);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Page<T> findPageNative(String selection, String[] tableNames, String restriction, Pageable<T> pageable, SqlFactory.ParameterHolder parameterHolder) {
+        String sql = SqlFactory.createSelect(selection, tableNames, restriction);
+        String count = SqlFactory.createCount(tableNames, restriction);
+        Query query = entityManager.createNativeQuery(sql, entityType);
+        //函数式接口设置sql占位符参数,Query为装饰者类，用于对外只暴露setParameter函数
+        parameterHolder.setParameter(new com.cheney.utils.sql.Query(query));
+        List<T> resultList = query.setFlushMode(FlushModeType.COMMIT).setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
+        Query countQuery = entityManager.createNativeQuery(count);
+        parameterHolder.setParameter(new com.cheney.utils.sql.Query(countQuery));
+        long counts = ((BigInteger) countQuery.setFlushMode(FlushModeType.COMMIT).getSingleResult()).longValue();
+        return new Page<>(pageable, resultList, counts);
+    }
+
+    /**
+     * 处理分页基类方法
+     * 只对dao包可见
+     */
+    protected Page<T> findPageBase(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, Pageable<T> pageable) {
+        FilterHandler.filterQuery(criteriaQuery, from, pageable.getFilter());
+        Predicate restriction = criteriaQuery.getRestriction();
+        List<T> content = entityManager.createQuery(criteriaQuery).setFirstResult(pageable.getStartSize()).setMaxResults(pageable.getPageSize()).getResultList();
+        //以同样的条件查找count
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = countQuery.from(entityType);
+        countQuery.select(criteriaBuilder.count(root));
+        countQuery.where(restriction);
+        Long count = entityManager.createQuery(countQuery).setFlushMode(FlushModeType.COMMIT).getSingleResult();
+        return new Page<>(pageable, content, count);
     }
 
 }

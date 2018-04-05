@@ -1,8 +1,12 @@
 package com.cheney.service;
 
 import com.cheney.entity.BaseEntity;
+import com.cheney.system.filter.Filter;
+import com.cheney.system.page.Page;
+import com.cheney.system.page.Pageable;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -52,5 +56,25 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
      * flush
      */
     void flush();
+
+    /**
+     * 过滤
+     */
+    List<T> findList(Filter filter);
+
+    /**
+     * 过滤
+     */
+    List<T> findList(Collection<Filter> filters);
+
+    /**
+     * 过滤count
+     */
+    long count(Filter filter);
+
+    /**
+     * 分页
+     */
+    Page<T> findPage(Pageable<T> pageable);
 
 }

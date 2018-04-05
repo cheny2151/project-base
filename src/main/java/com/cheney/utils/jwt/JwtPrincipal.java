@@ -110,4 +110,16 @@ public class JwtPrincipal implements UserDetails {
         return lastPasswordReset;
     }
 
+    @Override
+    public String toString() {
+        return "JwtPrincipal{" +
+                "authorities=" + authorities +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", enabled=" + enabled +
+                ", lastPasswordReset=" + lastPasswordReset +
+                '}';
+    }
 }

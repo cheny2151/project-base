@@ -1,14 +1,14 @@
 package com.cheney.service;
 
-import com.cheney.entity.User;
+import com.cheney.entity.AuthUser;
 import com.cheney.utils.jwt.JwtPrincipal;
 
-public interface UserService extends BaseService<User, Long> {
+public interface UserService extends BaseService<AuthUser, Long> {
 
     /**
      * 通过username查找user
      */
-    User findByUsername(String username);
+    AuthUser findByUsername(String username);
 
     /**
      * 登陆认证

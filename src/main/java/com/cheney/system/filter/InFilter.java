@@ -1,31 +1,28 @@
 package com.cheney.system.filter;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class InFilter<T> extends Filter<T> {
+public class InFilter extends Filter {
 
-    InFilter(String property, Object value, boolean ignoreCase, Class<T> javaType) {
-        super(property, value, ignoreCase, javaType);
+    InFilter(String property, Object value) {
+        super(property, value);
     }
 
     @Override
-    public void addRestrictions(CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Predicate restriction = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
-        if (value == null) {
-            return;
-        }
-        Collection value;
+    public Predicate addRestriction(Predicate restriction, Path<?> path, CriteriaBuilder criteriaBuilder) {
         //只接收数组或者集合
-        try {
-            value = (Collection) this.value;
-        } catch (ClassCastException e) {
-            value = Arrays.asList(this.value);
+        Collection values;
+        if (value instanceof Collection) {
+            values = (Collection) value;
+        } else if (value instanceof Object[]) {
+            values = Arrays.asList((Object[]) value);
+        } else {
+            throw new IllegalArgumentException("illegal filter value,must collection or array");
         }
-        restriction = criteriaBuilder.and(restriction, getPath(criteriaQuery).in(value));
-        criteriaQuery.where(restriction);
+        return criteriaBuilder.and(restriction, path.in(values));
     }
 }

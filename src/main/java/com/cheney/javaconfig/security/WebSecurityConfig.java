@@ -1,6 +1,7 @@
 package com.cheney.javaconfig.security;
 
 import com.cheney.filter.JsonWebTokenFilter;
+import com.cheney.service.security.MyUserDetailsService;
 import com.cheney.service.security.UserDetailsServiceImpl;
 import com.cheney.system.security.JsonAccessDeniedHandler;
 import com.cheney.system.security.JsonAuthenticationEntryPoint;
@@ -16,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -31,7 +31,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @PropertySource(value = {"classpath:security.properties"})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
+    private final MyUserDetailsService userDetailsService;
 
     @Autowired
     public WebSecurityConfig(UserDetailsServiceImpl tokenUserDetailsService) {

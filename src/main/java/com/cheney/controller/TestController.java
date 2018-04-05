@@ -1,26 +1,28 @@
 package com.cheney.controller;
 
-import com.cheney.entity.User;
+import com.cheney.entity.AuthUser;
 import com.cheney.redis.RedisClient;
-import org.apache.commons.lang.time.DateUtils;
+import com.cheney.service.UserService;
+import com.cheney.system.message.JsonMessage;
+import com.cheney.system.page.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 @Controller
 public class TestController {
 
     @Resource(name = "jdkRedisClient")
-    private RedisClient<User> redisClient;
+    private RedisClient<AuthUser> redisClient;
+    @Resource(name = "userServiceImpl")
+    private UserService userService;
 
     @RequestMapping("/test")
-    public void test() {
-        User user = new User();
-        user.setUsername("test");
-        redisClient.removeKey("test");
-//        System.out.println(redisClient.getList("Test"));
+    @ResponseBody
+    public JsonMessage test(Pageable<AuthUser> pageable) {
+        return null;
     }
 
 }

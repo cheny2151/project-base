@@ -1,24 +1,32 @@
 package com.cheney.system.filter;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
-public class LikeFilter<T> extends Filter<T> {
+public class LikeFilter extends Filter {
 
-    LikeFilter(String property, Object value, boolean ignoreCase, Class<T> javaType) {
-        super(property, value, ignoreCase, javaType);
+    private Boolean ignoreCase;
+
+    LikeFilter(String property, Object value, boolean ignoreCase) {
+        super(property, value);
+        this.ignoreCase = ignoreCase;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addRestrictions(CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Path<?> path = getPath(criteriaQuery);
+    public Predicate addRestriction(Predicate restriction, Path<?> path, CriteriaBuilder criteriaBuilder) {
         if (value instanceof String && String.class.isAssignableFrom(path.getJavaType())) {
-            Predicate restriction = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
             restriction = criteriaBuilder.and(restriction, criteriaBuilder.like((Path<String>) path, "%" + value + "%"));
-            criteriaQuery.where(restriction);
         }
+        return restriction;
+    }
+
+    public Boolean getIgnoreCase() {
+        return ignoreCase;
+    }
+
+    public void setIgnoreCase(Boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
     }
 }

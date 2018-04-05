@@ -6,22 +6,20 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.Date;
 
-public class GreaterThanFilter<T> extends Filter<T> {
+public class GreaterThanFilter extends Filter {
 
-    GreaterThanFilter(String property, Object value, boolean ignoreCase, Class<T> javaType) {
-        super(property, value, ignoreCase, javaType);
+    GreaterThanFilter(String property, Object value) {
+        super(property, value);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addRestrictions(CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Predicate restriction = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
-        Path<?> path = getPath(criteriaQuery);
+    public Predicate addRestriction(Predicate restriction,Path<?> path, CriteriaBuilder criteriaBuilder) {
         if (value instanceof Number && Number.class.isAssignableFrom(path.getJavaType())) {
             restriction = criteriaBuilder.and(restriction, criteriaBuilder.gt((Path<Number>) path, (Number) value));
         } else if (value instanceof Date && Date.class.isAssignableFrom(path.getJavaType())) {
             restriction = criteriaBuilder.and(restriction, criteriaBuilder.greaterThan((Path<Date>) path, (Date) value));
         }
-        criteriaQuery.where(restriction);
+        return restriction;
     }
 }

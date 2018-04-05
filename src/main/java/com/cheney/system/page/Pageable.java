@@ -1,5 +1,7 @@
 package com.cheney.system.page;
 
+import com.cheney.system.filter.Filter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
  * 分页信息
  * Created by cheny on 2017/9/24.
  */
-public class Pageable<T> implements Serializable{
+public class Pageable<T> implements Serializable {
 
     private static final long serialVersionUID = 5705303253597757865L;
 
@@ -17,17 +19,15 @@ public class Pageable<T> implements Serializable{
      */
     private final static int DEFAULT_PAGE_SIZE = 20;
 
-    private final static int DEFAULT_CURRENT_PAGE = 1;
+    private final static int DEFAULT_PAGE_NUMBER = 1;
 
-    private int currentPage = DEFAULT_CURRENT_PAGE;
+    private int pageNumber = DEFAULT_PAGE_NUMBER;
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private int pageTotal;
 
-    private int entityTotal;
-
-    private List<T> content = new ArrayList<>();
+    private long total;
 
     private String searchProperty;
 
@@ -35,12 +35,12 @@ public class Pageable<T> implements Serializable{
 
     private List<Filter> filter = new ArrayList<>();
 
-    public int getCurrentPage() {
-        return currentPage;
+    public int getPageNumber() {
+        return pageNumber;
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
     public int getPageSize() {
@@ -59,20 +59,12 @@ public class Pageable<T> implements Serializable{
         this.pageTotal = pageTotal;
     }
 
-    public int getEntityTotal() {
-        return entityTotal;
+    public long getTotal() {
+        return total;
     }
 
-    public void setEntityTotal(int entityTotal) {
-        this.entityTotal = entityTotal;
-    }
-
-    public List<T> getContent() {
-        return content;
-    }
-
-    public void setContent(List<T> content) {
-        this.content = content;
+    public void setTotal(long total) {
+        this.total = total;
     }
 
     public String getSearchProperty() {
@@ -99,4 +91,23 @@ public class Pageable<T> implements Serializable{
         this.filter = filter;
     }
 
+    /**
+     * 分页起始位置
+     */
+    public int getStartSize() {
+        return (pageNumber - 1) * pageSize;
+    }
+
+    @Override
+    public String toString() {
+        return "Pageable{" +
+                "pageNumber=" + pageNumber +
+                ", pageSize=" + pageSize +
+                ", pageTotal=" + pageTotal +
+                ", total=" + total +
+                ", searchProperty='" + searchProperty + '\'' +
+                ", searchValue='" + searchValue + '\'' +
+                ", filter=" + filter +
+                '}';
+    }
 }

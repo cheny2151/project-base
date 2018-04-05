@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 过滤器工厂
+ */
 public class FilterFactory {
 
     public enum Operator {
@@ -32,72 +35,73 @@ public class FilterFactory {
 
     }
 
-    public static <T> Filter<T> eq(String property, Object value, Class<T> javaType) {
-        return new EqualFilter<>(property, value, false, javaType);
+    public static Filter eq(String property, Object value) {
+        return new EqualFilter(property, value, false);
     }
 
-    public static <T> Filter<T> ne(String property, Object value, Class<T> javaType) {
-        return new NotEqualFilter<>(property, value, false, javaType);
+    public static Filter notEq(String property, Object value) {
+        return new NotEqualFilter(property, value, false);
     }
 
-    public static <T> Filter<T> gt(String property, Object value, Class<T> javaType) {
-        return new GreaterThanFilter<>(property, value, false, javaType);
+    public static Filter gt(String property, Object value) {
+        return new GreaterThanFilter(property, value);
     }
 
-    public static <T> Filter<T> ge(String property, Object value, Class<T> javaType) {
-        return new GreaterThanOrEqualFilter<>(property, value, false, javaType);
+    public static Filter ge(String property, Object value) {
+        return new GreaterThanOrEqualFilter(property, value);
     }
 
-    public static <T> Filter<T> lt(String property, Object value, Class<T> javaType) {
-        return new LessThanFilter<>(property, value, false, javaType);
+    public static Filter lt(String property, Object value) {
+        return new LessThanFilter(property, value);
     }
 
-    public static <T> Filter<T> le(String property, Object value, Class<T> javaType) {
-        return new LessThanOrEqualFilter<>(property, value, false, javaType);
+    public static Filter le(String property, Object value) {
+        return new LessThanOrEqualFilter(property, value);
     }
 
-    public static <T> Filter<T> in(String property, Object value, Class<T> javaType) {
-        return new InFilter<>(property, value, false, javaType);
+    public static Filter in(String property, Object value) {
+        return new InFilter(property, value);
     }
 
-    public static <T> Filter<T> like(String property, Object value, Class<T> javaType) {
-        return new LikeFilter<>(property, value, false, javaType);
+    public static Filter like(String property, Object value) {
+        return new LikeFilter(property, value, false);
     }
 
-    public static <T> Filter<T> isNull(String property, Object value, Class<T> javaType) {
-        return new NullFilter<>(property, value, false, javaType);
+    public static Filter notLike(String property, Object value) {
+        return new NotLikeFilter(property, value, false);
     }
 
-    public static <T> Filter<T> isNotNull(String property, Object value, Class<T> javaType) {
-        return new NotNullFilter<>(property, value, false, javaType);
+    public static Filter isNull(String property, Object value) {
+        return new NullFilter(property, value);
     }
 
-    public static <T> Filter<T> createIgnoreCase(Operator operator, String property, Object value, Class<T> javaType) {
-
-        switch (operator) {
-            case eq: {
-                return new EqualFilter<>(property, value, true, javaType);
-            }
-            case ne: {
-                return new NotEqualFilter<>(property, value, true, javaType);
-            }
-            case like: {
-                return new LikeFilter<>(property, value, true, javaType);
-            }
-            case noLike: {
-                return new NotLikeFilter<>(property, value, true, javaType);
-            }
-            default:
-                throw new RuntimeException("no this operator");
-        }
-
+    public static Filter isNotNull(String property, Object value) {
+        return new NotNullFilter(property, value);
     }
 
-    @SafeVarargs
-    public static <T> List<Filter<T>> createFilterList(Filter<T>... filters) {
-        ArrayList<Filter<T>> filterList = new ArrayList<>();
-        filterList.addAll(Arrays.asList(filters));
-        return filterList;
+    public static Filter isNotLike(String property, Object value) {
+        return new NotLikeFilter(property, value, false);
+    }
+
+
+    public static Filter eq(String property, Object value, boolean ignoreCase) {
+        return new EqualFilter(property, value, ignoreCase);
+    }
+
+    public static Filter notEq(String property, Object value, boolean ignoreCase) {
+        return new NotEqualFilter(property, value, ignoreCase);
+    }
+
+    public static Filter like(String property, Object value, boolean ignoreCase) {
+        return new LikeFilter(property, value, ignoreCase);
+    }
+
+    public static Filter isNotLike(String property, Object value, boolean ignoreCase) {
+        return new NotLikeFilter(property, value, ignoreCase);
+    }
+
+    public static List<Filter> createFilterList(Filter... filters) {
+        return new ArrayList<>(Arrays.asList(filters));
     }
 
 }

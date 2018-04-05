@@ -1,19 +1,17 @@
 package com.cheney.system.filter;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
-public class NotNullFilter<T> extends Filter<T> {
+public class NotNullFilter extends Filter {
 
-    NotNullFilter(String property, Object value, boolean ignoreCase, Class<T> javaType) {
-        super(property, value, ignoreCase, javaType);
+    NotNullFilter(String property, Object value) {
+        super(property, value);
     }
 
     @Override
-    public void addRestrictions(CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Predicate restriction = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
-        restriction = criteriaBuilder.and(restriction, criteriaBuilder.isNotNull(getPath(criteriaQuery)));
-        criteriaQuery.where(restriction);
+    public Predicate addRestriction(Predicate restriction, Path<?> path, CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.and(restriction, criteriaBuilder.isNotNull(path));
     }
 }

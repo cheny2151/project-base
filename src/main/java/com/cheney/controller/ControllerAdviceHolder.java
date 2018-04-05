@@ -2,6 +2,8 @@ package com.cheney.controller;
 
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
+import com.cheney.system.message.JsonMessage;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.WebDataBinder;
@@ -15,6 +17,8 @@ import java.util.Date;
  */
 @ControllerAdvice()
 public class ControllerAdviceHolder {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Resource(name = "dateEditor")
     private DateEditor dateEditor;
@@ -30,14 +34,17 @@ public class ControllerAdviceHolder {
     @ExceptionHandler({UsernameNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public String UsernameNotFoundException(UsernameNotFoundException e) {
-        return e.getMessage();
+    public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
+        logger.info(e.getMessage(), e);
+        return JsonMessage.error("username not found");
     }
 
     @ExceptionHandler
     @ResponseBody
-    public void exceptionHandler(Exception e) {
-        e.printStackTrace();
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public JsonMessage exceptionHandler(Exception e) {
+        logger.error(e.getMessage(), e);
+        return JsonMessage.error(e.getMessage());
     }
 
 }

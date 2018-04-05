@@ -1,7 +1,7 @@
 package com.cheney.utils.security;
 
+import com.cheney.entity.AuthUser;
 import com.cheney.entity.Role;
-import com.cheney.entity.User;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +22,7 @@ public class UserDetailsFactory {
     private UserDetailsFactory() {
     }
 
-    public static UserDetails create(User user) {
+    public static UserDetails create(AuthUser user) {
         return new JwtPrincipal(asAuthorities(user.getRoles()), user.getUsername(), user.getPassword(), user.getLastPasswordReset(), user.isEnabled());
     }
 

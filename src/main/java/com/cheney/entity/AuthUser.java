@@ -9,8 +9,8 @@ import java.util.Set;
  * 用户统一认证表
  */
 @Entity
-@Table(name = "auth_user")
-public class User extends BaseEntity {
+@Table(name = "auth_user", indexes = {@Index(columnList = "username")})
+public class AuthUser extends BaseEntity {
 
     private static final long serialVersionUID = -8511714083272416828L;
 
@@ -30,23 +30,6 @@ public class User extends BaseEntity {
     private boolean enabled;
 
     /**
-     * 角色枚举
-     */
-    public enum OriginType {
-
-        /**
-         * 管理员
-         */
-        admin,
-
-        /**
-         * 博主
-         */
-        blogger
-
-    }
-
-    /**
      * 角色
      */
     private Set<Role> roles = new HashSet<>();
@@ -61,6 +44,17 @@ public class User extends BaseEntity {
      */
     private Date lastPasswordReset;
 
+    public AuthUser() {
+    }
+
+    public AuthUser(String username, String password, boolean enabled, Set<Role> roles, Long originId, Date lastPasswordReset) {
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+        this.roles = roles;
+        this.originId = originId;
+        this.lastPasswordReset = lastPasswordReset;
+    }
 
     @Column(nullable = false, unique = true)
     public String getUsername() {
@@ -114,6 +108,18 @@ public class User extends BaseEntity {
 
     public void setLastPasswordReset(Date lastPasswordReset) {
         this.lastPasswordReset = lastPasswordReset;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", roles=" + roles +
+                ", originId=" + originId +
+                ", lastPasswordReset=" + lastPasswordReset +
+                '}';
     }
 
 }

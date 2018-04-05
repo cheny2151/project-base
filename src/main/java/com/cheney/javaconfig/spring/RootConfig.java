@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletContext;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
