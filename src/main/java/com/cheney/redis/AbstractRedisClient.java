@@ -15,10 +15,10 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractRedisClient<V> implements RedisClient<V> {
 
-    private RedisTemplate<String, V> redisTemplate;
+    private RedisTemplate<String, V> redis;
 
-    protected void setRedisTemplate(RedisTemplate<String, V> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    protected void setRedis(RedisTemplate<String, V> redis) {
+        this.redis = redis;
     }
 
     private HashOperations<String, String, V> opsForHash;
@@ -27,39 +27,39 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
      * 由于每次执行opsForHash()方法都会new一个，提取。
      */
     protected HashOperations<String, String, V> getHashOperation() {
-        return opsForHash == null ? (opsForHash = redisTemplate.opsForHash()) : opsForHash;
+        return opsForHash == null ? (opsForHash = redis.opsForHash()) : opsForHash;
     }
 
     //------------------------------ common ------------------------------
 
     @Override
     public void expire(String k, int days) {
-        redisTemplate.expire(k, days, TimeUnit.DAYS);
+        redis.expire(k, days, TimeUnit.DAYS);
     }
 
     @Override
     public boolean containsKey(String k) {
-        return redisTemplate.hasKey(k);
+        return redis.hasKey(k);
     }
 
     @Override
     public void removeKey(String k) {
-        redisTemplate.delete(k);
+        redis.delete(k);
     }
 
     @Override
     public boolean exists(String k) {
-        return redisTemplate.hasKey(k);
+        return redis.hasKey(k);
     }
 
     @Override
     public void delete(String k) {
-        redisTemplate.delete(k);
+        redis.delete(k);
     }
 
     @Override
     public long getExpire(String k, TimeUnit timeUnit) {
-        return redisTemplate.getExpire(k, timeUnit);
+        return redis.getExpire(k, timeUnit);
     }
 
     //------------------------------ value ------------------------------
@@ -72,12 +72,12 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
 
     @Override
     public void setValue(String k, V v) {
-        redisTemplate.opsForValue().set(k, v);
+        redis.opsForValue().set(k, v);
     }
 
     @Override
     public V getValue(String k) {
-        return redisTemplate.opsForValue().get(k);
+        return redis.opsForValue().get(k);
     }
 
     //------------------------------ list ------------------------------
@@ -94,43 +94,43 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
 
     @Override
     public void rightPushList(String k, List<V> values) {
-        redisTemplate.opsForList().rightPushAll(k, values);
+        redis.opsForList().rightPushAll(k, values);
     }
 
     @Override
     public void rightPush(String k, V v) {
-        redisTemplate.opsForList().rightPush(k, v);
+        redis.opsForList().rightPush(k, v);
     }
 
     @Override
     public void leftPushList(String k, List<V> values) {
-        redisTemplate.opsForList().leftPushAll(k, values);
+        redis.opsForList().leftPushAll(k, values);
     }
 
     @Override
     public void leftPush(String k, V v) {
-        redisTemplate.opsForList().leftPush(k, v);
+        redis.opsForList().leftPush(k, v);
     }
 
     @Override
     public List<V> getList(String k) {
         List<V> range;
-        return (range = redisTemplate.opsForList().range(k, 0, listSize(k) - 1)) == null || range.size() == 0 ? null : range;
+        return (range = redis.opsForList().range(k, 0, listSize(k) - 1)) == null || range.size() == 0 ? null : range;
     }
 
     @Override
     public V rightPop(String k) {
-        return redisTemplate.opsForList().rightPop(k);
+        return redis.opsForList().rightPop(k);
     }
 
     @Override
     public V leftPop(String k) {
-        return redisTemplate.opsForList().leftPop(k);
+        return redis.opsForList().leftPop(k);
     }
 
     @Override
     public Long listSize(String k) {
-        return redisTemplate.opsForList().size(k);
+        return redis.opsForList().size(k);
     }
 
     //------------------------------ hash ------------------------------

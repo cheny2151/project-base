@@ -1,4 +1,4 @@
-package com.cheney.entity;
+package com.cheney.entity.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -17,11 +17,6 @@ public class Blogger extends UserBase {
      * 昵称
      */
     private String nickName;
-
-    /**
-     * 账号
-     */
-    private String username;
 
     /**
      * 座右铭

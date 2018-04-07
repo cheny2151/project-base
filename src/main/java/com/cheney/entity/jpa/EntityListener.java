@@ -1,4 +1,4 @@
-package com.cheney.entity;
+package com.cheney.entity.jpa;
 
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,7 @@ package com.cheney.service.impl;
 
 import com.cheney.dao.BaseDao;
 import com.cheney.dao.UserDao;
-import com.cheney.entity.AuthUser;
+import com.cheney.entity.jpa.AuthUser;
 import com.cheney.service.UserService;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;

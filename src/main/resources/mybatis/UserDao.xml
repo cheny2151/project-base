@@ -6,7 +6,7 @@
 <mapper namespace="com.cheney.dao.mDaoImpl.UserDao">
 
     <!-- 如果entity实体类的属性跟数据库表中的字段命名不一样，就需要一个resultMap来对应两者的关系 -->
-    <resultMap id="user" type="com.cheney.entity.Blogger">
+    <resultMap id="user" type="com.cheney.entity.jpa.Blogger">
         <result property="id" column="id"/>
         <result property="nickName" column="nick_name"/>
         <result property="username" column="username"/>

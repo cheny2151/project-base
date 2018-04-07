@@ -14,12 +14,12 @@ public class Page<T> implements Serializable {
 
     private List<T> content;
 
-    private final Pageable<T> pageable;
+    private final PageInfo pageInfo;
 
-    public Page(Pageable<T> pageable, List<T> content, long count) {
-        pageable.setTotal(count);
-        pageable.setPageTotal((int) ((count + pageable.getPageSize() - 1) / pageable.getPageSize()));
-        this.pageable = pageable;
+    public Page(PageInfo pageInfo, List<T> content, long count) {
+        pageInfo.setTotal(count);
+        pageInfo.setPageTotal((int) ((count + pageInfo.getPageSize() - 1) / pageInfo.getPageSize()));
+        this.pageInfo = pageInfo;
         this.content = content == null ? new ArrayList<>() : content;
     }
 
@@ -28,28 +28,19 @@ public class Page<T> implements Serializable {
     }
 
     public int getPageTotal() {
-        return pageable.getPageTotal();
+        return pageInfo.getPageTotal();
     }
 
     public int getCurrentPage() {
-        return pageable.getPageNumber();
+        return pageInfo.getPageNumber();
     }
 
-    public long getEntityTotal() {
-        return pageable.getTotal();
+    public long getTotal() {
+        return pageInfo.getTotal();
     }
 
-    public Pageable getPageable() {
-        return pageable;
-    }
-
-
-    public String getSearchProperty() {
-        return pageable.getSearchProperty();
-    }
-
-    public String getSearchValue() {
-        return pageable.getSearchValue();
+    public PageInfo getPageable() {
+        return pageInfo;
     }
 
 }

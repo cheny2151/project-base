@@ -1,4 +1,4 @@
-package com.cheney.entity;
+package com.cheney.entity.jpa;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -1,6 +1,5 @@
-package com.cheney.entity;
+package com.cheney.entity.jpa;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

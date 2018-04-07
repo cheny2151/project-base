@@ -1,7 +1,8 @@
 package com.cheney.dao;
 
-import com.cheney.entity.BaseEntity;
+import com.cheney.entity.jpa.BaseEntity;
 import com.cheney.system.filter.Filter;
+import com.cheney.system.order.Order;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import com.cheney.utils.sql.SqlFactory;
@@ -69,14 +70,14 @@ public interface BaseDao<T extends BaseEntity, ID extends Serializable> {
     ID getIdentifier(T entity);
 
     /**
-     * 过滤查找
+     * 过滤排序查找
      */
-    List<T> findList(Filter filter);
+    List<T> findList(Filter filter, Order... orders);
 
     /**
-     * 过滤查找
+     * 过滤排序查找
      */
-    List<T> findList(Collection<Filter> filters);
+    List<T> findList(Collection<Filter> filters, Order... orders);
 
     /**
      * 过滤count
@@ -86,7 +87,7 @@ public interface BaseDao<T extends BaseEntity, ID extends Serializable> {
     /**
      * 分页
      */
-    Page<T> findPage(Pageable<T> pageable);
+    Page<T> findPage(Pageable pageable);
 
     /**
      * 分页原生sql
@@ -95,6 +96,6 @@ public interface BaseDao<T extends BaseEntity, ID extends Serializable> {
      * @param tableName   查找的表命
      * @param restriction 限定条件
      */
-    Page<T> findPageNative(String selection, String[] tableName, String restriction, Pageable<T> pageable, SqlFactory.ParameterHolder parameterHolder);
+    Page<T> findPageNative(String selection, String[] tableName, String restriction, Pageable pageable, SqlFactory.ParameterHolder parameterHolder);
 
 }

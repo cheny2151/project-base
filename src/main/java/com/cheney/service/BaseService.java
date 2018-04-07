@@ -1,6 +1,6 @@
 package com.cheney.service;
 
-import com.cheney.entity.BaseEntity;
+import com.cheney.entity.jpa.BaseEntity;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -75,6 +75,6 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     /**
      * 分页
      */
-    Page<T> findPage(Pageable<T> pageable);
+    Page<T> findPage(Pageable pageable);
 
 }

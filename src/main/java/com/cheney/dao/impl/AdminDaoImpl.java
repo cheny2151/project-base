@@ -1,7 +1,7 @@
 package com.cheney.dao.impl;
 
 import com.cheney.dao.AdminDao;
-import com.cheney.entity.Admin;
+import com.cheney.entity.jpa.Admin;
 import org.springframework.stereotype.Repository;
 
 /**

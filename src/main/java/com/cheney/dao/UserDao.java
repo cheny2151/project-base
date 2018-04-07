@@ -1,6 +1,6 @@
 package com.cheney.dao;
 
-import com.cheney.entity.AuthUser;
+import com.cheney.entity.jpa.AuthUser;
 
 public interface UserDao extends BaseDao<AuthUser, Long> {
 

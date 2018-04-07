@@ -1,9 +1,11 @@
 package com.cheney.dao.impl;
 
 import com.cheney.dao.BaseDao;
-import com.cheney.entity.BaseEntity;
+import com.cheney.entity.jpa.BaseEntity;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.filter.FilterHandler;
+import com.cheney.system.order.Order;
+import com.cheney.system.order.OrderHandler;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import com.cheney.utils.sql.SqlFactory;
@@ -28,12 +30,12 @@ import java.util.List;
 public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implements BaseDao<T, ID> {
 
     @PersistenceContext
-    protected EntityManager entityManager;
+    EntityManager entityManager;
 
     private Class<T> entityType;
 
     @SuppressWarnings("unchecked")
-    public BaseDaoImpl() {
+    BaseDaoImpl() {
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         this.entityType = (Class<T>) pt.getActualTypeArguments()[0];
     }
@@ -112,21 +114,21 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
-    public List<T> findList(Filter filter) {
+    public List<T> findList(Filter filter, Order... orders) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
         Root<T> root = criteriaQuery.from(entityType);
         FilterHandler.filterQuery(criteriaQuery, root, filter);
+        OrderHandler.addOrders(criteriaQuery, root, orders);
         return entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT).getResultList();
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
-    public List<T> findList(Collection<Filter> filters) {
+    public List<T> findList(Collection<Filter> filters, Order... orders) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
         Root<T> root = criteriaQuery.from(entityType);
+        OrderHandler.addOrders(criteriaQuery, root, orders);
         FilterHandler.filterQuery(criteriaQuery, root, filters);
         return entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT).getResultList();
     }
@@ -142,7 +144,7 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
     }
 
     @Override
-    public Page<T> findPage(Pageable<T> pageable) {
+    public Page<T> findPage(Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
         Root<T> root = criteriaQuery.from(entityType);
@@ -151,7 +153,7 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public Page<T> findPageNative(String selection, String[] tableNames, String restriction, Pageable<T> pageable, SqlFactory.ParameterHolder parameterHolder) {
+    public Page<T> findPageNative(String selection, String[] tableNames, String restriction, Pageable pageable, SqlFactory.ParameterHolder parameterHolder) {
         String sql = SqlFactory.createSelect(selection, tableNames, restriction);
         String count = SqlFactory.createCount(tableNames, restriction);
         Query query = entityManager.createNativeQuery(sql, entityType);
@@ -168,8 +170,9 @@ public class BaseDaoImpl<T extends BaseEntity, ID extends Serializable> implemen
      * 处理分页基类方法
      * 只对dao包可见
      */
-    protected Page<T> findPageBase(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, Pageable<T> pageable) {
+    protected Page<T> findPageBase(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, Pageable pageable) {
         FilterHandler.filterQuery(criteriaQuery, from, pageable.getFilter());
+        OrderHandler.addOrders(criteriaQuery, from, pageable.getOrders());
         Predicate restriction = criteriaQuery.getRestriction();
         List<T> content = entityManager.createQuery(criteriaQuery).setFirstResult(pageable.getStartSize()).setMaxResults(pageable.getPageSize()).getResultList();
         //以同样的条件查找count

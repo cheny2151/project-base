@@ -1,9 +1,8 @@
 package com.cheney.dao.impl;
 
 import com.cheney.dao.UserDao;
-import com.cheney.entity.AuthUser;
+import com.cheney.entity.jpa.AuthUser;
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.FlushModeType;

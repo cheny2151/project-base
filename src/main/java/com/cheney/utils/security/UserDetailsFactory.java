@@ -1,7 +1,7 @@
 package com.cheney.utils.security;
 
-import com.cheney.entity.AuthUser;
-import com.cheney.entity.Role;
+import com.cheney.entity.jpa.AuthUser;
+import com.cheney.entity.jpa.Role;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

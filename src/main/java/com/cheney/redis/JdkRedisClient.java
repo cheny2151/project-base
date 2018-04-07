@@ -9,12 +9,12 @@ import javax.annotation.Resource;
 public class JdkRedisClient<V> extends AbstractRedisClient<V> {
 
     @Resource(name = "jdkRedisSerializerTemplate")
-    private RedisTemplate<String,V> redisTemplate;
+    private RedisTemplate<String,V> redis;
 
     @Override
     @Resource(name = "jdkRedisSerializerTemplate")
-    protected void setRedisTemplate(RedisTemplate<String, V> redisTemplate) {
-        super.setRedisTemplate(redisTemplate);
+    protected void setRedis(RedisTemplate<String, V> redis) {
+        super.setRedis(redis);
     }
 
 }

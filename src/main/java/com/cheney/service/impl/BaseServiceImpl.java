@@ -1,7 +1,7 @@
 package com.cheney.service.impl;
 
 import com.cheney.dao.BaseDao;
-import com.cheney.entity.BaseEntity;
+import com.cheney.entity.jpa.BaseEntity;
 import com.cheney.service.BaseService;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.page.Page;
@@ -77,7 +77,7 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     }
 
     @Override
-    public Page<T> findPage(Pageable<T> pageable) {
+    public Page<T> findPage(Pageable pageable) {
         return baseDao.findPage(pageable);
     }
 

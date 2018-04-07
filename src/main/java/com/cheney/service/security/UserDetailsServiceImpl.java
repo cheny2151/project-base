@@ -1,7 +1,7 @@
 package com.cheney.service.security;
 
 import com.cheney.dao.UserDao;
-import com.cheney.entity.AuthUser;
+import com.cheney.entity.jpa.AuthUser;
 import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.RedisClient;
 import com.cheney.utils.security.UserDetailsFactory;

@@ -12,13 +12,13 @@ import javax.annotation.Resource;
 public class StrRedisClient<V> extends AbstractRedisClient<V> {
 
     @Resource(name = "stringRedisSerializerTemplate")
-    private RedisTemplate<String, V> redisTemplate;
+    private RedisTemplate<String, V> redis;
 
 
     @Override
     @Resource(name = "stringRedisSerializerTemplate")
-    protected void setRedisTemplate(RedisTemplate<String, V> redisTemplate) {
-        super.setRedisTemplate(redisTemplate);
+    protected void setRedis(RedisTemplate<String, V> redis) {
+        super.setRedis(redis);
     }
 
 }
