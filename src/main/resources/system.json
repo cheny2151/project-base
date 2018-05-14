@@ -1,0 +1,15 @@
+{
+  "protocols": "http",
+  "ip": "193.112.72.53",
+  "domainName": null,
+  "port": 80,
+  "static":"/usr/local/blog/static",
+  "staticAlias": "s",
+  "imagePath": "/image/${imageType}/${now}",
+  "windowImagePath": "C:/Users/hboxs010/Pictures",
+  "text":"text",
+  "int":5,
+  "array":[1,2,3,4,5],
+  "double":279.23,
+  "boolean":true
+}

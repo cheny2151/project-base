@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
  * 配置profiles
  * 1,xml:配置默认加载的profiles spring.profiles.default
  * 2.javaConfig:rootContext.getEnvironment().setDefaultProfiles("xxx");
- * 3,tomcat启动脚本中配置激活的profiles --> catalina.bar/sh -->添加JVM环境变量 JAVA_OPTS = -Dspring.profiles.active=prod
+ * 3,tomcat启动脚本中配置激活的profiles --> catalina.bar/sh -->添加JVM环境变量：JAVA_OPTS="-Dspring.profiles.active=test"(windows 加set)
  */
 @Configuration
 public class BeanConfig {

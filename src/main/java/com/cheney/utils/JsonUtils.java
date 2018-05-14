@@ -1,9 +1,11 @@
 package com.cheney.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -46,6 +48,13 @@ public class JsonUtils {
             logger.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    public static JsonNode readTree(File file) throws IOException {
+        if (file == null) {
+            throw new NullPointerException("json file is null");
+        }
+        return objectMapper().readTree(file);
     }
 
 }

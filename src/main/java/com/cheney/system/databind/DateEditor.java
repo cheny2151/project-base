@@ -1,10 +1,9 @@
 package com.cheney.system.databind;
 
-import org.apache.commons.lang.time.DateUtils;
+import com.cheney.utils.DateUtils;
 
 import java.beans.PropertyEditorSupport;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -12,16 +11,10 @@ import java.util.Date;
  */
 public class DateEditor extends PropertyEditorSupport {
 
-    public static final String[] DATE_PATTERNS = new String[]{"yyyy", "yyyy-MM", "yyyyMM", "yyyy/MM", "yyyy-MM-dd", "yyyyMMdd", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss", "yyyy/MM/dd HH:mm:ss"};
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
-
     @Override
     public String getAsText() {
         Date value = (Date) getValue();
-        return SIMPLE_DATE_FORMAT.format(value);
+        return DateUtils.formatDate(value);
     }
 
     @Override
@@ -31,7 +24,7 @@ public class DateEditor extends PropertyEditorSupport {
             if ("".equals(value)) {
                 setValue(null);
             } else {
-                Date date = DateUtils.parseDate(value, DATE_PATTERNS);
+                Date date = DateUtils.parseDate(value);
                 setValue(date);
             }
         } catch (ParseException e) {

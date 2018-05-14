@@ -46,10 +46,10 @@ public class RedisExceptionAop {
         try {
             return joinPoint.proceed();
         } catch (Throwable e) {
+            logger.error("redis异常：" + e.getMessage(), e);
             if (throwRedisException) {
                 throw e;
             } else {
-                logger.error(e.getMessage(), e);
                 return null;
             }
         }
@@ -63,10 +63,9 @@ public class RedisExceptionAop {
         try {
             joinPoint.proceed();
         } catch (Throwable e) {
+            logger.error("redis异常：" + e.getMessage(), e);
             if (throwRedisException) {
                 throw e;
-            } else {
-                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -74,9 +73,14 @@ public class RedisExceptionAop {
     /**
      * 切点为返回基本类型的方法
      */
-    /*@Around("returnBase()")
+    @Around("returnBase()")
     public Object baseHandler(ProceedingJoinPoint joinPoint) throws Throwable {
-        return joinPoint.proceed();
-    }*/
+        try {
+            return joinPoint.proceed();
+        } catch (Throwable t) {
+            logger.error("redis异常：" + t.getMessage());
+            throw t;
+        }
+    }
 
 }

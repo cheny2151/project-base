@@ -41,6 +41,9 @@ public class RedisConfig {
         factory.setHostName(env.getRequiredProperty("redis.host"));
         factory.setPort(env.getRequiredProperty("redis.port", int.class));
         factory.setTimeout(env.getRequiredProperty("redis.timeout", int.class));
+        if (env.getRequiredProperty("redis.auth", boolean.class)) {
+            factory.setPassword(env.getProperty("redis.password"));
+        }
         return factory;
     }
 
