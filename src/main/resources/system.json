@@ -11,5 +11,10 @@
   "int":5,
   "array":[1,2,3,4,5],
   "double":279.23,
-  "boolean":true
+  "boolean": true,
+  "object": {
+    "value": "1",
+    "intValue": 1,
+    "array":[1,2,4,5]
+  }
 }

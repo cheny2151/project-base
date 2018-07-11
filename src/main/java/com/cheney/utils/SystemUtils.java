@@ -1,7 +1,7 @@
 package com.cheney.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.cheney.exception.PropertyNotFoundException;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
@@ -52,6 +52,8 @@ public class SystemUtils {
             value = node.asDouble();
         } else if (node.isNull()) {
             value = null;
+        } else if (node.isObject()) {
+            value = node;
         } else {
             value = node.asText();
         }
@@ -88,6 +90,10 @@ public class SystemUtils {
 
     public static int getIntValue(String name) {
         return (int) systemValue.get(name);
+    }
+
+    public static JsonNode getJsonNode(String name) {
+        return (JsonNode) systemValue.get(name);
     }
 
     @SuppressWarnings("unchecked")
