@@ -18,7 +18,7 @@
         <hibernate.version>5.2.14.Final</hibernate.version>
 
         <!-- mysql驱动版本号 -->
-        <mysql-driver.version>5.1.37</mysql-driver.version>
+        <mysql-driver.version>8.0.11</mysql-driver.version>
 
         <aspectj.version>1.8.13</aspectj.version>
 
