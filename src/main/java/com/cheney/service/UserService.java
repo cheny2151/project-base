@@ -1,6 +1,6 @@
 package com.cheney.service;
 
-import com.cheney.entity.jpa.AuthUser;
+import com.cheney.entity.dto.AuthUser;
 import com.cheney.utils.jwt.JwtPrincipal;
 
 public interface UserService extends BaseService<AuthUser, Long> {

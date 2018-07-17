@@ -19,9 +19,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Configuration
 public class BeanConfig {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Profile("dev")
     @Bean(name = "profilesBean")
     public String devBean() {
@@ -54,11 +51,6 @@ public class BeanConfig {
     @Bean("stringEditor")
     public StringEditor stringEditor() {
         return new StringEditor();
-    }
-
-    @Bean("criteriaBuilder")
-    public CriteriaBuilder criteriaBuilder() {
-        return entityManager.getCriteriaBuilder();
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.cheney.service;
 
-import com.cheney.entity.jpa.BaseEntity;
+import com.cheney.entity.dto.BaseEntity;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -43,19 +43,9 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     void delete(ID id);
 
     /**
-     * 删除
-     */
-    void delete(T entity);
-
-    /**
      * 批量删除
      */
     void delete(ID[] ids);
-
-    /**
-     * flush
-     */
-    void flush();
 
     /**
      * 过滤

@@ -1,7 +1,7 @@
 package com.cheney.service.security;
 
-import com.cheney.dao.UserDao;
-import com.cheney.entity.jpa.AuthUser;
+import com.cheney.dao.UserMapper;
+import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.RedisClient;
 import com.cheney.utils.security.UserDetailsFactory;
@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 @Service("userDetailsServiceImpl")
 public class UserDetailsServiceImpl implements MyUserDetailsService {
 
-    @Resource(name = "userDaoImpl")
-    private UserDao userDao;
+    @Resource(name = "userMapper")
+    private UserMapper userMapper;
     @Resource(name = "jdkRedisClient")
     private RedisClient<UserDetails> redisClient;
 
@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements MyUserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AuthUser user = userDao.findByUsername(username);
+        AuthUser user = userMapper.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("unknown username");
         }

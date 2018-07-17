@@ -1,8 +1,8 @@
 package com.cheney.service.impl;
 
-import com.cheney.dao.BaseDao;
-import com.cheney.dao.UserDao;
-import com.cheney.entity.jpa.AuthUser;
+import com.cheney.dao.BaseMapper;
+import com.cheney.dao.UserMapper;
+import com.cheney.entity.dto.AuthUser;
 import com.cheney.service.UserService;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,8 @@ import javax.annotation.Resource;
 @Transactional
 public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements UserService {
 
-    @Resource(name = "userDaoImpl")
-    private UserDao userDao;
+    @Autowired
+    private UserMapper userMapper;
     @Resource(name = "userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
     @Autowired
@@ -32,13 +32,13 @@ public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements 
 
     @Autowired
     @Override
-    protected void setBaseDao(BaseDao<AuthUser, Long> baseDao) {
-        super.setBaseDao(baseDao);
+    protected void setBaseMapper(BaseMapper<AuthUser, Long> baseMapper) {
+        super.setBaseMapper(baseMapper);
     }
 
     @Override
     public AuthUser findByUsername(String username) {
-        return userDao.findByUsername(username);
+        return userMapper.findByUsername(username);
     }
 
     @Override

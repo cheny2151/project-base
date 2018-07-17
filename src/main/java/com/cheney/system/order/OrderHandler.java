@@ -1,6 +1,6 @@
 package com.cheney.system.order;
 
-import com.cheney.entity.jpa.BaseEntity;
+import com.cheney.entity.dto.BaseEntity;
 import com.cheney.utils.SpringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;

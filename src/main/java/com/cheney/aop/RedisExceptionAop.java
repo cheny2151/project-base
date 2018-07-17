@@ -1,5 +1,6 @@
-package com.cheney.redis;
+package com.cheney.aop;
 
+import com.cheney.redis.RedisClient;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

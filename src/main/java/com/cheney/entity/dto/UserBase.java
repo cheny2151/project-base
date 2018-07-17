@@ -1,4 +1,4 @@
-package com.cheney.entity.jpa;
+package com.cheney.entity.dto;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

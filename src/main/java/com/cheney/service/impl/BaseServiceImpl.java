@@ -1,7 +1,7 @@
 package com.cheney.service.impl;
 
-import com.cheney.dao.BaseDao;
-import com.cheney.entity.jpa.BaseEntity;
+import com.cheney.dao.BaseMapper;
+import com.cheney.entity.dto.BaseEntity;
 import com.cheney.service.BaseService;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.page.Page;
@@ -15,70 +15,61 @@ import java.util.List;
 @Transactional
 public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> implements BaseService<T, ID> {
 
-    private BaseDao<T, ID> baseDao;
+    private BaseMapper<T, ID> baseMapper;
 
-    protected void setBaseDao(BaseDao<T, ID> baseDao) {
-        this.baseDao = baseDao;
+    protected void setBaseMapper(BaseMapper<T, ID> baseMapper) {
+        this.baseMapper = baseMapper;
     }
 
     @Override
     public T find(ID id) {
-        return baseDao.find(id);
+        return baseMapper.find(id);
     }
 
     @Override
     public List<T> findAll() {
-        return baseDao.findAll();
+        return baseMapper.findAll();
     }
 
     @Override
     public void save(T entity) {
-        baseDao.persist(entity);
+        baseMapper.persist(entity);
     }
 
     @Override
     public void update(T entity) {
-        baseDao.merge(entity);
+        baseMapper.merge(entity);
     }
 
     @Override
     public void delete(ID id) {
-        baseDao.remove(id);
-    }
-
-    @Override
-    public void delete(T entity) {
-        baseDao.remove(entity);
+        baseMapper.remove(id);
     }
 
     @Override
     public void delete(ID[] ids) {
-        baseDao.remove(ids);
-    }
-
-    @Override
-    public void flush() {
-        baseDao.flush();
+        baseMapper.multiRemove(ids);
     }
 
     @Override
     public List<T> findList(Filter filter) {
-        return baseDao.findList(filter);
+        return null;
     }
 
     @Override
     public List<T> findList(Collection<Filter> filters) {
-        return baseDao.findList(filters);
+        return null;
     }
 
     @Override
     public long count(Filter filter) {
-        return baseDao.count(filter);
+        return 0;
     }
 
     @Override
     public Page<T> findPage(Pageable pageable) {
-        return baseDao.findPage(pageable);
+        return null;
     }
+
 
 }
