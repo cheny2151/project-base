@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace命名空间对应要映射的dao接口的全限定名 -->
-<mapper namespace="com.cheney.dao.UserMapper">
+<mapper namespace="@{package}">
 
     <select id="find" parameterType="@{idType}" resultType="@{package}">
         select *
         from @{tableName}
-        where @{idCloumn} = #{id}
+        where @{idColumn} = #{id}
     </select>
 
     <select id="findAll" resultType="@{package}">
@@ -18,22 +18,22 @@
 
     <insert id="persist" parameterType="@{package}">
         insert into @{tableName}(@{cloumns})
-        values(@{cloumnValues})
+        values(@{columnValues})
     </insert>
 
     <update id="merge" parameterType="@{package}">
         update auth_user
         set @{setValue}
-        where @{idCloumn} = #{id}
+        where @{idColumn} = #{id}
     </update>
 
     <delete id="remove" parameterType="@{idType}">
-        delete from @{tableName} where @{idCloumn} = #{id}
+        delete from @{tableName} where @{idColumn} = #{id}
     </delete>
 
     <delete id="multiRemove" parameterType="@{idType}">
         delete from @{tableName}
-        where @{idCloumn} in
+        where @{idColumn} in
         <foreach item="id" collection="ids" open="(" close=")" separator=",">
             #{id}
         </foreach>
