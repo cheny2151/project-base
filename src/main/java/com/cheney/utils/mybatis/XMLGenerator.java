@@ -21,7 +21,7 @@ public class XMLGenerator {
     public final static String TABLE_NAME = "m_admin";
 
     //驼峰命名,false为下划线
-    public final static boolean HUMP = true;
+    public final static boolean HUMP = false;
 
     public static void main(String[] args) throws IOException {
         generate(Admin.class);

@@ -5,26 +5,25 @@ import com.cheney.utils.mybatis.XMLGenerator;
 
 import java.util.Set;
 
-public class ColumnValuesSwitch extends AbstractSwitch {
+public class ColumnsSwitch extends AbstractSwitch {
 
-    private final static String target = "@\\{columnValues}";
+    private final static String target = "@\\{cloumns}";
 
-    public ColumnValuesSwitch(Switch next) {
+    public ColumnsSwitch(Switch next) {
         super(next, target);
     }
 
     @Override
     public String getReplacement(Class clazz) {
-        StringBuilder columnValues = new StringBuilder();
+        StringBuilder columns = new StringBuilder();
         Set<String> names = BeanUtils.getAllFieldNames(clazz);
         names.remove(XMLGenerator.ID_COLUMN);
         for (String s : names) {
             if (!XMLGenerator.HUMP) {
                 s = underline(s);
             }
-            columnValues.append(placeholder(s)).append(SEPARATOR);
+            columns.append(s).append(SEPARATOR);
         }
-        return columnValues.subSequence(0, columnValues.length() - 1).toString();
+        return columns.subSequence(0, columns.length() - 1).toString();
     }
-
 }

@@ -17,7 +17,7 @@
     </select>
 
     <insert id="persist" parameterType="@{package}">
-        insert into @{tableName}(@{cloumns})
+        insert into @{tableName} (@{cloumns})
         values(@{columnValues})
     </insert>
 

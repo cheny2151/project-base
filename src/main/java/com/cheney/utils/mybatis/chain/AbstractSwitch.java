@@ -56,7 +56,8 @@ public abstract class AbstractSwitch implements Switch {
         char[] chars = name.toCharArray();
         int len = chars.length + 3;
         char[] newChars = new char[len];
-        for (int i = 0, j = 0; i < chars.length; i++, j++) {
+        int j = 0;
+        for (int i = 0; i < chars.length; i++, j++) {
             char c = chars[i];
             if (c >= 65 && c <= 90) {
                 if (j == len) {
@@ -68,7 +69,7 @@ public abstract class AbstractSwitch implements Switch {
             }
             newChars[j] = c;
         }
-        return new String(newChars);
+        return new String(newChars, 0, j);
     }
 
     private char[] resize(char[] chars) {

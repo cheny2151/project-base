@@ -19,7 +19,10 @@ public class SetValueSwitch extends AbstractSwitch {
         StringBuilder setValue = new StringBuilder();
         names.remove(XMLGenerator.ID_COLUMN);
         for (String s : names) {
-            String column = underline(s);
+            String column = s;
+            if (!XMLGenerator.HUMP) {
+                column = underline(s);
+            }
             setValue.append(column).append(EQUAL_TO).append(placeholder(s)).append(SEPARATOR);
         }
         return setValue.subSequence(0, setValue.length() - 1).toString();

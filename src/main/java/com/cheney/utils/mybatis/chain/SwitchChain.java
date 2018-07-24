@@ -10,7 +10,9 @@ public class SwitchChain {
                         new IdTypeSwitch(
                                 new PackageSwitch(
                                         new SetValueSwitch(
-                                                new TableNameSwitch(null)
+                                                new TableNameSwitch(
+                                                        new ColumnsSwitch(null)
+                                                )
                                         )))));
     }
 
