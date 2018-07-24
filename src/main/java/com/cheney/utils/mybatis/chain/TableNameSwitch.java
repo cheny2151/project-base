@@ -1,23 +1,18 @@
 package com.cheney.utils.mybatis.chain;
 
-public class TableNameSwitch implements Switch {
+import com.cheney.utils.mybatis.XMLGenerator;
 
-    private Switch next;
+public class TableNameSwitch extends AbstractSwitch {
 
     private final static String target = "@\\{tableName}";
 
     public TableNameSwitch(Switch next) {
-        this.next = next;
+        super(next, target);
     }
 
     @Override
-    public String replaceAll(String t, String fullPath) {
-        t = t.replaceAll(target, "tableName");
-        return next == null ? t : next.replaceAll(t, fullPath);
+    public String getReplacement(Class clazz) {
+        return XMLGenerator.TABLE_NAME;
     }
 
-    @Override
-    public Switch next() {
-        return next;
-    }
 }

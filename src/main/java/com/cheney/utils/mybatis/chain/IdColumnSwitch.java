@@ -1,23 +1,18 @@
 package com.cheney.utils.mybatis.chain;
 
-public class IdColumnSwitch implements Switch {
+import com.cheney.utils.mybatis.XMLGenerator;
 
-    private Switch next;
+public class IdColumnSwitch extends AbstractSwitch {
 
     private final static String target = "@\\{idColumn}";
 
     public IdColumnSwitch(Switch next) {
-        this.next = next;
+        super(next, target);
     }
 
     @Override
-    public String replaceAll(String t, String fullPath) {
-        t = t.replaceAll(target, "idColumn");
-        return next == null ? t : next.replaceAll(t, fullPath);
+    public String getReplacement(Class clazz) {
+        return XMLGenerator.ID_COLUMN;
     }
 
-    @Override
-    public Switch next() {
-        return next;
-    }
 }

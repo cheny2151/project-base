@@ -7,8 +7,9 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 反射工具类
@@ -81,11 +82,23 @@ public class BeanUtils {
     }
 
     public static List<Field> getAllFields(Class clazz, Class stop) {
-        ArrayList<Field> fieldList = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
         for (; clazz != stop; clazz = clazz.getSuperclass()) {
-            fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.getName().equalsIgnoreCase("serialVersionUID")) continue;
+                fields.add(field);
+            }
         }
-        return fieldList;
+        return fields;
+    }
+
+    public static Set<String> getAllFieldNames(Class clazz) {
+        List<Field> fields = getAllFields(clazz, Object.class);
+        TreeSet<String> names = new TreeSet<>();
+        fields.forEach(field ->
+                names.add(field.getName())
+        );
+        return names;
     }
 
     private static String toUpperFirstLetter(String fieldName) {

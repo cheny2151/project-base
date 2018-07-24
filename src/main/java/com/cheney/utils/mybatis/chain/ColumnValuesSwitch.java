@@ -1,23 +1,31 @@
 package com.cheney.utils.mybatis.chain;
 
-public class ColumnValuesSwitch implements Switch {
+import com.cheney.utils.BeanUtils;
+import com.cheney.utils.mybatis.XMLGenerator;
 
-    private Switch next;
+import java.util.Set;
+
+public class ColumnValuesSwitch extends AbstractSwitch {
 
     private final static String target = "@\\{columnValues}";
 
     public ColumnValuesSwitch(Switch next) {
-        this.next = next;
+        super(next, target);
     }
 
     @Override
-    public String replaceAll(String t, String fullPath) {
-        t = t.replaceAll(target, "columnValues");
-        return next == null ? t : next.replaceAll(t, fullPath);
+    public String getReplacement(Class clazz) {
+        StringBuilder columnValues = new StringBuilder();
+        Set<String> names = BeanUtils.getAllFieldNames(clazz);
+        names.remove(XMLGenerator.ID_COLUMN);
+        for (String s : names) {
+            if (!XMLGenerator.HUMP) {
+                s = underline(s);
+            }
+            columnValues.append(placeholder(s)).append(SEPARATOR);
+        }
+        columnValues.subSequence(0, columnValues.length() - 1);
+        return columnValues.toString();
     }
 
-    @Override
-    public Switch next() {
-        return next;
-    }
 }

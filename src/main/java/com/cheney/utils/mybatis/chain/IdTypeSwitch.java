@@ -1,23 +1,17 @@
 package com.cheney.utils.mybatis.chain;
 
-public class IdTypeSwitch implements Switch {
+import com.cheney.utils.mybatis.XMLGenerator;
 
-    private Switch next;
+public class IdTypeSwitch extends AbstractSwitch {
 
     private final static String target = "@\\{idType}";
 
     public IdTypeSwitch(Switch next) {
-        this.next = next;
+        super(next, target);
     }
 
     @Override
-    public String replaceAll(String t, String fullPath) {
-        t = t.replaceAll(target, "idType");
-        return next == null ? t : next.replaceAll(t, fullPath);
-    }
-
-    @Override
-    public Switch next() {
-        return next;
+    public String getReplacement(Class clazz) {
+        return XMLGenerator.ID_TYPE.toString();
     }
 }

@@ -14,8 +14,8 @@ public class SwitchChain {
                                         )))));
     }
 
-    public static String replaceAll(String toReplace, String fullPath) {
-        return start.replaceAll(toReplace, fullPath);
+    public static String replaceAll(String toReplace, Class clazz) {
+        return start.replaceAll(toReplace, clazz);
     }
 
 }
