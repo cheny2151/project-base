@@ -33,15 +33,15 @@ public class XMLGenerator {
         FileWriter fileWriter = null;
         try {
             reader = new BufferedReader(
-                new InputStreamReader(
-                        new ClassPathResource("/mybatis/template/Template.xml").getInputStream()
-                )
-        );
-        String t;
+                    new InputStreamReader(
+                            new ClassPathResource("/mybatis/template/Template.xml").getInputStream()
+                    )
+            );
+            String t;
 //        File file = new File(generatePath + target.getSimpleName() + end);
             String generatePath = "C:\\Users\\admin\\IdeaProjects\\project-base\\src\\main\\resources\\mybatis\\";
-        File file = new File(generatePath + target.getSimpleName() + end);
-        file.createNewFile();
+            File file = new File(generatePath + target.getSimpleName() + end);
+            file.createNewFile();
             fileWriter = new FileWriter(file);
             while ((t = reader.readLine()) != null) {
                 t = rewrite(t, target);
