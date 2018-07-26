@@ -1,6 +1,6 @@
 package com.cheney.service.security;
 
-import com.cheney.dao.UserMapper;
+import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.RedisClient;

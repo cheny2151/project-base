@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace命名空间对应要映射的dao接口的全限定名 -->
-<mapper namespace="com.cheney.dao.UserMapper">
+<mapper namespace="com.cheney.dao.mybatis.UserMapper">
 
     <select id="find" parameterType="long" resultType="com.cheney.entity.dto.AuthUser">
         select *

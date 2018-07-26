@@ -1,6 +1,6 @@
 package com.cheney.controller;
 
-import com.cheney.dao.UserMapper;
+import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.system.message.JsonMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

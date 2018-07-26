@@ -1,4 +1,4 @@
-package com.cheney.dao;
+package com.cheney.dao.mybatis;
 
 import com.cheney.entity.dto.AuthUser;
 import org.springframework.stereotype.Repository;

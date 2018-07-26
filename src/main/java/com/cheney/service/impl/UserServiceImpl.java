@@ -1,7 +1,7 @@
 package com.cheney.service.impl;
 
-import com.cheney.dao.BaseMapper;
-import com.cheney.dao.UserMapper;
+import com.cheney.dao.mybatis.BaseMapper;
+import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.AuthUser;
 import com.cheney.service.UserService;
 import com.cheney.utils.jwt.JwtPrincipal;

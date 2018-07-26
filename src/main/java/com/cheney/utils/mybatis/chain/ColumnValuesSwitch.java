@@ -19,9 +19,6 @@ public class ColumnValuesSwitch extends AbstractSwitch {
         Set<String> names = BeanUtils.getAllFieldNames(clazz);
         names.remove(XMLGenerator.ID_COLUMN);
         for (String s : names) {
-            if (!XMLGenerator.HUMP) {
-                s = underline(s);
-            }
             columnValues.append(placeholder(s)).append(SEPARATOR);
         }
         return columnValues.subSequence(0, columnValues.length() - 1).toString();

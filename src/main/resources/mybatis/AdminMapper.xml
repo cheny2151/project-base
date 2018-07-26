@@ -18,7 +18,7 @@
 
     <insert id="persist" parameterType="com.cheney.entity.dto.Admin">
         insert into m_admin (create_date,username)
-        values(#{create_date},#{username})
+        values(#{createDate},#{username})
     </insert>
 
     <update id="merge" parameterType="com.cheney.entity.dto.Admin">

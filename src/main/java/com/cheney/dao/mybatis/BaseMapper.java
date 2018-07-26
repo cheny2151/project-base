@@ -1,4 +1,4 @@
-package com.cheney.dao;
+package com.cheney.dao.mybatis;
 
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.system.filter.Filter;

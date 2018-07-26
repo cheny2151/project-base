@@ -1,4 +1,6 @@
-import com.cheney.dao.UserMapper;
+import com.cheney.dao.mybatis.AdminMapper;
+import com.cheney.dao.mybatis.UserMapper;
+import com.cheney.entity.dto.Admin;
 import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.spring.RootConfig;
 import org.junit.Test;
@@ -23,6 +25,9 @@ public class TestJunits {
     @Resource(name = "userMapper")
     private UserMapper userMapper;
 
+    @Resource(name = "adminMapper")
+    private AdminMapper adminMapper;
+
     @Resource(name = "profilesBean")
     private String profile;
 
@@ -35,4 +40,13 @@ public class TestJunits {
         authUser.setOriginId(12323L);
         userMapper.persist(authUser);
     }
+
+    @Test
+    public void test2() {
+        Admin admin = new Admin();
+        admin.setCreateDate(new Date());
+        admin.setUsername("testAdmin");
+        adminMapper.persist(admin);
+    }
+
 }

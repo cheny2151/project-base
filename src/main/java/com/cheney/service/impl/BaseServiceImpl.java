@@ -1,6 +1,6 @@
 package com.cheney.service.impl;
 
-import com.cheney.dao.BaseMapper;
+import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.service.BaseService;
 import com.cheney.system.filter.Filter;

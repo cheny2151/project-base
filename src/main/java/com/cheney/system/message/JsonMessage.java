@@ -69,7 +69,7 @@ public class JsonMessage implements Serializable {
     public static JsonMessage success(Object... data) {
         //单一数据
         if (data.length == 1) {
-            return new JsonMessage(SUCCESS_CODE, data);
+            return new JsonMessage(SUCCESS_CODE, data[0]);
         } else {
             //多数据
             HashMap<String, Object> map = new HashMap<>();
