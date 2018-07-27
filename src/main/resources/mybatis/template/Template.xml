@@ -39,4 +39,10 @@
         </foreach>
     </delete>
 
+    <select id="findPage" resultType="@{package}">
+        select *
+        from @{tableName}
+
+    </select>
+
 </mapper>
