@@ -8,8 +8,8 @@ public class EqualFilter extends Filter {
         super(equalSymbol);
     }
 
-    public EqualFilter(Object value, String property) {
-        super(equalSymbol, value, property);
+    public EqualFilter(String property, Object value) {
+        super(equalSymbol, property, value);
     }
 
 }

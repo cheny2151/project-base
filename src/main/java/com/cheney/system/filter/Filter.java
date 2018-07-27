@@ -12,10 +12,10 @@ public abstract class Filter {
         this.symbol = symbol;
     }
 
-    public Filter(String symbol, Object value, String property) {
+    public Filter(String symbol, String property, Object value) {
         this.symbol = symbol;
-        this.value = value;
         this.property = property;
+        this.value = value;
     }
 
     public String getSymbol() {

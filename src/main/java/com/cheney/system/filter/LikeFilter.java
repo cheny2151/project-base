@@ -8,7 +8,8 @@ public class LikeFilter extends Filter {
         super(likeSymbol);
     }
 
-    public LikeFilter(Object value, String property) {
-        super(likeSymbol, value, property);
+    public LikeFilter(String property, Object value) {
+        super(likeSymbol, property, value);
     }
+
 }

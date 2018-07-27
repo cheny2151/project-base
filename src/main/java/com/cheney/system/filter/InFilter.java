@@ -2,14 +2,14 @@ package com.cheney.system.filter;
 
 public class InFilter extends Filter {
 
-    private static final String inSymbol = "=";
+    private static final String inSymbol = "in";
 
     public InFilter() {
         super(inSymbol);
     }
 
-    public InFilter(Object value, String property) {
-        super(inSymbol, value, property);
+    public InFilter(String property, Object value) {
+        super(inSymbol, property, value);
     }
 
 }
