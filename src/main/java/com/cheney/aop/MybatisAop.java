@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class MybatisAop {
 
     private final Logger logger = Logger.getLogger(MybatisAop.class);

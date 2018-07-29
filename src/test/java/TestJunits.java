@@ -3,6 +3,7 @@ import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.Admin;
 import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.spring.RootConfig;
+import com.cheney.system.filter.FilterFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
@@ -12,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 单元测试类
@@ -33,20 +35,14 @@ public class TestJunits {
 
     @Test
     public void test() {
-        AuthUser authUser = new AuthUser();
-        authUser.setUsername("test1234");
-        authUser.setLastPasswordReset(new Date());
-        authUser.setPassword("13254khasgfkh");
-        authUser.setOriginId(12323L);
-        userMapper.persist(authUser);
+        List<Admin> id = adminMapper.findList(FilterFactory.createFilterList(FilterFactory.isNotNull("id")));
+        System.out.println(id);
     }
 
     @Test
     public void test2() {
-        Admin admin = new Admin();
-        admin.setCreateDate(new Date());
-        admin.setUsername("testAdmin");
-        adminMapper.persist(admin);
+        List<Admin> all = adminMapper.findAll();
+        System.out.println(all);
     }
 
 }

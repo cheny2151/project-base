@@ -1,6 +1,6 @@
 package com.cheney.system.filter;
 
-public abstract class Filter {
+public class Filter {
 
     private String symbol;
 

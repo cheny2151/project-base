@@ -4,10 +4,6 @@ public class EqualFilter extends Filter {
 
     private static final String equalSymbol = "=";
 
-    public EqualFilter() {
-        super(equalSymbol);
-    }
-
     public EqualFilter(String property, Object value) {
         super(equalSymbol, property, value);
     }

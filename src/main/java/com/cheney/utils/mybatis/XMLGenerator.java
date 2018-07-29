@@ -39,7 +39,7 @@ public class XMLGenerator {
             );
             String t;
 //        File file = new File(generatePath + target.getSimpleName() + end);
-            String generatePath = "C:\\Users\\admin\\IdeaProjects\\project-base\\src\\main\\resources\\mybatis\\";
+            String generatePath = "C:\\Users\\47824\\IdeaProjects\\project-base\\src\\main\\resources\\mybatis\\";
             File file = new File(generatePath + target.getSimpleName() + end);
             file.createNewFile();
             fileWriter = new FileWriter(file);

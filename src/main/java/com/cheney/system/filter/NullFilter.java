@@ -4,8 +4,8 @@ public class NullFilter extends Filter {
 
     private static final String nullSymbol = "is null";
 
-    public NullFilter() {
-        super(nullSymbol);
+    public NullFilter(String property) {
+        super(nullSymbol, property, null);
     }
 
 }

@@ -36,11 +36,11 @@ public class FilterFactory {
     }
 
     public static Filter eq(String property, Object value) {
-        return new EqualFilter(property, value, false);
+        return new EqualFilter(property, value);
     }
 
     public static Filter notEq(String property, Object value) {
-        return new NotEqualFilter(property, value, false);
+        return new NotEqualFilter(property, value);
     }
 
     public static Filter gt(String property, Object value) {
@@ -64,40 +64,23 @@ public class FilterFactory {
     }
 
     public static Filter like(String property, Object value) {
-        return new LikeFilter(property, value, false);
+        return new LikeFilter(property, value);
     }
 
     public static Filter notLike(String property, Object value) {
-        return new NotLikeFilter(property, value, false);
+        return new NotLikeFilter(property, value);
     }
 
-    public static Filter isNull(String property, Object value) {
-        return new NullFilter(property, value);
+    public static Filter isNull(String property) {
+        return new NullFilter(property);
     }
 
-    public static Filter isNotNull(String property, Object value) {
-        return new NotNullFilter(property, value);
+    public static Filter isNotNull(String property) {
+        return new NotNullFilter(property);
     }
 
     public static Filter isNotLike(String property, Object value) {
-        return new NotLikeFilter(property, value, false);
-    }
-
-
-    public static Filter eq(String property, Object value, boolean ignoreCase) {
-        return new EqualFilter(property, value, ignoreCase);
-    }
-
-    public static Filter notEq(String property, Object value, boolean ignoreCase) {
-        return new NotEqualFilter(property, value, ignoreCase);
-    }
-
-    public static Filter like(String property, Object value, boolean ignoreCase) {
-        return new LikeFilter(property, value, ignoreCase);
-    }
-
-    public static Filter isNotLike(String property, Object value, boolean ignoreCase) {
-        return new NotLikeFilter(property, value, ignoreCase);
+        return new NotLikeFilter(property, value);
     }
 
     public static List<Filter> createFilterList(Filter... filters) {

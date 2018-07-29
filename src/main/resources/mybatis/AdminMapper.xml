@@ -3,9 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace命名空间对应要映射的dao接口的全限定名 -->
-<mapper namespace="com.cheney.entity.dto.Admin">
+<mapper namespace="com.cheney.dao.mybatis.AdminMapper">
 
-    <select id="find" parameterType="long" resultType="com.cheney.entity.dto.Admin">
+    <sql id="filter">
+        <where>
+            <foreach collection="filters" item="filter" separator=",">
+                <if test="filter.symbol != 'is null' and filter.symbol != 'is not null'">
+                    and ${filter.property} ${filter.symbol} #{filter.value}
+                </if>
+                <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                    and ${filter.property} ${filter.symbol}
+                </if>
+                <if test="filter.symbol == 'in'">
+                    ${filter.property}
+                    in
+                    <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="findById" parameterType="long" resultType="com.cheney.entity.dto.Admin">
         select *
         from m_admin
         where id = #{id}
@@ -38,5 +58,16 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="findPage" resultType="com.cheney.entity.dto.Admin">
+        select *
+        from m_admin
+    </select>
+
+    <select id="findList" resultType="com.cheney.entity.dto.Admin">
+        select *
+        from m_admin
+        <include refid="filter"/>
+    </select>
 
 </mapper>

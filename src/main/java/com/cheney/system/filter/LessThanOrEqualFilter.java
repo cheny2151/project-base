@@ -4,12 +4,8 @@ public class LessThanOrEqualFilter extends Filter {
 
     private static final String lessThanOrEqualSymbol = "<=";
 
-    public LessThanOrEqualFilter() {
-        super(lessThanOrEqualSymbol);
-    }
-
-    public LessThanOrEqualFilter(Object value, String property) {
-        super(lessThanOrEqualSymbol, value, property);
+    public LessThanOrEqualFilter(String property, Object value) {
+        super(lessThanOrEqualSymbol, property, value);
     }
 
 }

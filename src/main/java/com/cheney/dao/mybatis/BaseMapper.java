@@ -49,7 +49,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤排序查找
      */
-//    List<T> findList(Filter filter, Order... orders);
+    List<T> findList(@Param("filters") List<Filter> filter);
 
     /**
      * 过滤排序查找
