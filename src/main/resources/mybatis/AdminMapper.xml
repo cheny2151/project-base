@@ -8,7 +8,7 @@
     <sql id="filter">
         <where>
             <foreach collection="filters" item="filter" separator=",">
-                <if test="filter.symbol != 'is null' and filter.symbol != 'is not null'">
+                <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     and ${filter.property} ${filter.symbol} #{filter.value}
                 </if>
                 <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">

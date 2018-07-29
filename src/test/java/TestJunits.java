@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,10 @@ public class TestJunits {
 
     @Test
     public void test() {
-        List<Admin> id = adminMapper.findList(FilterFactory.createFilterList(FilterFactory.isNotNull("id")));
+        ArrayList<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        List<Admin> id = adminMapper.findList(FilterFactory.createFilterList(FilterFactory.in("id",integers)));
         System.out.println(id);
     }
 
