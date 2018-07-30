@@ -1,7 +1,6 @@
 package com.cheney.system.page;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,38 +13,35 @@ public class Page<T> implements Serializable {
 
     private List<T> content;
 
-    private PageInfo pageInfo;
+    private long total;
 
-    private long count;
+    private int pageNumber;
+
+    private int pageSize;
 
     public Page() {
     }
 
-    public Page(PageInfo pageInfo, List<T> content, long count) {
-        pageInfo.setTotal(count);
-        pageInfo.setPageTotal((int) ((count + pageInfo.getPageSize() - 1) / pageInfo.getPageSize()));
-        this.pageInfo = pageInfo;
-        this.content = content == null ? new ArrayList<>() : content;
+    public Page(List<T> content, long total, PageInfo pageInfo) {
+        this.content = content;
+        this.total = total;
+        this.pageNumber = pageInfo.getPageNumber();
+        this.pageSize = pageInfo.getPageSize();
     }
 
     public List<T> getContent() {
         return content;
     }
 
-    public int getPageTotal() {
-        return pageInfo.getPageTotal();
-    }
-
-    public int getCurrentPage() {
-        return pageInfo.getPageNumber();
-    }
-
     public long getTotal() {
-        return pageInfo.getTotal();
+        return total;
     }
 
-    public PageInfo getPageable() {
-        return pageInfo;
+    public int getPageNumber() {
+        return pageNumber;
     }
 
+    public int getPageSize() {
+        return pageSize;
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,14 +40,18 @@ public class TestJunits {
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
-        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.gt("id", integers)));
+        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.in("id",integers)),null);
         System.out.println(id);
     }
 
     @Test
     public void test2() {
-        Page<Admin> page = adminMapper.findPage(new Pageable());
-        System.out.println(page.getCount());
+        Pageable pageable = new Pageable();
+        pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","test"),FilterFactory.eq("username","test1")));
+        Page<Admin> page = adminMapper.findPage(pageable);
+        System.out.println(page.getPageNumber());
+        System.out.println(page.getPageSize());
+        System.out.println(page.getTotal());
         System.out.println(page.getContent());
     }
 

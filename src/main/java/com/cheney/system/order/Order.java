@@ -1,14 +1,23 @@
 package com.cheney.system.order;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Root;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 排序父类
  */
 public abstract class Order {
 
-    protected String property;
+    private String property;
+
+    private String type;
+
+    public Order(String property, String type) {
+        if (StringUtils.isEmpty(property)) {
+            throw new IllegalArgumentException("illegal arg property");
+        }
+        this.property = property;
+        this.type = type;
+    }
 
     public String getProperty() {
         return property;
@@ -18,6 +27,11 @@ public abstract class Order {
         this.property = property;
     }
 
-    abstract javax.persistence.criteria.Order create(Root<?> root, CriteriaBuilder criteriaBuilder);
+    public String getType() {
+        return type;
+    }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 }

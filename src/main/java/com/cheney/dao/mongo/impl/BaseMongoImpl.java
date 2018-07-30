@@ -94,7 +94,7 @@ class BaseMongoImpl<T extends MongoBaseEntity> implements BaseMongo<T> {
         }
         query.skip(pageInfo.getStartSize()).limit(pageInfo.getPageSize());
         List<T> content = mongo.find(query, entityType);
-        return new Page<>(pageInfo, content, count);
+        return new Page<>(content, count, pageInfo);
     }
 
     //rouji mongo聚合代码

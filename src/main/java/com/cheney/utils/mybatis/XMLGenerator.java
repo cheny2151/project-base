@@ -18,12 +18,14 @@ public class XMLGenerator {
 
     public final static String ID_COLUMN = "id";
 
+    public final static String ID = "id";
+
     public final static Class ID_TYPE = long.class;
 
     public final static String TABLE_NAME = "m_admin";
 
     //驼峰命名,false为下划线
-    public final static boolean HUMP = false;
+    public final static boolean HUMP = true;
 
     public static void main(String[] args) throws IOException {
         generate(Admin.class);

@@ -11,9 +11,10 @@ public class SwitchChain {
                                 new PackageSwitch(
                                         new SetValueSwitch(
                                                 new TableNameSwitch(
-                                                        new ColumnsSwitch(new NamespaceSwitch(null))
-                                                )
-                                        )))));
+                                                        new ColumnsSwitch(
+                                                                new NamespaceSwitch(
+                                                                        new ResultMapSwitch(null)
+                                                                ))))))));
     }
 
     public static String replaceAll(String toReplace, Class clazz) {

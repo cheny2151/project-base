@@ -8,7 +8,7 @@ public class OrderFactory {
     /**
      * 默认排序属性
      */
-    final static String DEFAULT_ORDER_PRO = "createDate";
+    public final static String DEFAULT_ORDER_PRO = "createDate";
 
     private OrderFactory() {
     }

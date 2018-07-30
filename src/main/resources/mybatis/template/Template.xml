@@ -5,14 +5,18 @@
 <!-- namespace命名空间对应要映射的dao接口的全限定名 -->
 <mapper namespace="@{namespace}">
 
+    <resultMap id="base" type="@{package}">
+        @{resultMap}
+    </resultMap>
+
     <sql id="filters">
         <where>
-            <foreach collection="filters" item="filter" separator=",">
+            <foreach collection="filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
-                    and ${filter.property} ${filter.symbol} #{filter.value}
+                    ${filter.property} ${filter.symbol} #{filter.value}
                 </if>
                 <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                    and ${filter.property} ${filter.symbol}
+                    ${filter.property} ${filter.symbol}
                 </if>
                 <if test="filter.symbol == 'in'">
                     ${filter.property}
@@ -27,12 +31,12 @@
 
     <sql id="pageFilters">
         <where>
-            <foreach collection="pageable.filters" item="filter" separator=",">
+            <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
-                    and ${filter.property} ${filter.symbol} #{filter.value}
+                    ${filter.property} ${filter.symbol} #{filter.value}
                 </if>
                 <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                    and ${filter.property} ${filter.symbol}
+                    ${filter.property} ${filter.symbol}
                 </if>
                 <if test="filter.symbol == 'in'">
                     ${filter.property}
@@ -45,9 +49,32 @@
         </where>
     </sql>
 
+    <sql id="orders">
+      <if test="orders != null and orders.size >0">
+          order by
+          <foreach collection="orders" separator="," item="order">
+              #{order.property}
+          </foreach>
+          #{order.type}
+      </if>
+    </sql>
+
+    <sql id="pageOrders">
+        <if test="pageable.orders != null and pageable.orders.size >0">
+            order by
+            <foreach collection="orders" separator="," item="order">
+                #{order.property}
+            </foreach>
+            #{order.type}
+        </if>
+    </sql>
+
     <resultMap id="page" type="com.cheney.system.page.Page">
         <result property="total" column="count"/>
+        <result property="pageSize" column="pageSize"/>
+        <result property="pageNumber" column="pageNumber"/>
         <collection property="content" ofType="@{package}" >
+            @{resultMap}
         </collection>
     </resultMap>
 
@@ -85,11 +112,15 @@
         </foreach>
     </delete>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultType="@{package}">
-        select (select count(*) from @{tableName} <include refid="pageFilters"/>) as count
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select
+        #{pageable.pageSize} as pageSize
+        ,#{pageable.pageNumber} as pageNumber
+        ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
         ,t1.*
         from @{tableName} t1
         <include refid="pageFilters"/>
+        <include refid="pageOrders"/>
         limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
@@ -97,6 +128,7 @@
         select *
         from @{tableName}
         <include refid="filters"/>
+        <include refid="orders"/>
     </select>
 
 </mapper>
