@@ -10,7 +10,9 @@ public class XMLGenerator {
 
     private String tableName;
 
-    private final static String end = "Mapper.xml";
+    public final static String NAMESPACE = "com.cheney.dao.mybatis";
+
+    public final static String END = "Mapper";
 
     private final static String generatePath = "/mybatis/template/";
 
@@ -38,9 +40,9 @@ public class XMLGenerator {
                     )
             );
             String t;
-//        File file = new File(generatePath + target.getSimpleName() + end);
-            String generatePath = "C:\\Users\\47824\\IdeaProjects\\project-base\\src\\main\\resources\\mybatis\\";
-            File file = new File(generatePath + target.getSimpleName() + end);
+//        File file = new File(generatePath + target.getSimpleName() + END);
+            String generatePath = "C:\\Users\\admin\\IdeaProjects\\project-base\\src\\main\\resources\\mybatis\\";
+            File file = new File(generatePath + target.getSimpleName() + END + ".xml");
             file.createNewFile();
             fileWriter = new FileWriter(file);
             while ((t = reader.readLine()) != null) {

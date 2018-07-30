@@ -45,6 +45,12 @@
         </where>
     </sql>
 
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="total" column="count"/>
+        <collection property="content" ofType="@{package}" >
+        </collection>
+    </resultMap>
+
     <select id="findById" parameterType="@{idType}" resultType="@{package}">
         select *
         from @{tableName}
@@ -80,8 +86,9 @@
     </delete>
 
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultType="@{package}">
-        select *
-        from @{tableName}
+        select (select count(*) from @{tableName} <include refid="pageFilters"/>) as count
+        ,t1.*
+        from @{tableName} t1
         <include refid="pageFilters"/>
         limit #{pageable.startSize},#{pageable.pageSize}
     </select>

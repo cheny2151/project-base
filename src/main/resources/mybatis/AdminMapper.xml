@@ -45,6 +45,13 @@
         </where>
     </sql>
 
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="count" column="count"/>
+        <collection property="content" ofType="com.cheney.entity.dto.Admin" >
+            <id property="id" column="id" />
+        </collection>
+    </resultMap>
+
     <select id="findById" parameterType="long" resultType="com.cheney.entity.dto.Admin">
         select *
         from m_admin
@@ -79,9 +86,10 @@
         </foreach>
     </delete>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultType="com.cheney.entity.dto.Admin">
-        select *
-        from m_admin
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select (select count(*) from m_admin <include refid="pageFilters"/>) as count
+        ,t1.*
+        from m_admin t1
         <include refid="pageFilters"/>
         limit #{pageable.startSize},#{pageable.pageSize}
     </select>

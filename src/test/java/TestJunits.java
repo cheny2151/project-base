@@ -39,14 +39,15 @@ public class TestJunits {
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
-        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.notLike("username", "test1")));
+        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.gt("id", integers)));
         System.out.println(id);
     }
 
     @Test
     public void test2() {
         Page<Admin> page = adminMapper.findPage(new Pageable());
-        System.out.println(page);
+        System.out.println(page.getCount());
+        System.out.println(page.getContent());
     }
 
 }

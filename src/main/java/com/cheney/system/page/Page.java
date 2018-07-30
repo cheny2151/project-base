@@ -14,7 +14,12 @@ public class Page<T> implements Serializable {
 
     private List<T> content;
 
-    private final PageInfo pageInfo;
+    private PageInfo pageInfo;
+
+    private long count;
+
+    public Page() {
+    }
 
     public Page(PageInfo pageInfo, List<T> content, long count) {
         pageInfo.setTotal(count);
