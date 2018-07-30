@@ -11,7 +11,7 @@ public class SwitchChain {
                                 new PackageSwitch(
                                         new SetValueSwitch(
                                                 new TableNameSwitch(
-                                                        new ColumnsSwitch(null)
+                                                        new ColumnsSwitch(new NamespaceSwitch(null))
                                                 )
                                         )))));
     }

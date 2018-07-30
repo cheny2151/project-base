@@ -83,7 +83,7 @@ public class FilterFactory {
         return new NotLikeFilter(property, value);
     }
 
-    public static List<Filter> createFilterList(Filter... filters) {
+    public static List<Filter> create(Filter... filters) {
         return new ArrayList<>(Arrays.asList(filters));
     }
 

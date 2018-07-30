@@ -14,16 +14,16 @@ public class Pageable extends PageInfo {
 
     private static final long serialVersionUID = 5705303253597757865L;
 
-    private List<Filter> filter = new ArrayList<>();
+    private List<Filter> filters = new ArrayList<>();
 
     private List<Order> orders = new ArrayList<>();
 
-    public List<Filter> getFilter() {
-        return filter;
+    public List<Filter> getFilters() {
+        return filters;
     }
 
-    public void setFilter(List<Filter> filter) {
-        this.filter = filter;
+    public void setFilters(List<Filter> filters) {
+        this.filters = filters;
     }
 
     public List<Order> getOrders() {

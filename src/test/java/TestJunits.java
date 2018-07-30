@@ -1,9 +1,10 @@
 import com.cheney.dao.mybatis.AdminMapper;
 import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.Admin;
-import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.spring.RootConfig;
 import com.cheney.system.filter.FilterFactory;
+import com.cheney.system.page.Page;
+import com.cheney.system.page.Pageable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,7 +14,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,14 +39,14 @@ public class TestJunits {
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
-        List<Admin> id = adminMapper.findList(FilterFactory.createFilterList(FilterFactory.in("id",integers)));
+        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.notLike("username", "test1")));
         System.out.println(id);
     }
 
     @Test
     public void test2() {
-        List<Admin> all = adminMapper.findAll();
-        System.out.println(all);
+        Page<Admin> page = adminMapper.findPage(new Pageable());
+        System.out.println(page);
     }
 
 }

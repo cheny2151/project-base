@@ -2,16 +2,11 @@ package com.cheney.dao.mybatis;
 
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.system.filter.Filter;
-import com.cheney.system.order.Order;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
-import com.cheney.utils.sql.SqlFactory;
 import org.apache.ibatis.annotations.Param;
 
-import javax.persistence.Column;
-import javax.persistence.LockModeType;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
@@ -64,6 +59,6 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 分页
      */
-//    Page<T> findPage(Pageable pageable);
+    Page<T> findPage(@Param("pageable") Pageable pageable);
 
 }

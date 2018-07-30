@@ -2,10 +2,10 @@ package com.cheney.system.filter;
 
 public class NotLikeFilter extends Filter {
 
-    private static final String notLikeSymbol = "no like";
+    private static final String notLikeSymbol = "not like";
 
     public NotLikeFilter(String property, Object value) {
-        super(notLikeSymbol, property, value);
+        super(notLikeSymbol, property, "%" + value + "%");
     }
 
 }
