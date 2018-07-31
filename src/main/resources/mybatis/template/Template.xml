@@ -55,7 +55,7 @@
           <foreach collection="order.properties" separator="," item="property">
               #{property}
           </foreach>
-          #{order.type}
+          ${order.type}
       </if>
     </sql>
 
