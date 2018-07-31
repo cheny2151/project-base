@@ -7,7 +7,7 @@ public class AscOrder extends Order {
 
     private final static String TYPE = "asc";
 
-    public AscOrder(String property) {
+    public AscOrder(String... property) {
         super(property, TYPE);
     }
 

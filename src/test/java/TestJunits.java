@@ -3,6 +3,7 @@ import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.Admin;
 import com.cheney.javaconfig.spring.RootConfig;
 import com.cheney.system.filter.FilterFactory;
+import com.cheney.system.order.OrderFactory;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import org.junit.Test;
@@ -48,6 +49,7 @@ public class TestJunits {
     public void test2() {
         Pageable pageable = new Pageable();
         pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","test"),FilterFactory.eq("username","test1")));
+        pageable.setOrder(OrderFactory.defaultOrder());
         Page<Admin> page = adminMapper.findPage(pageable);
         System.out.println(page.getPageNumber());
         System.out.println(page.getPageSize());

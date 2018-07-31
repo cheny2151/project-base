@@ -1,30 +1,28 @@
 package com.cheney.system.order;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * 排序父类
  */
 public abstract class Order {
 
-    private String property;
+    private String[] properties;
 
     private String type;
 
-    public Order(String property, String type) {
-        if (StringUtils.isEmpty(property)) {
+    public Order(String[] properties, String type) {
+        if (properties == null || properties.length == 0) {
             throw new IllegalArgumentException("illegal arg property");
         }
-        this.property = property;
+        this.properties = properties;
         this.type = type;
     }
 
-    public String getProperty() {
-        return property;
+    public String[] getProperties() {
+        return properties;
     }
 
-    public void setProperty(String property) {
-        this.property = property;
+    public void setProperties(String[] properties) {
+        this.properties = properties;
     }
 
     public String getType() {

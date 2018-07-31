@@ -13,11 +13,11 @@ public class OrderFactory {
     private OrderFactory() {
     }
 
-    public static Order asc(String property) {
+    public static Order asc(String... property) {
         return new AscOrder(property);
     }
 
-    public static Order desc(String property) {
+    public static Order desc(String... property) {
         return new DescOrder(property);
     }
 

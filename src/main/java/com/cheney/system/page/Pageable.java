@@ -4,6 +4,7 @@ import com.cheney.system.filter.Filter;
 import com.cheney.system.order.Order;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class Pageable extends PageInfo {
 
     private List<Filter> filters = new ArrayList<>();
 
-    private List<Order> orders = new ArrayList<>();
+    private Order order;
 
     public List<Filter> getFilters() {
         return filters;
@@ -26,12 +27,11 @@ public class Pageable extends PageInfo {
         this.filters = filters;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setOrder(Order order) {
+        this.order = order;
     }
-
 }

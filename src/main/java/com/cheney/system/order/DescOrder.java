@@ -7,7 +7,7 @@ public class DescOrder extends Order {
 
     private final static String TYPE = "desc";
 
-    public DescOrder(String property) {
+    public DescOrder(String... property) {
         super(property, TYPE);
     }
 
