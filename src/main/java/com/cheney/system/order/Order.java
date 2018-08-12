@@ -7,9 +7,17 @@ public abstract class Order {
 
     private String[] properties;
 
-    private String type;
+    private Type type;
 
-    public Order(String[] properties, String type) {
+    public enum Type{
+
+        asc,
+
+        desc
+
+    }
+
+    public Order(String[] properties, Type type) {
         if (properties == null || properties.length == 0) {
             throw new IllegalArgumentException("illegal arg property");
         }
@@ -25,11 +33,11 @@ public abstract class Order {
         this.properties = properties;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 }

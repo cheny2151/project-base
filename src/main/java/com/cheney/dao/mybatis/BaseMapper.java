@@ -45,12 +45,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤排序查找
      */
-    List<T> findList(@Param("filters") List<Filter> filters, @Param("orders") List<Order> orders);
-
-    /**
-     * 过滤排序查找
-     */
-//    List<T> findList(Collection<Filter> filters, Order... orders);
+    List<T> findList(@Param("filters") List<Filter> filters, @Param("order") Order order);
 
     /**
      * 过滤count

@@ -1,0 +1,24 @@
+package @{servicePackage}.impl;
+
+@{serviceImportImpl};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @{simpleClassName} - serviceImpl
+ */
+@Service
+@Transactional
+public class UserServiceImpl extends BaseServiceImpl<@{simpleClassName}, @{idSimpleClassName}> implements UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    @Override
+    protected void setBaseMapper(BaseMapper<@{simpleClassName}, @{idSimpleClassName}> baseMapper) {
+        super.setBaseMapper(baseMapper);
+    }
+
+}

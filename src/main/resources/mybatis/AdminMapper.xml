@@ -52,20 +52,20 @@
     </sql>
 
     <sql id="orders">
-        <if test="order != null">
-            order by
-            <foreach collection="order.properties" separator="," item="property">
-                #{property}
-            </foreach>
-            #{order.type}
-        </if>
+      <if test="order != null">
+          order by
+          <foreach collection="order.properties" separator="," item="property">
+              ${property}
+          </foreach>
+          ${order.type}
+      </if>
     </sql>
 
     <sql id="pageOrders">
         <if test="pageable.order != null">
             order by
             <foreach collection="pageable.order.properties" separator="," item="property">
-                #{property}
+                ${property}
             </foreach>
             ${pageable.order.type}
         </if>
@@ -82,7 +82,7 @@
         </collection>
     </resultMap>
 
-    <select id="findById" parameterType="long" resultType="com.cheney.entity.dto.Admin">
+    <select id="findById" parameterType="Long" resultType="com.cheney.entity.dto.Admin">
         select *
         from m_admin
         where id = #{id}
@@ -104,11 +104,11 @@
         where id = #{id}
     </update>
 
-    <delete id="remove" parameterType="long">
+    <delete id="remove" parameterType="Long">
         delete from m_admin where id = #{id}
     </delete>
 
-    <delete id="multiRemove" parameterType="long">
+    <delete id="multiRemove" parameterType="Long">
         delete from m_admin
         where id in
         <foreach item="id" collection="ids" open="(" close=")" separator=",">

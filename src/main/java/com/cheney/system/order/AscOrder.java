@@ -5,10 +5,8 @@ package com.cheney.system.order;
  */
 public class AscOrder extends Order {
 
-    private final static String TYPE = "asc";
-
     public AscOrder(String... property) {
-        super(property, TYPE);
+        super(property, Type.asc);
     }
 
 }

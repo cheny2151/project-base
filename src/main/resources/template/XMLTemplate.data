@@ -53,7 +53,7 @@
       <if test="order != null">
           order by
           <foreach collection="order.properties" separator="," item="property">
-              #{property}
+              ${property}
           </foreach>
           ${order.type}
       </if>
@@ -63,7 +63,7 @@
         <if test="pageable.order != null">
             order by
             <foreach collection="pageable.order.properties" separator="," item="property">
-                #{property}
+                ${property}
             </foreach>
             ${pageable.order.type}
         </if>

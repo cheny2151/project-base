@@ -41,14 +41,14 @@ public class TestJunits {
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
-        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.in("id",integers)),null);
+        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.in("id",integers)),OrderFactory.desc("createDate"));
         System.out.println(id);
     }
 
     @Test
     public void test2() {
         Pageable pageable = new Pageable();
-        pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","test"),FilterFactory.eq("username","test1")));
+        pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","123")));
         pageable.setOrder(OrderFactory.defaultOrder());
         Page<Admin> page = adminMapper.findPage(pageable);
         System.out.println(page.getPageNumber());

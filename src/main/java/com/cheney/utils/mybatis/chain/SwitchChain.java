@@ -13,8 +13,14 @@ public class SwitchChain {
                                                 new TableNameSwitch(
                                                         new ColumnsSwitch(
                                                                 new NamespaceSwitch(
-                                                                        new ResultMapSwitch(null)
-                                                                ))))))));
+                                                                        new ResultMapSwitch(
+                                                                                   new LowSimpleClassNameSwitch(
+                                                                                           new SimpleClassNameSwitch(
+                                                                                                   new DaoPackageSwitch(
+                                                                                                           new IdSimpleClassNameSwitch(
+                                                                                                                   new ServicePackageSwitch(
+                                                                                                                           null
+                                                                                                                   ))))))))))))));
     }
 
     public static String replaceAll(String toReplace, Class clazz) {
