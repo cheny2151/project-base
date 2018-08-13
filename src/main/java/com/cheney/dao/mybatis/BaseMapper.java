@@ -8,6 +8,7 @@ import com.cheney.system.page.Pageable;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
@@ -45,7 +46,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤排序查找
      */
-    List<T> findList(@Param("filters") List<Filter> filters, @Param("order") Order order);
+    List<T> findList(@Param("filters") Collection<Filter> filters, @Param("order") Order order);
 
     /**
      * 过滤count

@@ -13,7 +13,7 @@ public class ServicePackageSwitch extends AbstractSwitch {
     @Override
     public String getReplacement(Class clazz) {
         String pack = XMLGenerator.getGeneratorFilePackage().get(XMLGenerator.getCurrentKey());
-        return pack.replaceAll("\\\\", ".").replaceAll("src.main.java.", "");
+        return toJavaPackage(pack);
     }
 
 }

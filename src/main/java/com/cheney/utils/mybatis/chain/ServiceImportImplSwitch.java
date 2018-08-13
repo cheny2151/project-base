@@ -12,7 +12,13 @@ public class ServiceImportImplSwitch extends AbstractSwitch {
 
     @Override
     public String getReplacement(Class clazz) {
-        return "import " + XMLGenerator.getGeneratorFilePackage().get(XMLGenerator.getCurrentKey()) + System.getProperty("line.separator");
+        String separator = System.getProperty("line.separator");
+        String daoPackage = toJavaPackage(XMLGenerator.getGeneratorFilePackage().get("Dao"));
+        String servicePackage = toJavaPackage(XMLGenerator.getGeneratorFilePackage().get("Service"));
+        return "import " + daoPackage + ".BaseMapper;" + separator
+                + "import " + daoPackage + "." + clazz.getSimpleName() + "Mapper;" + separator
+                + "import " + clazz.getCanonicalName() + ";" + separator
+                + "import " + servicePackage + "." + clazz.getSimpleName() + "Service";
     }
 
 }

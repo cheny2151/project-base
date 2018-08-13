@@ -19,8 +19,9 @@ public class SwitchChain {
                                                                                                    new DaoPackageSwitch(
                                                                                                            new IdSimpleClassNameSwitch(
                                                                                                                    new ServicePackageSwitch(
-                                                                                                                           null
-                                                                                                                   ))))))))))))));
+                                                                                                                           new ServiceImportImplSwitch(
+                                                                                                                                   null
+                                                                                                                           )))))))))))))));
     }
 
     public static String replaceAll(String toReplace, Class clazz) {

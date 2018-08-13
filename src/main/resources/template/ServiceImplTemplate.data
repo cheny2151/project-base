@@ -1,4 +1,4 @@
-package @{servicePackage}.impl;
+package @{servicePackage};
 
 @{serviceImportImpl};
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class UserServiceImpl extends BaseServiceImpl<@{simpleClassName}, @{idSimpleClassName}> implements UserService {
+public class @{simpleClassName}ServiceImpl extends BaseServiceImpl<@{simpleClassName}, @{idSimpleClassName}> implements @{simpleClassName}Service {
 
     @Autowired
-    private UserMapper userMapper;
+    private @{simpleClassName}Mapper @{lowSimpleClassName}Mapper;
 
     @Autowired
     @Override

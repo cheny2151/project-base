@@ -38,11 +38,13 @@ public class XMLGenerator {
         dataFile.put("Mapper", "src\\main\\resources\\template\\XMLTemplate.data");
         dataFile.put("Dao", "src\\main\\resources\\template\\DaoTemplate.data");
         dataFile.put("Service", "src\\main\\resources\\template\\ServiceTemplate.data");
+        dataFile.put("ServiceImpl", "src\\main\\resources\\template\\ServiceImplTemplate.data");
 
         generatorFilePackage = new HashMap<>();
         generatorFilePackage.put("Mapper", "src\\main\\resources\\mybatis");
         generatorFilePackage.put("Dao", "src\\main\\java\\com\\cheney\\dao\\mybatis");
         generatorFilePackage.put("Service", "src\\main\\java\\com\\cheney\\service");
+        generatorFilePackage.put("ServiceImpl", "src\\main\\java\\com\\cheney\\service\\impl");
     }
 
     //驼峰命名,false为下划线
@@ -79,6 +81,7 @@ public class XMLGenerator {
             );
             String t;
             File file;
+            //区分文件类型
             if ("Mapper".equalsIgnoreCase(key)) {
                 file = new File(generatorFilePath + "\\" + target.getSimpleName() + key + ".xml");
             } else if ("dao".equalsIgnoreCase(key)) {

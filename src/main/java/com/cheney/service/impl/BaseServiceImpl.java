@@ -4,11 +4,13 @@ import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.service.BaseService;
 import com.cheney.system.filter.Filter;
+import com.cheney.system.order.Order;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -52,13 +54,15 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     }
 
     @Override
-    public List<T> findList(Filter filter) {
-        return null;
+    public List<T> findList(Filter filter, Order order) {
+        List<Filter> filters = new ArrayList<>();
+        filters.add(filter);
+        return baseMapper.findList(filters, order);
     }
 
     @Override
     public List<T> findList(Collection<Filter> filters) {
-        return null;
+        return baseMapper.findList(filters, null);
     }
 
     @Override
@@ -68,7 +72,7 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
 
     @Override
     public Page<T> findPage(Pageable pageable) {
-        return null;
+        return baseMapper.findPage(pageable);
     }
 
 

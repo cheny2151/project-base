@@ -2,7 +2,9 @@ import com.cheney.dao.mybatis.AdminMapper;
 import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.Admin;
 import com.cheney.javaconfig.spring.RootConfig;
+import com.cheney.redis.RedisClient;
 import com.cheney.system.filter.FilterFactory;
+import com.cheney.system.order.Order;
 import com.cheney.system.order.OrderFactory;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -36,6 +38,9 @@ public class TestJunits {
     @Resource(name = "profilesBean")
     private String profile;
 
+    @Resource(name = "jdkRedisClient")
+    private RedisClient<Admin> redisClient;
+
     @Test
     public void test() {
         ArrayList<Integer> integers = new ArrayList<>();
@@ -48,8 +53,9 @@ public class TestJunits {
     @Test
     public void test2() {
         Pageable pageable = new Pageable();
-        pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","123")));
+        pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","test")));
         pageable.setOrder(OrderFactory.defaultOrder());
+        pageable.getOrder().setType(Order.Type.desc);
         Page<Admin> page = adminMapper.findPage(pageable);
         System.out.println(page.getPageNumber());
         System.out.println(page.getPageSize());

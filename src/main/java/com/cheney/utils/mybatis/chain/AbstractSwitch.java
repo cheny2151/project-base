@@ -72,6 +72,10 @@ public abstract class AbstractSwitch implements Switch {
         return new String(newChars, 0, j);
     }
 
+    String toJavaPackage(String pack) {
+        return pack.replaceAll("\\\\", ".").replaceAll("src.main.java.", "");
+    }
+
     private char[] resize(char[] chars) {
         char[] newChars = new char[chars.length + 3];
         System.arraycopy(chars, 0, newChars, 0, chars.length);
