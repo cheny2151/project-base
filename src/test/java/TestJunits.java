@@ -3,6 +3,7 @@ import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.Admin;
 import com.cheney.javaconfig.spring.RootConfig;
 import com.cheney.redis.RedisClient;
+import com.cheney.service.AdminService;
 import com.cheney.system.filter.FilterFactory;
 import com.cheney.system.order.Order;
 import com.cheney.system.order.OrderFactory;
@@ -32,8 +33,8 @@ public class TestJunits {
     @Resource(name = "userMapper")
     private UserMapper userMapper;
 
-    @Resource(name = "adminMapper")
-    private AdminMapper adminMapper;
+    @Resource(name = "adminServiceImpl")
+    private AdminService adminService;
 
     @Resource(name = "profilesBean")
     private String profile;
@@ -46,17 +47,18 @@ public class TestJunits {
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
-        List<Admin> id = adminMapper.findList(FilterFactory.create(FilterFactory.in("id",integers)),OrderFactory.desc("createDate"));
+        List<Admin> id = adminService.findList(FilterFactory.in("id", integers), null);
         System.out.println(id);
     }
 
     @Test
     public void test2() {
         Pageable pageable = new Pageable();
+        pageable.setPageNumber(2);
         pageable.setFilters(FilterFactory.create(FilterFactory.le("createDate",new Date()),FilterFactory.like("username","test")));
         pageable.setOrder(OrderFactory.defaultOrder());
         pageable.getOrder().setType(Order.Type.desc);
-        Page<Admin> page = adminMapper.findPage(pageable);
+        Page<Admin> page = adminService.findPage(pageable);
         System.out.println(page.getPageNumber());
         System.out.println(page.getPageSize());
         System.out.println(page.getTotal());

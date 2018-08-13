@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @{simpleClassName} - serviceImpl
  */
-@Service
+@Service("@{lowSimpleClassName}ServiceImpl")
 @Transactional
 public class @{simpleClassName}ServiceImpl extends BaseServiceImpl<@{simpleClassName}, @{idSimpleClassName}> implements @{simpleClassName}Service {
 

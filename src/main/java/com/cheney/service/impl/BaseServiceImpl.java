@@ -54,6 +54,13 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     }
 
     @Override
+    public List<T> findList(Filter filter) {
+        List<Filter> filters = new ArrayList<>();
+        filters.add(filter);
+        return baseMapper.findList(filters, null);
+    }
+
+    @Override
     public List<T> findList(Filter filter, Order order) {
         List<Filter> filters = new ArrayList<>();
         filters.add(filter);
@@ -66,13 +73,19 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     }
 
     @Override
+    public List<T> findList(Collection<Filter> filters, Order order) {
+        return baseMapper.findList(filters, order);
+    }
+
+    @Override
     public long count(Filter filter) {
         return 0;
     }
 
     @Override
     public Page<T> findPage(Pageable pageable) {
-        return baseMapper.findPage(pageable);
+        Page<T> page = baseMapper.findPage(pageable);
+        return page == null ? Page.emptyPage(pageable) : page;
     }
 
 

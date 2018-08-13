@@ -51,12 +51,22 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤
      */
+    List<T> findList(Filter filter);
+
+    /**
+     * 过滤
+     */
     List<T> findList(Filter filter, Order order);
 
     /**
      * 过滤
      */
     List<T> findList(Collection<Filter> filters);
+
+    /**
+     * 过滤
+     */
+    List<T> findList(Collection<Filter> filters, Order order);
 
     /**
      * 过滤count

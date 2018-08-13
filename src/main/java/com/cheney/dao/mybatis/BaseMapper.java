@@ -55,6 +55,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
 
     /**
      * 分页
+     * @return maybe null
      */
     Page<T> findPage(@Param("pageable") Pageable pageable);
 

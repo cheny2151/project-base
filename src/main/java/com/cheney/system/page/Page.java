@@ -1,6 +1,9 @@
 package com.cheney.system.page;
 
+import com.cheney.entity.dto.BaseEntity;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +32,7 @@ public class Page<T> implements Serializable {
         this.pageSize = pageInfo.getPageSize();
     }
 
+
     public List<T> getContent() {
         return content;
     }
@@ -43,5 +47,12 @@ public class Page<T> implements Serializable {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    /**
+     * 生成一个空列表的分页
+     */
+    public static <T extends BaseEntity> Page<T> emptyPage(Pageable pageable) {
+        return new Page<>(new ArrayList<>(), 0L, pageable);
     }
 }
