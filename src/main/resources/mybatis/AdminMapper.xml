@@ -33,6 +33,7 @@
 
     <sql id="pageFilters">
         <where>
+            rownum <![CDATA[<]]> ${pageable.endSize} and
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     ${filter.property} ${filter.symbol} #{filter.value}
@@ -117,15 +118,18 @@
     </delete>
 
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from m_admin<include refid="pageFilters"/>) as count
-        ,t1.*
-        from m_admin t1
-        <include refid="pageFilters"/>
-        <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        select * from(
+            select
+            rownum as row
+            #{pageable.pageSize} as pageSize
+            ,#{pageable.pageNumber} as pageNumber
+            ,(select count(*) from m_admin<include refid="pageFilters"/>) as count
+            ,t1.*
+            from m_admin t1
+            <include refid="pageFilters"/>
+            <include refid="pageOrders"/>
+        )
+        where row <![CDATA[>]]>  #{pageable.startSize}
     </select>
 
     <select id="findList" resultType="com.cheney.entity.dto.Admin">

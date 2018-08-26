@@ -31,7 +31,7 @@
 
     <sql id="pageFilters">
         <where>
-            rownum < ${pageable.pageSize} and
+            rownum <![CDATA[<]]> ${pageable.endSize} and
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     ${filter.property} ${filter.symbol} #{filter.value}
@@ -125,7 +125,7 @@
             <include refid="pageFilters"/>
             <include refid="pageOrders"/>
         )
-        where row > limit #{pageable.startSize}
+        where row <![CDATA[>]]>  #{pageable.startSize}
     </select>
 
     <select id="findList" resultType="@{package}">

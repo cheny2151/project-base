@@ -67,4 +67,11 @@ public class PageInfo implements Serializable {
         return (pageNumber - 1) * pageSize;
     }
 
+    /**
+     * 分页结束位置
+     */
+    public int getEndSize() {
+        return getStartSize() + pageSize;
+    }
+
 }
