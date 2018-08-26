@@ -31,7 +31,7 @@
 
     <sql id="pageFilters">
         <where>
-            rownum <![CDATA[<]]> ${pageable.endSize} and
+            rownum <![CDATA[<=]]> ${pageable.endSize} and
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     ${filter.property} ${filter.symbol} #{filter.value}
