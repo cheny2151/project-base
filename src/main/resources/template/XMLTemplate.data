@@ -31,6 +31,7 @@
 
     <sql id="pageFilters">
         <where>
+            rownum < ${pageable.pageSize} and
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     ${filter.property} ${filter.symbol} #{filter.value}
@@ -113,15 +114,18 @@
     </delete>
 
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
-        ,t1.*
-        from @{tableName} t1
-        <include refid="pageFilters"/>
-        <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        select * from(
+            select
+            rownum as row
+            #{pageable.pageSize} as pageSize
+            ,#{pageable.pageNumber} as pageNumber
+            ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
+            ,t1.*
+            from @{tableName} t1
+            <include refid="pageFilters"/>
+            <include refid="pageOrders"/>
+        )
+        where row > limit #{pageable.startSize}
     </select>
 
     <select id="findList" resultType="@{package}">
