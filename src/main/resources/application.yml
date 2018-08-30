@@ -5,8 +5,23 @@ spring:
      username: root
      password: 2151
      driver-class-name: com.mysql.cj.jdbc.Driver
+
+## profile
  profiles:
    active: dev
+
+## redis
+ redis:
+   host: 127.0.0.1
+   port: 6379
+   password: cheney@redis
+   timeout: 100000ms
+   jedis:
+     pool:
+       max-active: 1024
+       max-idle: 200
+       max-wait: 10000ms
+
 #mybatis
 mybatis:
   typeAliasesPackage: com.cheney.entity.dto
