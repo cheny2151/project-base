@@ -2,14 +2,12 @@ package com.cheney.entity.dto;
 
 import lombok.Data;
 
-import javax.persistence.EntityListeners;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * entity基类
  */
-@EntityListeners(EntityListener.class)
 @Data
 public class BaseEntity implements Serializable {
 

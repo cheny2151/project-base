@@ -1,8 +1,8 @@
 package com.cheney.utils;
 
 import com.cheney.exception.BeanReflectException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -14,9 +14,8 @@ import java.util.TreeSet;
 /**
  * 反射工具类
  */
+@Slf4j
 public class BeanUtils {
-
-    private final static Logger LOGGER = Logger.getLogger(BeanUtils.class);
 
     private final static String GET_PRE = "get";
 
@@ -34,7 +33,7 @@ public class BeanUtils {
         try {
             return getReadMethod(obj.getClass(), property).invoke(obj);
         } catch (Exception e) {
-            LOGGER.error(e);
+            log.error("反射获取字段值错误", e);
             throw new BeanReflectException("反射获取字段值错误", e);
         }
     }
@@ -59,7 +58,7 @@ public class BeanUtils {
         try {
             method = clazz.getMethod(IS_PRE + toUpperFirstLetter(property));
         } catch (NoSuchMethodException e) {
-            LOGGER.error(e);
+            log.error("反射获取方法失败", e);
             throw new BeanReflectException("反射获取方法失败", e);
         }
         return method;
@@ -76,7 +75,7 @@ public class BeanUtils {
         try {
             return clazz.getMethod(SET_PRE + toUpperFirstLetter(property), propertyType);
         } catch (NoSuchMethodException e) {
-            LOGGER.error(e);
+            log.error("反射获取方法失败", e);
             throw new BeanReflectException("反射获取方法失败", e);
         }
     }

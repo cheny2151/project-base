@@ -1,7 +1,6 @@
 package com.cheney.aop;
 
-import com.cheney.redis.RedisClient;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Aspect
+@Slf4j
 public class RedisExceptionAop {
 
     /**
@@ -21,8 +21,6 @@ public class RedisExceptionAop {
      */
     @Value("${redis.throwRedisException}")
     private boolean throwRedisException;
-
-    private final Logger logger = Logger.getLogger(RedisClient.class);
 
     /**
      * 切点
@@ -47,7 +45,7 @@ public class RedisExceptionAop {
         try {
             return joinPoint.proceed();
         } catch (Throwable e) {
-            logger.error("redis异常：" + e.getMessage(), e);
+            log.error("redis异常：" + e.getMessage(), e);
             if (throwRedisException) {
                 throw e;
             } else {
@@ -64,7 +62,7 @@ public class RedisExceptionAop {
         try {
             joinPoint.proceed();
         } catch (Throwable e) {
-            logger.error("redis异常：" + e.getMessage(), e);
+            log.error("redis异常：" + e.getMessage(), e);
             if (throwRedisException) {
                 throw e;
             }
@@ -79,7 +77,7 @@ public class RedisExceptionAop {
         try {
             return joinPoint.proceed();
         } catch (Throwable t) {
-            logger.error("redis异常：" + t.getMessage());
+            log.error("redis异常：" + t.getMessage());
             throw t;
         }
     }

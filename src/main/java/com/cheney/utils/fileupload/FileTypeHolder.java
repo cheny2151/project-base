@@ -2,7 +2,6 @@ package com.cheney.utils.fileupload;
 
 import com.cheney.utils.DateUtils;
 import com.cheney.utils.SystemUtils;
-import org.junit.Test;
 
 import java.util.Date;
 
@@ -33,11 +32,6 @@ public class FileTypeHolder {
     private static String uploadPath(String path) {
         path = path.replaceAll("\\$\\{now}", DateUtils.formatDay(new Date()));
         return SystemUtils.getValue("static") + path + "/";
-    }
-
-    @Test
-    public void test() {
-        System.out.println(getUploadPath(Image.avatar));
     }
 
 }

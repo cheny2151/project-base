@@ -3,8 +3,8 @@ package com.cheney.filter;
 import com.cheney.service.security.MyUserDetailsService;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,9 +24,8 @@ import java.io.IOException;
  * token拦截器
  * 若拦截到含有token的请求头 则尝试进行认证
  */
+@Slf4j
 public class JsonWebTokenFilter extends OncePerRequestFilter {
-
-    private final Logger LOGGER = Logger.getLogger(this.getClass());
 
     private static final String AUTH_REQUEST_HEAD = "AUTH_TOKEN";
 
@@ -67,7 +66,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         try {
             details = userDetailsService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e) {
-            LOGGER.warn("token exist,but username not found");
+            log.warn("token exist,but username not found");
         }
         return details;
     }

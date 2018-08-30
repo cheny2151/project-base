@@ -1,9 +1,9 @@
 package com.cheney.utils.fileupload;
 
 import com.cheney.utils.SystemUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 /**
  * 文件上传
  */
+@Slf4j
 public class FileUploadHolder {
 
     private final static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
@@ -99,7 +100,6 @@ public class FileUploadHolder {
      */
     private static class UploadTask implements Runnable {
 
-        private Logger logger = Logger.getLogger(this.getClass());
 
         private File file;
 
@@ -115,7 +115,7 @@ public class FileUploadHolder {
             try {
                 FileUploadHolder.upload(file, path);
             } catch (IOException e) {
-                logger.error("异步上传文件失败", e);
+                log.error("异步上传文件失败", e);
             }
         }
     }

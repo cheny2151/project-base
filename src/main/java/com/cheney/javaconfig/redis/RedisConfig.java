@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -35,16 +38,19 @@ public class RedisConfig {
     }
 
     @Bean
-    public JedisConnectionFactory fitJedisConnectionFactory() {
-        JedisConnectionFactory factory = new JedisConnectionFactory(fitJedisPoolConfig());
-        factory.setUsePool(true);
-        factory.setHostName(env.getRequiredProperty("redis.host"));
-        factory.setPort(env.getRequiredProperty("redis.port", int.class));
-        factory.setTimeout(env.getRequiredProperty("redis.timeout", int.class));
+    public RedisStandaloneConfiguration redisStandaloneConfiguration() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(env.getRequiredProperty("redis.host"));
+        configuration.setPort(env.getRequiredProperty("redis.port", int.class));
         if (env.getRequiredProperty("redis.auth", boolean.class)) {
-            factory.setPassword(env.getProperty("redis.password"));
+            configuration.setPassword(RedisPassword.of(env.getProperty("redis.password")));
         }
-        return factory;
+        return configuration;
+    }
+
+    @Bean
+    public JedisConnectionFactory fitJedisConnectionFactory() {
+        return new JedisConnectionFactory(redisStandaloneConfiguration());
     }
 
     @Bean("stringRedisSerializerTemplate")

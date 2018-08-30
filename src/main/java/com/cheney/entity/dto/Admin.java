@@ -4,13 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * 管理员
  */
-@Table(name = "m_admin")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)

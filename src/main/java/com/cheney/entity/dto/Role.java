@@ -1,13 +1,8 @@
 package com.cheney.entity.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * 角色
  */
-@Entity
-@Table(name = "auth_role")
 public class Role extends BaseEntity {
 
     private static final long serialVersionUID = -960190065903091695L;

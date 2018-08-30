@@ -2,7 +2,7 @@ package com.cheney.utils;
 
 import com.cheney.exception.PropertyNotFoundException;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -12,9 +12,8 @@ import java.util.Iterator;
 /**
  * 读取系统设置
  */
+@Slf4j
 public class SystemUtils {
-
-    private final static Logger LOGGER = Logger.getLogger(SystemUtils.class);
 
     private static HashMap<String, Object> systemValue;
 
@@ -33,7 +32,7 @@ public class SystemUtils {
                 systemValue.put(nodeName, nodeValue);
             }
         } catch (IOException e) {
-            LOGGER.error("文件类型工具类初始化失败", e);
+            log.error("文件类型工具类初始化失败", e);
         }
     }
 
