@@ -27,6 +27,7 @@ public class PageCommonController {
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
+        System.out.println(redisClient.getValue("test"));
         AuthUser byUsername = userMapper.findByUsername("test");
         System.out.println(byUsername);
         return JsonMessage.success("123");

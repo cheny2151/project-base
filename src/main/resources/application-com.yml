@@ -7,34 +7,24 @@ spring:
      driver-class-name: com.mysql.cj.jdbc.Driver
 
 ## redis
-# redis:
-#   host: 127.0.0.1
-#   port: 6379
-#   password: cheney@redis
-#   timeout: 100000ms
-#   jedis:
-#     pool:
-#       max-active: 1024
-#       max-idle: 200
-#       max-wait: 10000ms
+ redis:
+   host: 127.0.0.1
+   port: 6379
+   #   password:
+   timeout: 100000ms
+   jedis:
+     pool:
+       max-active: 1024
+       max-idle: 200
+       max-wait: 10000ms
+   database: 0
 
 #############################################################
 
 ##other config
 ## redis config
 redis:
-  host: 127.0.0.1
-  port: 6379
-  auth: false
-  password:
-  timeout: 100000
-  maxActive: 1024
-  maxIdle: 200
-  maxWait: 10000
-  testOnBorrow: true
   throwRedisException: true
-  default:
-    db: 0
 
 ## mongodb config
 mongodb:
