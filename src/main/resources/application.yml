@@ -1,29 +1,30 @@
-## DB Config
-spring:
- datasource:
-     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-     username: root
-     password: 2151
-     driver-class-name: com.mysql.cj.jdbc.Driver
-
-## profile
- profiles:
-   active: dev
-
-## redis
- redis:
-   host: 127.0.0.1
-   port: 6379
-   password: cheney@redis
-   timeout: 100000ms
-   jedis:
-     pool:
-       max-active: 1024
-       max-idle: 200
-       max-wait: 10000ms
-
+##spring common config
 #mybatis
 mybatis:
   typeAliasesPackage: com.cheney.entity.dto
   mapperLocations: classpath:mybatis/*.xml
 
+#############################################################
+
+##other common config
+## Freemarker Template Config
+template:
+  number_format: 0.\#\#\#\#\#\#
+  datetime_format: yyyy-MM-dd
+  time_format: HH\:mm\:ss
+  boolean_format: true,false
+  update_delay: 0
+  encoding: UTF-8
+  date_format: yyyy-MM-dd
+  loader_path: /WEB-INF/template
+  tag_syntax: auto_detect
+
+#java mail
+mail:
+  smtp:
+    auth: true
+    timeout: 25000
+  ssl:
+    enable: true
+  socketFactory:
+    class: javax.net.ssl.SSLSocketFactory
