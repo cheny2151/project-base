@@ -4,12 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.HashSet;
 
 /**
  * redis配置
@@ -34,6 +41,7 @@ public class RedisConfig {
         return jedisPoolConfig;
     }
 
+    //----------------------------单节点----------------------------
     @Bean
     public JedisConnectionFactory fitJedisConnectionFactory() {
         JedisConnectionFactory factory = new JedisConnectionFactory(fitJedisPoolConfig());
@@ -46,6 +54,37 @@ public class RedisConfig {
         }
         return factory;
     }
+
+    //----------------------------集群----------------------------
+    /*@Bean("redisClusterConfiguration")
+    public RedisClusterConfiguration redisClusterConfiguration() {
+        HashSet<RedisNode> redisNodes = new HashSet<>();
+        for (String server : env.getProperty("REDIS.CLUSTER.SERVERS").split("[,]")) {
+            String[] hostAndPort = server.split("[:]");
+            redisNodes.add(new RedisNode(hostAndPort[0], Integer.parseInt(hostAndPort[1])));
+        }
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
+        redisClusterConfiguration.setClusterNodes(redisNodes);
+        return redisClusterConfiguration;
+    }
+
+    @Bean("redisConnectionFactory")
+    public RedisConnectionFactory redisConnectionFactory() {
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisClusterConfiguration());
+        jedisConnectionFactory.setPoolConfig(fitJedisPoolConfig());
+        jedisConnectionFactory.setTimeout(1000);
+        return jedisConnectionFactory;
+    }
+
+    @Bean("jedisCluster")
+    public JedisCluster jedisCluster() {
+        HashSet<HostAndPort> hostAndPorts = new HashSet<>();
+        for (String server : env.getProperty("REDIS.CLUSTER.SERVERS").split("[,]")) {
+            String[] hostAndPort = server.split("[:]");
+            hostAndPorts.add(new HostAndPort(hostAndPort[0], Integer.valueOf(hostAndPort[1])));
+        }
+        return new JedisCluster(hostAndPorts, 1000, 20, fitJedisPoolConfig());
+    }*/
 
     @Bean("stringRedisSerializerTemplate")
     public RedisTemplate fitStringTemplate() {
