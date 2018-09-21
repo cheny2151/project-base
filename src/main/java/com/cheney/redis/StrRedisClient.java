@@ -9,15 +9,14 @@ import javax.annotation.Resource;
  * String序列化的redis存储方式
  */
 @Component("strRedisClient")
-public class StrRedisClient<V> extends AbstractRedisClient<V> {
+public class StrRedisClient extends AbstractRedisClient<String> {
 
     @Resource(name = "stringRedisSerializerTemplate")
-    private RedisTemplate<String, V> redis;
-
+    private RedisTemplate<String, String> redis;
 
     @Override
     @Resource(name = "stringRedisSerializerTemplate")
-    protected void setRedis(RedisTemplate<String, V> redis) {
+    protected void setRedis(RedisTemplate<String, String> redis) {
         super.setRedis(redis);
     }
 

@@ -25,18 +25,7 @@ spring:
 ##other config
 ## redis config
 redis:
- host: 127.0.0.1
- port: 6379
- auth: false
- password:
- timeout: 100000
- maxActive: 1024
- maxIdle: 200
- maxWait: 10000
- testOnBorrow: true
  throwRedisException: true
- default:
-  db: 0
 
 ## mongodb config
 mongodb:
