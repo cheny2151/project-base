@@ -7,7 +7,7 @@
 
     <resultMap id="base" type="com.cheney.entity.dto.Admin">
         <id property="id" column="id"/>
-        <result property="createDate" column="createDate"/>
+        <result property="createDate" column="create_date"/>
         <result property="username" column="username"/>
     </resultMap>
 
@@ -33,7 +33,7 @@
 
     <sql id="pageFilters">
         <where>
-            rownum <![CDATA[<]]> ${pageable.endSize} and
+            rownum <![CDATA[<=]]> ${pageable.endSize} and
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
                     ${filter.property} ${filter.symbol} #{filter.value}
@@ -78,7 +78,7 @@
         <result property="pageNumber" column="pageNumber"/>
         <collection property="content" ofType="com.cheney.entity.dto.Admin" >
             <id property="id" column="id"/>
-        <result property="createDate" column="createDate"/>
+        <result property="createDate" column="create_date"/>
         <result property="username" column="username"/>
         </collection>
     </resultMap>
@@ -95,13 +95,13 @@
     </select>
 
     <insert id="persist" parameterType="com.cheney.entity.dto.Admin">
-        insert into m_admin (createDate,username)
+        insert into m_admin (create_date,username)
         values(#{createDate},#{username})
     </insert>
 
     <update id="merge" parameterType="com.cheney.entity.dto.Admin">
         update auth_user
-        set createDate = #{createDate},username = #{username}
+        set create_date = #{createDate},username = #{username}
         where id = #{id}
     </update>
 
