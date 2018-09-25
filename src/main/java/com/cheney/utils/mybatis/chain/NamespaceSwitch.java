@@ -15,7 +15,7 @@ public class NamespaceSwitch extends AbstractSwitch {
 
     @Override
     public String getReplacement(Class clazz) {
-        return XMLGenerator.NAMESPACE + "." + clazz.getSimpleName() + XMLGenerator.END;
+        return toJavaPackage(XMLGenerator.getGeneratorFilePackage().get("Dao")) + "." + clazz.getSimpleName() + XMLGenerator.END;
     }
 
 }
