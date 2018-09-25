@@ -13,7 +13,10 @@ public class XMLGenerator {
 
     public final static String NAMESPACE = "com.cheney.dao.mybatis";
 
-    public final static String END = "Mapper";
+    public final static String TABLE_NAME = "m_admin";
+
+    //驼峰命名,false为下划线
+    public final static boolean HUMP = true;
 
     public final static String ID_COLUMN = "id";
 
@@ -21,7 +24,8 @@ public class XMLGenerator {
 
     public final static Class ID_TYPE = Long.class;
 
-    public final static String TABLE_NAME = "m_admin";
+    public final static String END = "Mapper";
+
 
     /**
      * 模板文件位置
@@ -47,8 +51,6 @@ public class XMLGenerator {
         generatorFilePackage.put("ServiceImpl", "src\\main\\java\\com\\cheney\\service\\impl");
     }
 
-    //驼峰命名,false为下划线
-    public final static boolean HUMP = true;
 
     public static void main(String[] args) throws IOException {
         generate(Admin.class);
