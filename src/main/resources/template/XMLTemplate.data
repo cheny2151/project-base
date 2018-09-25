@@ -78,7 +78,7 @@
         </collection>
     </resultMap>
 
-    <select id="findById" parameterType="@{idType}" resultType="@{package}">
+    <select id="find" parameterType="@{idType}" resultType="@{package}">
         select *
         from @{tableName}
         where @{idColumn} = #{id}
