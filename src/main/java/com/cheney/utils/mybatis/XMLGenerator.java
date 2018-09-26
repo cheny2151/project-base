@@ -33,6 +33,9 @@ public class XMLGenerator {
      */
     private final static Map<String, String> generatorFilePackage;
 
+    //驼峰命名,false为下划线
+    public final static boolean HUMP = false;
+
     static {
         dataFile = new HashMap<>();
         dataFile.put("Mapper", "src\\main\\resources\\template\\XMLTemplate.data");
@@ -47,8 +50,6 @@ public class XMLGenerator {
         generatorFilePackage.put("ServiceImpl", "src\\main\\java\\com\\cheney\\service\\impl");
     }
 
-    //驼峰命名,false为下划线
-    public final static boolean HUMP = true;
 
     public static void main(String[] args) throws IOException {
         generate(Admin.class);
