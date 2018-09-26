@@ -2,6 +2,7 @@ package com.cheney.system.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,7 +60,11 @@ public class FilterFactory {
         return new LessThanOrEqualFilter(property, value);
     }
 
-    public static Filter in(String property, Object value) {
+    public static <T> Filter in(String property, Collection<T> value) {
+        return new InFilter(property, value);
+    }
+
+    public static <T> Filter in(String property, T[] value) {
         return new InFilter(property, value);
     }
 
