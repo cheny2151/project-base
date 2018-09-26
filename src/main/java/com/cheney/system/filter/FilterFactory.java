@@ -59,7 +59,7 @@ public class FilterFactory {
         return new LessThanOrEqualFilter(property, value);
     }
 
-    public static Filter in(String property, Object value) {
+    public static <T> Filter in(String property, List<T> value) {
         return new InFilter(property, value);
     }
 
