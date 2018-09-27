@@ -10,6 +10,8 @@ public abstract class AbstractSwitch implements Switch {
 
     public final static String EQUAL_TO = " = ";
 
+    public final static String LINE_BREAK = System.getProperty("line.separator");
+
     private final static char UNDERLINE = "_".toCharArray()[0];
 
     private Switch next;
