@@ -18,24 +18,32 @@ public class ColumnsSwitch extends AbstractSwitch {
         StringBuilder columns = new StringBuilder();
         Set<String> names = BeanUtils.getAllFieldNames(clazz);
         names.remove(XMLGenerator.ID);
-        int count = 0;
+        int count = 1;
         int size = names.size();
         for (String s : names) {
+            String column = s;
+            String next;
             if (!XMLGenerator.HUMP) {
-                s = underline(s);
+                column = underline(s);
             }
             if (count != size) {
-                s += SEPARATOR;
+                next = ifFlag(s, column, false);
+            } else {
+                next = ifFlag(s, column, true);
             }
-            columns.append(s);
+            columns.append(next);
             count++;
         }
-        return columns.subSequence(0, columns.length() - 1).toString();
+        return columns.toString();
     }
 
-    private String ifFlag(String field) {
+    private String ifFlag(String field, String column, boolean last) {
         StringBuilder content = new StringBuilder("<if test=\"" + field + "!=null\">");
-        content.append(LINE_BREAK).append("  ").append(field)
-                .append("</if>");
+        content.append(LINE_BREAK).append("  ").append(column);
+        if (!last) {
+            content.append(SEPARATOR);
+        }
+        content.append(LINE_BREAK).append("</if>");
+        return content.toString();
     }
 }
