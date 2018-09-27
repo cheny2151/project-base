@@ -1,6 +1,7 @@
 package com.cheney.utils.mybatis;
 
 import com.cheney.entity.dto.Admin;
+import com.cheney.utils.mybatis.chain.AbstractSwitch;
 import com.cheney.utils.mybatis.chain.SwitchChain;
 
 import java.io.*;
@@ -96,7 +97,7 @@ public class XMLGenerator {
             while ((t = reader.readLine()) != null) {
                 t = rewrite(t, target);
                 fileWriter.write(t);
-                fileWriter.write(System.getProperty("line.separator"));
+                fileWriter.write(AbstractSwitch.LINE_BREAK);
                 fileWriter.flush();
             }
             System.out.println("生成" + key + "对应文件成功");

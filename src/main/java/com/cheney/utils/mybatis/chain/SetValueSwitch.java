@@ -5,7 +5,7 @@ import com.cheney.utils.mybatis.XMLGenerator;
 
 import java.util.Set;
 
-public class SetValueSwitch extends AbstractSwitch {
+public class SetValueSwitch extends ColumnFliedAbstractSwitch {
 
     private final static String target = "@\\{setValue}";
 
@@ -13,19 +13,23 @@ public class SetValueSwitch extends AbstractSwitch {
         super(next, target);
     }
 
-    @Override
-    public String getReplacement(Class clazz) {
-        Set<String> names = BeanUtils.getAllFieldNames(clazz);
-        StringBuilder setValue = new StringBuilder();
-        names.remove(XMLGenerator.ID_COLUMN);
-        for (String s : names) {
-            String column = s;
-            if (!XMLGenerator.HUMP) {
-                column = underline(s);
-            }
-            setValue.append(column).append(EQUAL_TO).append(placeholder(s)).append(SEPARATOR);
+    String ifFlag(String field, String column, boolean last) {
+        StringBuilder content = new StringBuilder("\t\t<if test=\"" + field + " != null\">");
+        content.append(LINE_BREAK)
+                .append("\t\t\t").append(column).append(EQUAL_TO).append(placeholder(field));
+        if (!last) {
+            content.append(SEPARATOR).append(LINE_BREAK).append("\t\t</if>").append(LINE_BREAK);
+        } else {
+            content.append(LINE_BREAK).append("\t\t</if>");
         }
-        return setValue.subSequence(0, setValue.length() - 1).toString();
+        return content.toString();
+    }
+
+    @Override
+    Set<String> getFieldNames(Class clazz) {
+        Set<String> names = BeanUtils.getAllFieldNames(clazz);
+        names.remove(XMLGenerator.ID_COLUMN);
+        return names;
     }
 
 }

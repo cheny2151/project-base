@@ -82,25 +82,45 @@
         </collection>
     </resultMap>
 
-    <select id="findById" parameterType="Long" resultType="com.cheney.entity.dto.Admin">
+    <select id="find" parameterType="Long" resultMap="base">
         select *
         from m_admin
         where id = #{id}
     </select>
 
-    <select id="findAll" resultType="com.cheney.entity.dto.Admin">
+    <select id="findAll" resultMap="base">
         select *
         from m_admin
     </select>
 
     <insert id="persist" parameterType="com.cheney.entity.dto.Admin">
-        insert into m_admin (createDate,username)
-        values(#{createDate},#{username})
+        insert into m_admin (
+		<if test="createDate != null">
+			createDate,
+		</if>
+		<if test="username != null">
+			username
+		</if>
+        )
+        values(
+		<if test="createDate != null">
+			#{createDate},
+		</if>
+		<if test="username != null">
+			#{username}
+		</if>
+        )
     </insert>
 
     <update id="merge" parameterType="com.cheney.entity.dto.Admin">
-        update auth_user
-        set createDate = #{createDate},username = #{username}
+        update m_admin
+        set
+		<if test="createDate != null">
+			createDate = #{createDate},
+		</if>
+		<if test="username != null">
+			username = #{username}
+		</if>
         where id = #{id}
     </update>
 

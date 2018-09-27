@@ -78,25 +78,30 @@
         </collection>
     </resultMap>
 
-    <select id="find" parameterType="@{idType}" resultType="@{package}">
+    <select id="find" parameterType="@{idType}" resultMap="base">
         select *
         from @{tableName}
         where @{idColumn} = #{id}
     </select>
 
-    <select id="findAll" resultType="@{package}">
+    <select id="findAll" resultMap="base">
         select *
         from @{tableName}
     </select>
 
     <insert id="persist" parameterType="@{package}">
-        insert into @{tableName} (@{cloumns})
-        values(@{columnValues})
+        insert into @{tableName} (
+@{cloumns}
+        )
+        values(
+@{columnValues}
+        )
     </insert>
 
     <update id="merge" parameterType="@{package}">
-        update auth_user
-        set @{setValue}
+        update @{tableName}
+        set
+@{setValue}
         where @{idColumn} = #{id}
     </update>
 

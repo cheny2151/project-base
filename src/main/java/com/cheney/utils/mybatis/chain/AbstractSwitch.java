@@ -12,6 +12,8 @@ public abstract class AbstractSwitch implements Switch {
 
     private final static char UNDERLINE = "_".toCharArray()[0];
 
+    public final static String LINE_BREAK = System.getProperty("line.separator");
+
     private Switch next;
 
     private String target;
