@@ -1,5 +1,6 @@
 package com.cheney.utils.mybatis.chain;
 
+import com.cheney.utils.BeanUtils;
 import com.cheney.utils.mybatis.XMLGenerator;
 
 import java.util.Set;
@@ -13,7 +14,8 @@ public abstract class ColumnFliedAbstractSwitch extends AbstractSwitch {
     @Override
     public String getReplacement(Class clazz) {
         StringBuilder columns = new StringBuilder();
-        Set<String> names = getFieldNames(clazz);
+        Set<String> names = BeanUtils.getAllFieldNames(clazz);
+        names.remove(XMLGenerator.ID);
         int count = 1;
         int size = names.size();
         for (String s : names) {
@@ -34,7 +36,5 @@ public abstract class ColumnFliedAbstractSwitch extends AbstractSwitch {
     }
 
     abstract String ifFlag(String field, String column, boolean last);
-
-    abstract Set<String> getFieldNames(Class clazz);
 
 }

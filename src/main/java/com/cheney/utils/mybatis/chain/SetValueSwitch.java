@@ -1,10 +1,5 @@
 package com.cheney.utils.mybatis.chain;
 
-import com.cheney.utils.BeanUtils;
-import com.cheney.utils.mybatis.XMLGenerator;
-
-import java.util.Set;
-
 public class SetValueSwitch extends ColumnFliedAbstractSwitch {
 
     private final static String target = "@\\{setValue}";
@@ -23,13 +18,6 @@ public class SetValueSwitch extends ColumnFliedAbstractSwitch {
             content.append(LINE_BREAK).append("\t\t</if>");
         }
         return content.toString();
-    }
-
-    @Override
-    Set<String> getFieldNames(Class clazz) {
-        Set<String> names = BeanUtils.getAllFieldNames(clazz);
-        names.remove(XMLGenerator.ID_COLUMN);
-        return names;
     }
 
 }
