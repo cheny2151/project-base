@@ -20,8 +20,9 @@ public class SwitchChain {
                                                                                                            new IdSimpleClassNameSwitch(
                                                                                                                    new ServicePackageSwitch(
                                                                                                                            new ServiceImportImplSwitch(
-                                                                                                                                   null
-                                                                                                                           )))))))))))))));
+                                                                                                                                   new IdFieldSwitch(
+                                                                                                                                           null
+                                                                                                                                   ))))))))))))))));
     }
 
     public static String replaceAll(String toReplace, Class clazz) {

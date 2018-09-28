@@ -5,9 +5,9 @@ import com.cheney.utils.mybatis.XMLGenerator;
 
 import java.util.Set;
 
-public abstract class ColumnFliedAbstractSwitch extends AbstractSwitch {
+public abstract class ColumnFieldAbstractSwitch extends AbstractSwitch {
 
-    public ColumnFliedAbstractSwitch(Switch next, String target) {
+    public ColumnFieldAbstractSwitch(Switch next, String target) {
         super(next, target);
     }
 

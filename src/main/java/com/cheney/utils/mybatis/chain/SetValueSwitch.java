@@ -1,6 +1,6 @@
 package com.cheney.utils.mybatis.chain;
 
-public class SetValueSwitch extends ColumnFliedAbstractSwitch {
+public class SetValueSwitch extends ColumnFieldAbstractSwitch {
 
     private final static String target = "@\\{setValue}";
 

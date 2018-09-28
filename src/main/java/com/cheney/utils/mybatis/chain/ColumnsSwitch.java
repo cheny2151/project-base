@@ -1,6 +1,6 @@
 package com.cheney.utils.mybatis.chain;
 
-public class ColumnsSwitch extends ColumnFliedAbstractSwitch {
+public class ColumnsSwitch extends ColumnFieldAbstractSwitch {
 
     private final static String target = "@\\{cloumns}";
 

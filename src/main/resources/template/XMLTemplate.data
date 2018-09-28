@@ -102,7 +102,7 @@
         update @{tableName}
         set
 @{setValue}
-        where @{idColumn} = #{id}
+        where @{idColumn} = @{idField}
     </update>
 
     <delete id="remove" parameterType="@{idType}">
