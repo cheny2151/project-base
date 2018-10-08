@@ -11,23 +11,20 @@ import java.util.Map;
 
 public class XMLGenerator {
 
-    private static String currentKey;
-
-    public final static String NAMESPACE = "com.cheney.dao.mybatis";
-
     public final static String TABLE_NAME = "m_admin";
-
-    //驼峰命名,false为下划线
-    public final static boolean HUMP = true;
 
     public final static String ID_COLUMN = "id";
 
     public final static String ID = "id";
 
+    //驼峰命名,false为下划线
+    public final static boolean HUMP = true;
+
     public final static Class ID_TYPE = Long.class;
 
     public final static String END = "Mapper";
 
+    private static String currentKey;
 
     /**
      * 模板文件位置
