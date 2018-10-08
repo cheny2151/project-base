@@ -1,5 +1,7 @@
 package com.cheney.utils.mybatis.chain;
 
+import java.io.File;
+
 public abstract class AbstractSwitch implements Switch {
 
     public final static String PRE = "#{";
@@ -13,6 +15,8 @@ public abstract class AbstractSwitch implements Switch {
     private final static char UNDERLINE = "_".toCharArray()[0];
 
     public final static String LINE_BREAK = System.getProperty("line.separator");
+
+    public final static String FILE_SEPARATOR = "\\" + File.separator;
 
     private Switch next;
 

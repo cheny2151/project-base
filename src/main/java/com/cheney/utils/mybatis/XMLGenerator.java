@@ -3,6 +3,7 @@ package com.cheney.utils.mybatis;
 import com.cheney.entity.dto.Admin;
 import com.cheney.utils.mybatis.chain.AbstractSwitch;
 import com.cheney.utils.mybatis.chain.SwitchChain;
+import org.testng.annotations.Test;
 
 import java.io.*;
 import java.util.HashMap;
@@ -40,18 +41,27 @@ public class XMLGenerator {
 
     static {
         dataFile = new HashMap<>();
-        dataFile.put("Mapper", "src\\main\\resources\\template\\XMLTemplate.data");
-        dataFile.put("Dao", "src\\main\\resources\\template\\DaoTemplate.data");
-        dataFile.put("Service", "src\\main\\resources\\template\\ServiceTemplate.data");
-        dataFile.put("ServiceImpl", "src\\main\\resources\\template\\ServiceImplTemplate.data");
+        dataFile.put("Mapper", "src|main|resources|template|XMLTemplate.data");
+        dataFile.put("Dao", "src|main|resources|template|DaoTemplate.data");
+        dataFile.put("Service", "src|main|resources|template|ServiceTemplate.data");
+        dataFile.put("ServiceImpl", "src|main|resources|template|ServiceImplTemplate.data");
 
         generatorFilePackage = new HashMap<>();
-        generatorFilePackage.put("Mapper", "src\\main\\resources\\mybatis");
-        generatorFilePackage.put("Dao", "src\\main\\java\\com\\cheney\\dao\\mybatis");
-        generatorFilePackage.put("Service", "src\\main\\java\\com\\cheney\\service");
-        generatorFilePackage.put("ServiceImpl", "src\\main\\java\\com\\cheney\\service\\impl");
+        generatorFilePackage.put("Mapper", "src|main|resources|mybatis");
+        generatorFilePackage.put("Dao", "src|main|java|com|cheney|dao|mybatis");
+        generatorFilePackage.put("Service", "src|main|java|com|cheney|service");
+        generatorFilePackage.put("ServiceImpl", "src|main|java|com|cheney|service|impl");
+
+        buildSystemPath(dataFile);
+        buildSystemPath(generatorFilePackage);
     }
 
+    private static void buildSystemPath(Map<String, String> pathMap) {
+        for (Map.Entry<String, String> entry : pathMap.entrySet()) {
+            String path = entry.getValue();
+            pathMap.put(entry.getKey(), path.replaceAll("\\|", AbstractSwitch.FILE_SEPARATOR));
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         generate(Admin.class);
