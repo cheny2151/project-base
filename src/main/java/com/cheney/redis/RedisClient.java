@@ -1,6 +1,5 @@
 package com.cheney.redis;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,8 +12,6 @@ public interface RedisClient<V> {
     void expire(String k, int days);
 
     void delete(String k);
-
-    boolean containsKey(String k);
 
     void removeKey(String k);
 
