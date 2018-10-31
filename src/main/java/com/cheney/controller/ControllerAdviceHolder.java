@@ -31,7 +31,7 @@ public class ControllerAdviceHolder {
     }
 
     @ExceptionHandler({UsernameNotFoundException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
         log.info(e.getMessage(), e);
@@ -40,7 +40,7 @@ public class ControllerAdviceHolder {
 
     @ExceptionHandler
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonMessage exceptionHandler(Exception e) {
         log.error(e.getMessage(), e);
         return JsonMessage.error(e.getMessage());
