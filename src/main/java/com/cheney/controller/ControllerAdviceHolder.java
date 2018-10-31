@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * controller统一通知
  */
-@ControllerAdvice()
+@RestControllerAdvice()
 @Slf4j
 public class ControllerAdviceHolder {
 
@@ -32,14 +32,12 @@ public class ControllerAdviceHolder {
 
     @ExceptionHandler({UsernameNotFoundException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
     public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
         log.info(e.getMessage(), e);
         return JsonMessage.error("username not found");
     }
 
     @ExceptionHandler
-    @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonMessage exceptionHandler(Exception e) {
         log.error(e.getMessage(), e);
