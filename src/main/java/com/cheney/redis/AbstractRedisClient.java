@@ -1,5 +1,6 @@
 package com.cheney.redis;
 
+import io.lettuce.core.RedisException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -38,18 +39,17 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
     }
 
     @Override
-    public boolean containsKey(String k) {
-        return redis.hasKey(k);
-    }
-
-    @Override
     public void removeKey(String k) {
         redis.delete(k);
     }
 
     @Override
     public boolean exists(String k) {
-        return redis.hasKey(k);
+        Boolean exists = redis.hasKey(k);
+        if (exists == null) {
+            throw new RedisException("exists key:" + k + " return null");
+        }
+        return exists;
     }
 
     @Override
@@ -59,7 +59,11 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
 
     @Override
     public long getExpire(String k, TimeUnit timeUnit) {
-        return redis.getExpire(k, timeUnit);
+        Long expire = redis.getExpire(k, timeUnit);
+        if (expire == null){
+            throw new RedisException("expire key:" + k + " return null");
+        }
+        return expire;
     }
 
     //------------------------------ value ------------------------------
