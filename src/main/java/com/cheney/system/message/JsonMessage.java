@@ -64,17 +64,20 @@ public class JsonMessage implements Serializable {
     /**
      * 用于成功时返回数据:{"name":data}
      *
-     * @param data 返回的主数据
+     * @param args 返回的主数据
      */
-    public static JsonMessage success(Object... data) {
+    public static JsonMessage success(Object... args) {
         //单一数据
-        if (data.length == 1) {
-            return new JsonMessage(SUCCESS_CODE, data[0]);
+        if (args.length == 1) {
+            return new JsonMessage(SUCCESS_CODE, args[0]);
         } else {
+            if ((args.length & 1) == 1) {
+                throw new IllegalArgumentException("The args must be even");
+            }
             //多数据
             HashMap<String, Object> map = new HashMap<>();
-            for (int i = 0; i < data.length; i++) {
-                map.put((String) data[i], data[++i]);
+            for (int i = 0; i < args.length; i++) {
+                map.put((String) args[i], args[++i]);
             }
             return new JsonMessage(SUCCESS_CODE, map);
         }
