@@ -1,5 +1,6 @@
 package com.cheney.redis;
 
+import com.cheney.utils.JsonUtils;
 import io.lettuce.core.RedisException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,13 +23,19 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
         this.redis = redis;
     }
 
-    private HashOperations<String, String, V> opsForHash;
+    private HashOperations<String, String, V> opsForMap;
+
+    private HashOperations<String, String, Object> opsForObject;
 
     /**
      * 由于每次执行opsForHash()方法都会new一个，提取。
      */
-    protected HashOperations<String, String, V> getHashOperation() {
-        return opsForHash == null ? (opsForHash = redis.opsForHash()) : opsForHash;
+    protected HashOperations<String, String, V> getHashOperationForMap() {
+        return opsForMap == null ? (opsForMap = redis.opsForHash()) : opsForMap;
+    }
+
+    protected HashOperations<String, String, Object> getHashOperationForObject() {
+        return opsForObject == null ? (opsForObject = redis.opsForHash()) : opsForObject;
     }
 
     //------------------------------ common ------------------------------
@@ -140,52 +147,79 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
     //------------------------------ hash ------------------------------
 
     @Override
-    public void HMSet(String k, Map<String, V> kv, int days) {
-        HMSet(k, kv);
+    public void HMSetForMap(String k, Map<String, V> kv, int days) {
+        HMSetForMap(k, kv);
         expire(k, days);
     }
 
     @Override
-    public void HMSet(String k, Map<String, V> kv) {
-        getHashOperation().putAll(k, kv);
+    public void HMSetForMap(String k, Map<String, V> kv) {
+        getHashOperationForMap().putAll(k, kv);
     }
 
     @Override
-    public void HSet(String k, String hk, V v) {
-        getHashOperation().put(k, hk, v);
+    public void HSetForMap(String k, String hk, V v) {
+        getHashOperationForMap().put(k, hk, v);
     }
 
     @Override
-    public V HGet(String k, String hk) {
-        return getHashOperation().get(k, hk);
+    public V HGetForMap(String k, String hk) {
+        return getHashOperationForMap().get(k, hk);
     }
 
     @Override
     public boolean HHasKey(String k, String hk) {
-        return getHashOperation().hasKey(k, hk);
+        return getHashOperationForMap().hasKey(k, hk);
     }
 
     @Override
-    public Map<String, V> HMGet(String k) {
+    public Map<String, V> HMGetForMap(String k) {
         Map<String, V> map;
-        return (map = getHashOperation().entries(k)) == null || map.size() == 0 ? null : map;
+        return (map = getHashOperationForMap().entries(k)) == null || map.size() == 0 ? null : map;
     }
 
     @Override
     public Set<String> HKeys(String k) {
         Set<String> keys;
-        return (keys = getHashOperation().keys(k)) == null || keys.size() == 0 ? null : keys;
+        return (keys = getHashOperationForMap().keys(k)) == null || keys.size() == 0 ? null : keys;
     }
 
     @Override
-    public List<V> HValues(String k) {
+    public List<V> HValuesForMap(String k) {
         List<V> values;
-        return (values = getHashOperation().values(k)) == null || values.size() == 0 ? null : values;
+        return (values = getHashOperationForMap().values(k)) == null || values.size() == 0 ? null : values;
+    }
+
+    @Override
+    public void HMSetForObject(String k, V kv, int days) {
+        getHashOperationForObject().putAll(k, JsonUtils.object2Map(kv));
+        expire(k, days);
+    }
+
+    @Override
+    public void HMSetForObject(String k, V kv) {
+        getHashOperationForObject().putAll(k, JsonUtils.object2Map(kv));
+    }
+
+    @Override
+    public void HSetForObject(String k, String hk, Object v) {
+        getHashOperationForObject().put(k, hk, v);
+    }
+
+    @Override
+    public Object HGetForObject(String k, String hk) {
+        return getHashOperationForObject().get(k, hk);
+    }
+
+    @Override
+    public V HMGetForObject(String k,Class<V> clazz) {
+        Map<String, Object> map = getHashOperationForObject().entries(k);
+        return JsonUtils.map2Object(map,clazz);
     }
 
     @Override
     public long HDel(String k, String hk) {
-        return getHashOperation().delete(k, hk);
+        return getHashOperationForMap().delete(k, hk);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.cheney.utils;
 
+import com.cheney.exception.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Json工具类
@@ -33,7 +35,7 @@ public class JsonUtils {
             return objectMapper().readValue(json, type);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            return null;
+            throw new JsonParseException();
         }
     }
 
@@ -42,7 +44,7 @@ public class JsonUtils {
             return objectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
-            return null;
+            throw new JsonParseException();
         }
     }
 
@@ -51,6 +53,14 @@ public class JsonUtils {
             throw new NullPointerException("json file is null");
         }
         return objectMapper().readTree(file);
+    }
+
+    public static Map<String, ?> object2Map(Object obj) {
+        return toObject(toJson(obj), Map.class);
+    }
+
+    public static <V> V map2Object(Map<String, Object> map, Class<V> clazz) {
+        return toObject(toJson(map), clazz);
     }
 
 }

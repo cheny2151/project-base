@@ -49,23 +49,37 @@ public interface RedisClient<V> {
 
     Long listSize(String k);
 
-    //------------------------------ hash ------------------------------
+    //------------------------------ hash for map------------------------------
 
-    void HMSet(String k, Map<String, V> kv, int days);
+    void HMSetForMap(String k, Map<String, V> kv, int days);
 
-    void HMSet(String k, Map<String, V> kv);
+    void HMSetForMap(String k, Map<String, V> kv);
 
-    void HSet(String k, String hk, V v);
+    void HSetForMap(String k, String hk, V v);
 
-    V HGet(String k, String hk);
+    V HGetForMap(String k, String hk);
+
+    Map<String, V> HMGetForMap(String k);
+
+    List<V> HValuesForMap(String k);
+
+    //------------------------------ hash for object------------------------------
+
+    void HMSetForObject(String k, V kv, int days);
+
+    void HMSetForObject(String k, V kv);
+
+    void HSetForObject(String k, String hk, Object v);
+
+    Object HGetForObject(String k, String hk);
+
+    V HMGetForObject(String k,Class<V> clazz);
+
+    //------------------------------ hash common------------------------------
 
     boolean HHasKey(String k, String hk);
 
-    Map<String, V> HMGet(String k);
-
     Set<String> HKeys(String k);
-
-    List<V> HValues(String k);
 
     long HDel(String k, String hk);
 
