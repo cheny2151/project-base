@@ -37,7 +37,7 @@ public class ControllerAdviceHolder {
         binder.registerCustomEditor(String.class, stringEditor);
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class})
+    @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
         log.info(e.getMessage(), e);
@@ -50,7 +50,7 @@ public class ControllerAdviceHolder {
      * @param e MultiRequestException
      * @return http响应
      */
-    @ExceptionHandler(value = MultiRequestException.class)
+    @ExceptionHandler(MultiRequestException.class)
     public JsonMessage multiRequestException(MultiRequestException e) {
         final RequestInfo requestInfo = e.getRequestInfo();
         final HttpEntity responseEntity = e.getResponseEntity();
