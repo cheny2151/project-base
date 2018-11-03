@@ -11,6 +11,8 @@ public interface RedisClient<V> {
 
     void expire(String k, int days);
 
+    void expire(String k, long timeout, TimeUnit timeUnit);
+
     void delete(String k);
 
     void removeKey(String k);

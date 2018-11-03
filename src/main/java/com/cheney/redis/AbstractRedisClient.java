@@ -46,6 +46,11 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
     }
 
     @Override
+    public void expire(String k, long timeout, TimeUnit timeUnit) {
+        redis.expire(k, timeout, timeUnit);
+    }
+
+    @Override
     public void removeKey(String k) {
         redis.delete(k);
     }
