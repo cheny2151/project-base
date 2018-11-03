@@ -17,8 +17,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @AutoConfigureAfter(value = RedisAutoConfiguration.class)
 public class RedisConfig {
 
-    @Bean("strRedisSerializerTemplate")
-    public RedisTemplate fitStringTemplate(RedisConnectionFactory redisConnectionFactory) {
+    @Bean("strRedisTemplate")
+    public RedisTemplate strTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
@@ -28,8 +28,8 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean("jsonRedisSerializerTemplate")
-    public RedisTemplate fitJsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    @Bean("jsonRedisTemplate")
+    public RedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
@@ -39,8 +39,8 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean("jdkRedisSerializerTemplate")
-    public RedisTemplate fitJdkRedisSerializerTemplate(RedisConnectionFactory redisConnectionFactory) {
+    @Bean("jdkRedisTemplate")
+    public RedisTemplate jdkRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());

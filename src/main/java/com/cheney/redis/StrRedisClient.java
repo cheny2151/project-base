@@ -11,11 +11,11 @@ import javax.annotation.Resource;
 @Component("strRedisClient")
 public class StrRedisClient extends AbstractRedisClient<String> {
 
-    @Resource(name = "stringRedisSerializerTemplate")
+    @Resource(name = "strRedisTemplate")
     private RedisTemplate<String, String> redis;
 
     @Override
-    @Resource(name = "stringRedisSerializerTemplate")
+    @Resource(name = "strRedisTemplate")
     protected void setRedis(RedisTemplate<String, String> redis) {
         super.setRedis(redis);
     }
