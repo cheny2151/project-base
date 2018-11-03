@@ -17,7 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @AutoConfigureAfter(value = RedisAutoConfiguration.class)
 public class RedisConfig {
 
-    @Bean("stringRedisSerializerTemplate")
+    @Bean("strRedisSerializerTemplate")
     public RedisTemplate fitStringTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
