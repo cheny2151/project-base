@@ -65,18 +65,6 @@ public interface RedisClient<V> {
 
     List<V> HValuesForMap(String k);
 
-    //------------------------------ hash for object------------------------------
-
-    void HMSetForObject(String k, V kv, int days);
-
-    void HMSetForObject(String k, V kv);
-
-    void HSetForObject(String k, String hk, Object v);
-
-    Object HGetForObject(String k, String hk);
-
-    V HMGetForObject(String k,Class<V> clazz);
-
     //------------------------------ hash common------------------------------
 
     boolean HHasKey(String k, String hk);
