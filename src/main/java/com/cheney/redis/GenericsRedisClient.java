@@ -13,9 +13,9 @@ public interface GenericsRedisClient<V> extends RedisClient<V> {
 
     void HMSetForObject(String k, V kv);
 
-    void HSetForObject(String k, String hk, Object v);
+    void HSetField(String k, String hk, Object v);
 
-    Object HGetForObject(String k, String hk);
+    Object HGetField(String k, String hk);
 
     V HMGetForObject(String k,Class<V> clazz);
 

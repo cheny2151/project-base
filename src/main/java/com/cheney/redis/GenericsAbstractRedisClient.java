@@ -37,12 +37,12 @@ public abstract class GenericsAbstractRedisClient<V> extends AbstractRedisClient
     }
 
     @Override
-    public void HSetForObject(String k, String hk, Object v) {
+    public void HSetField(String k, String hk, Object v) {
         getHashOperationForObject().put(k, hk, v);
     }
 
     @Override
-    public Object HGetForObject(String k, String hk) {
+    public Object HGetField(String k, String hk) {
         return getHashOperationForObject().get(k, hk);
     }
 

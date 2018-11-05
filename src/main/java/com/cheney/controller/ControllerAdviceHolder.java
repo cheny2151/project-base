@@ -51,6 +51,7 @@ public class ControllerAdviceHolder {
      * @return http响应
      */
     @ExceptionHandler(MultiRequestException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonMessage multiRequestException(MultiRequestException e) {
         final RequestInfo requestInfo = e.getRequestInfo();
         final HttpEntity responseEntity = e.getResponseEntity();
