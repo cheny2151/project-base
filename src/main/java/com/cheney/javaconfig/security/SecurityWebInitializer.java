@@ -9,7 +9,8 @@ import java.util.EnumSet;
 
 /**
  * 注册springSecurityChain过滤器
- * 使用mvc时,将WebSecurityConfig加入到servlet容器配置的getRootConfig中。
+ * 使用mvc时,1：将WebSecurityConfig加入到servlet容器配置的getRootConfig中。
+ *           2：Filter实现类加@WebFilter注解(@Order指定顺序)，并在主类上添加@ServletComponentScan注解
  * 使用security，Filter在这里配置
  */
 public class SecurityWebInitializer extends AbstractSecurityWebApplicationInitializer {
