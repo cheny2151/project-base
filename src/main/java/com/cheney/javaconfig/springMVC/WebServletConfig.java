@@ -28,34 +28,12 @@ import java.util.List;
 public class WebServletConfig implements WebMvcConfigurer {
 
     /**
-     * 静态资源由WEB服务器默认的Servlet来处理
-     *
-     * @param configurer
-     */
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
-    /**
      * 拦截器
      *
      * @param registry
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-    }
-
-
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorParameter(false);
-        configurer.favorPathExtension(false);
-        configurer.ignoreAcceptHeader(false);
-        configurer.mediaType("html", MediaType.TEXT_HTML);
-        configurer.mediaType("json", MediaType.APPLICATION_JSON_UTF8);
-        configurer.mediaType("xml", MediaType.APPLICATION_XML);
-        configurer.mediaType("*", MediaType.ALL);
     }
 
     /**
@@ -79,24 +57,6 @@ public class WebServletConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 将json转换器注册到MessageConverters中
-     */
-    @Bean(name = "requestMappingHandlerAdapter")
-    public RequestMappingHandlerAdapter registerRequestMappingHandlerAdapter() {
-        RequestMappingHandlerAdapter requestMappingHandlerAdapter = new RequestMappingHandlerAdapter();
-        List<HttpMessageConverter<?>> converters = new ArrayList<>();
-        converters.add(mappingJackson2HttpMessageConverter());
-        //注册jackson
-        requestMappingHandlerAdapter.setMessageConverters(converters);
-        return requestMappingHandlerAdapter;
-    }
-
-    @Bean(name = "requestMappingHandlerMapping")
-    public RequestMappingHandlerMapping registerRequestMappingHandlerMapping() {
-        return new RequestMappingHandlerMapping();
-    }
-
-    /**
      * 上传解析器
      *
      * @return
@@ -106,15 +66,6 @@ public class WebServletConfig implements WebMvcConfigurer {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setDefaultEncoding("utf-8");
         return multipartResolver;
-    }
-
-    /**
-     * json转换器
-     * 使用@ResponseBody转换对象成json需要注册此bean到RequestMappingHandlerAdapter的MessageConverters
-     */
-    @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        return new MappingJackson2HttpMessageConverter();
     }
 
 }
