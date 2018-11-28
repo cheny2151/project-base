@@ -21,6 +21,7 @@ public class TaskConfig implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
+        //注册线程池，@Scheduled注解使用此线程池执行任务
         scheduledTaskRegistrar.setTaskScheduler(taskScheduler());
     }
 
