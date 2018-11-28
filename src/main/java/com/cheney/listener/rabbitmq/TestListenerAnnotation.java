@@ -25,6 +25,7 @@ public class TestListenerAnnotation {
         try {
             String body = new String(message.getBody(), Charset.forName("utf-8"));
             log.info(Thread.currentThread().getId() + ":" + body);
+            //手动确认需要在application.yml中配置
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             log.error("error", e);
