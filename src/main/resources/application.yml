@@ -28,3 +28,10 @@ mail:
     enable: true
   socketFactory:
     class: javax.net.ssl.SSLSocketFactory
+
+#mq消息手动确认
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual
