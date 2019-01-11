@@ -16,8 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @auther baibei
- * @Date 2018/11/30
+ * 优雅停机，监听tomcat的ContextClosedEvent事件
  */
 @Configuration
 @Slf4j
