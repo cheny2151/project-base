@@ -1,4 +1,4 @@
-package com.cheney.redis;
+package com.cheney.redis.client;
 
 import com.cheney.utils.JsonUtils;
 import org.springframework.data.redis.core.HashOperations;

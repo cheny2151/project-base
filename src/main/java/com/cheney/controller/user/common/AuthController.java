@@ -1,7 +1,7 @@
 package com.cheney.controller.user.common;
 
 import com.cheney.javaconfig.redis.RedisKey;
-import com.cheney.redis.RedisClient;
+import com.cheney.redis.client.RedisClient;
 import com.cheney.service.UserService;
 import com.cheney.system.message.JsonMessage;
 import com.cheney.utils.jwt.JwtPrincipal;

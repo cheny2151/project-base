@@ -1,4 +1,4 @@
-package com.cheney.redis;
+package com.cheney.redis.client;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

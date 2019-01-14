@@ -1,4 +1,4 @@
-package com.cheney.redis;
+package com.cheney.redis.client;
 
 /**
  * 用于泛型继承树

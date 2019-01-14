@@ -2,7 +2,7 @@ package com.cheney.controller;
 
 import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.AuthUser;
-import com.cheney.redis.RedisClient;
+import com.cheney.redis.client.RedisClient;
 import com.cheney.system.message.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

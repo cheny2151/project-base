@@ -1,6 +1,6 @@
-package com.cheney.redis;
+package com.cheney.redis.client;
 
-import io.lettuce.core.RedisException;
+import com.cheney.exception.RedisException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 

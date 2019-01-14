@@ -1,4 +1,4 @@
-package com.cheney.redis;
+package com.cheney.redis.client;
 
 import java.util.List;
 import java.util.Map;

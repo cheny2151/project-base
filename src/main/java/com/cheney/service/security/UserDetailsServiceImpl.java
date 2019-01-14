@@ -3,7 +3,7 @@ package com.cheney.service.security;
 import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.redis.RedisKey;
-import com.cheney.redis.RedisClient;
+import com.cheney.redis.client.RedisClient;
 import com.cheney.utils.security.UserDetailsFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
