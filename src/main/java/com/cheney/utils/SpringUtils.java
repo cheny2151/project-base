@@ -7,6 +7,14 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+/**
+ * 创建ApplicationContext时的钩子
+ * <p>
+ * 配合此类可以把spring容器管理的bean注入到静态变量里，构造一个静态工具类
+ * 关键词：@Component，@DependsOn("springUtils")，@PostConstruct
+ * 原理：@Component会创建一个类，@DependsOn("springUtils")会使该类依赖于SpringUtils创建
+ * ，@PostConstruct通过创建类后将spring管理的bean通过SpringUtils获取并写入静态变量中
+ */
 @Component
 @Lazy(false)
 public class SpringUtils implements ApplicationContextAware {
