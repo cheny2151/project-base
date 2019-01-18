@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.cheney.redis.lock.LockConstant.LOCK_LUA_SCRIPT;
+import static com.cheney.redis.lock.LockConstant.UNLOCK_LUA_SCRIPT;
+
 /**
  * todo 未实现
  *
@@ -21,34 +24,6 @@ public class SimpleRedisLock extends RedisLockAdaptor {
      * 轮询间隔时间
      */
     private final long POLLING_INTERVAL = 10;
-
-    private final String LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
-            "redis.call('hset', KEYS[1], ARGV[2], 1); " +
-            "redis.call('pexpire', KEYS[1], ARGV[1]); " +
-            "return nil; " +
-            "end; " +
-            "if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then " +
-            "redis.call('hincrby', KEYS[1], ARGV[2], 1); " +
-            "redis.call('pexpire', KEYS[1], ARGV[1]); " +
-            "return nil; " +
-            "end; " +
-            "return redis.call('pttl', KEYS[1]);";
-
-    private final String UNLOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
-            "return 1; " +
-            "end;" +
-            "if (redis.call('hexists', KEYS[1], ARGV[2]) == 0) then " +
-            "return nil;" +
-            "end; " +
-            "local counter = redis.call('hincrby', KEYS[1], ARGV[2], -1); " +
-            "if (counter > 0) then " +
-            "redis.call('pexpire', KEYS[1], ARGV[1]); " +
-            "return 0; " +
-            "else " +
-            "redis.call('del', KEYS[1]); " +
-            "return 1; " +
-            "end; " +
-            "return nil;";
 
     public SimpleRedisLock(String path) {
         super(path);
