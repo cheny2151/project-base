@@ -4,17 +4,15 @@ import com.cheney.redis.lock.LockConstant;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPubSub;
 
-import javax.annotation.PostConstruct;
-
 /**
  * @author cheney
  */
 @Component
 public class SubLockManager extends JedisPubSub {
 
-    @PostConstruct
-    public void initSub() {
-        this.psubscribe(LockConstant.LOCK_CHANNEL + "*");
+    @Override
+    public void psubscribe(String... patterns) {
+        super.psubscribe(LockConstant.LOCK_CHANNEL + "*");
     }
 
     @Override
