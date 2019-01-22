@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author cheney
  */
 @Slf4j
-public abstract class RedisLockAdaptor implements RedisLock, AutoCloseable {
+public abstract class RedisLockAdaptor implements RedisLock {
 
     protected final String path;
 
@@ -63,4 +63,5 @@ public abstract class RedisLockAdaptor implements RedisLock, AutoCloseable {
     public void close() throws Exception {
         this.unLock();
     }
+
 }

@@ -1,6 +1,8 @@
 import com.cheney.app.ApplicationContext;
 import com.cheney.redis.client.StrRedisClient;
+import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.SimpleRedisLock;
+import com.cheney.redis.lock.awaken.AwakenRedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,11 +27,15 @@ public class TestForApp {
     public void test() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         ArrayList<Callable<String>> threads = new ArrayList<>();
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i < 10; i++) {
             threads.add(() -> {
-                try (SimpleRedisLock lock = new SimpleRedisLock("test")) {
-                    lock.tryLock(6, 5, TimeUnit.SECONDS);
-                    Thread.sleep(500);
+                try (RedisLock lock = new AwakenRedisLock("test")) {
+                    if (lock.tryLock(5, 5, TimeUnit.SECONDS)) {
+                        Thread.sleep(500);
+                        System.out.println("线程完成");
+                    } else {
+                        System.out.println("线程失败");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -71,22 +77,13 @@ public class TestForApp {
 
     @Test
     public void test4() throws InterruptedException {
-//        SimpleRedisLockForLettuce simpleRedisLock = new SimpleRedisLockForLettuce("test:test");
-        SimpleRedisLock simpleRedisLock = new SimpleRedisLock("test:test");
-        try {
+        try (RedisLock simpleRedisLock = new AwakenRedisLock("test:test")) {
             boolean b;
-            b = simpleRedisLock.tryLock(1000, 10, TimeUnit.SECONDS);
+            b = simpleRedisLock.tryLock(10, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
             Thread.sleep(5 * 1000);
-//            b = simpleRedisLock.tryLock(100, 20, TimeUnit.SECONDS);
-//            System.out.println("second lock result:" + b);
-            Thread.sleep(5 * 1000);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            simpleRedisLock.unLock();
-            Thread.sleep(20 * 1000);
-            simpleRedisLock.unLock();
         }
     }
 

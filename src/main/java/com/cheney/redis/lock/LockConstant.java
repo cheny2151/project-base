@@ -63,7 +63,7 @@ public class LockConstant {
             "end; " +
             "return nil;";
 
-    public static final String LOCK_CHANNEL = "LOCK_CHANNEL";
+    public static final String LOCK_CHANNEL = "LOCK_CHANNEL:";
 
     public static final String UNLOCK_MESSAGE = "UN_LOCK";
 
