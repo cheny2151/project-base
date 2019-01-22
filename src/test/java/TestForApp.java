@@ -8,6 +8,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
@@ -18,10 +22,23 @@ public class TestForApp {
     private StrRedisClient redisClient;
 
     @Test
-    public void test() {
-        redisClient.setValue("test", "success");
-        System.out.println(redisClient.getValue("test"));
+    public void test() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ArrayList<Callable<String>> threads = new ArrayList<>();
+        for (int i = 0; i <= 10; i++) {
+            threads.add(() -> {
+                try (SimpleRedisLock lock = new SimpleRedisLock("test")) {
+                    lock.tryLock(6, 5, TimeUnit.SECONDS);
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "success";
+            });
+        }
+        executorService.invokeAll(threads);
     }
+
 
     @Test
     public void test2() {
@@ -58,11 +75,11 @@ public class TestForApp {
         SimpleRedisLock simpleRedisLock = new SimpleRedisLock("test:test");
         try {
             boolean b;
-            b = simpleRedisLock.tryLock(5, 10, TimeUnit.SECONDS);
+            b = simpleRedisLock.tryLock(1000, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
             Thread.sleep(5 * 1000);
-            b = simpleRedisLock.tryLock(5, 20, TimeUnit.SECONDS);
-            System.out.println("second lock result:" + b);
+//            b = simpleRedisLock.tryLock(100, 20, TimeUnit.SECONDS);
+//            System.out.println("second lock result:" + b);
             Thread.sleep(5 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -72,5 +89,6 @@ public class TestForApp {
             simpleRedisLock.unLock();
         }
     }
+
 
 }
