@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class SimpleRedisLockForLettuce {
-
+/*
     private final RedisTemplate<String, String> redisTemplate;
 
     private final String path;
@@ -27,9 +27,9 @@ public class SimpleRedisLockForLettuce {
 
     private long leaseTimeTemp;
 
-    /**
+    *//**
      * 轮询间隔时间
-     */
+     *//*
     private final long POLLING_INTERVAL = 10;
 
     private final String LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
@@ -118,16 +118,16 @@ public class SimpleRedisLockForLettuce {
 
             Object result = null;
 
-           /* // 单机模式
+            // 单机模式
             if (nativeConnection instanceof RedisAsyncCommands) {
                 result = ((RedisAsyncCommands) nativeConnection).getStatefulConnection().async().eval(script, INTEGER, keys.toArray(), args.toArray());
-//                result = statefulConnection.(script, keys, args);
+                result = statefulConnection.(script, keys, args);
                 System.out.println(result);
             }
             // 集群模式
             else if (nativeConnection instanceof Jedis) {
                 result = ((Jedis) nativeConnection).eval(script, keys, args);
-            }*/
+            }
 
             return result;
         });
@@ -135,6 +135,6 @@ public class SimpleRedisLockForLettuce {
 
     private String getCurrentThreadID() {
         return "THREAD_ID:" + (SERVER_ID + "-" + Thread.currentThread().getId()).hashCode();
-    }
+    }*/
 
 }

@@ -11,7 +11,7 @@ import static com.cheney.redis.lock.LockConstant.LOCK_LUA_SCRIPT;
 import static com.cheney.redis.lock.LockConstant.UNLOCK_LUA_SCRIPT;
 
 /**
- * todo 未实现
+ * 获取重入锁成功则返回，失败则轮询直到获取到锁或者waitTime时间结束
  *
  * @author cheney
  */

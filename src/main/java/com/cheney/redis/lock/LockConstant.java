@@ -48,7 +48,7 @@ public class LockConstant {
             "return redis.call('pttl', KEYS[1]);";
 
     public static final String UNLOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
-            "return 1; " +
+            "return nil; " +
             "end;" +
             "if (redis.call('hexists', KEYS[1], ARGV[2]) == 0) then " +
             "return nil;" +

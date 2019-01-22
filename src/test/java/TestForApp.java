@@ -58,10 +58,10 @@ public class TestForApp {
         SimpleRedisLock simpleRedisLock = new SimpleRedisLock("test:test");
         try {
             boolean b;
-            b = simpleRedisLock.tryLock(100, 10, TimeUnit.SECONDS);
+            b = simpleRedisLock.tryLock(5, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
             Thread.sleep(5 * 1000);
-            b = simpleRedisLock.tryLock(100, 20, TimeUnit.SECONDS);
+            b = simpleRedisLock.tryLock(5, 20, TimeUnit.SECONDS);
             System.out.println("second lock result:" + b);
             Thread.sleep(5 * 1000);
         } catch (InterruptedException e) {
