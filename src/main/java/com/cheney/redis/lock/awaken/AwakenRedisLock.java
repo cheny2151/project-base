@@ -43,6 +43,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
             while ((result = LockScript(leaseTime)) != null) {
                 long timeout = maxTime - System.currentTimeMillis();
                 if (timeout <= 0) {
+                    //timeout return false
                     break;
                 }
                 CountDownLatch countDownLatch = new CountDownLatch(1);
