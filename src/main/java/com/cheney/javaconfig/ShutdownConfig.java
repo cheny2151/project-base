@@ -3,6 +3,7 @@ package com.cheney.javaconfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -38,7 +39,7 @@ public class ShutdownConfig {
      * @return
      */
     @Bean
-    public ServletWebServerFactory tomcatCustomizer(GracefulShutdown gracefulShutdown) {
+    public ServletWebServerFactory tomcatCustomizer(@Qualifier("gracefulShutdown") GracefulShutdown gracefulShutdown) {
         TomcatServletWebServerFactory tomcatServletWebServerFactory = new TomcatServletWebServerFactory();
         tomcatServletWebServerFactory.addConnectorCustomizers(gracefulShutdown);
         return tomcatServletWebServerFactory;
