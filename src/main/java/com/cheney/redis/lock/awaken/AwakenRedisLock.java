@@ -18,6 +18,8 @@ import static com.cheney.redis.lock.LockConstant.*;
  * 利用redis的发布订阅，在加锁失败时订阅其他线程的redis解锁信息，然后阻塞线程，
  * 等到其他线程解锁时唤醒线程再循环获取该锁，直至获取到锁或者超时时退出
  *
+ * 注意：此锁的lua脚本出现操作多个key，必须有{}
+ *
  * @author cheney
  */
 @Slf4j
@@ -92,7 +94,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
     }
 
     private String getChannelName() {
-        return LOCK_CHANNEL + path;
+        return getRandomPre() + LOCK_CHANNEL + path;
     }
 
 
