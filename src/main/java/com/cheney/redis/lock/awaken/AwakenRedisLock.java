@@ -1,6 +1,5 @@
 package com.cheney.redis.lock.awaken;
 
-import com.cheney.redis.lock.LockConstant;
 import com.cheney.redis.lock.RedisLockAdaptor;
 import com.cheney.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +50,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
                 CountDownLatch countDownLatch = new CountDownLatch(1);
                 //add listener
                 subLockManager.addMessageListener(
-                        new LockListener(LockConstant.LOCK_CHANNEL + path, countDownLatch::countDown)
+                        new LockListener(getChannelName(), countDownLatch::countDown)
                 );
                 countDownLatch.await(timeout, timeUnit);
             }
@@ -74,11 +73,11 @@ public class AwakenRedisLock extends RedisLockAdaptor {
     public void unLock() {
         Object result = unLockScript();
         if (result == null) {
-            log.info("解锁失败:redis未上该锁");
+            log.info("unlock fail:redis未上该锁");
         } else if (1 == (long) result) {
-            log.info("解锁成功");
+            log.info("unlock success");
         } else if (0 == (long) result) {
-            log.info("减少重入次数，并且刷新了锁定时间");
+            log.info("count down:减少重入次数，并且刷新了锁定时间");
         }
     }
 
@@ -94,7 +93,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
     }
 
     private String getChannelName() {
-        return getRandomPre() + LOCK_CHANNEL + path;
+        return LOCK_CHANNEL + path;
     }
 
 
