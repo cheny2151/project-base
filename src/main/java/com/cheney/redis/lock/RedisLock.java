@@ -9,7 +9,7 @@ public interface RedisLock extends AutoCloseable {
 
     String getPath();
 
-    boolean tryLock(long waitTime, long leaseTime, TimeUnit timeUnit) throws InterruptedException;
+    boolean tryLock(long waitTime, long leaseTime, TimeUnit timeUnit);
 
     void unLock();
 
