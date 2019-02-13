@@ -62,7 +62,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
         return isLock = (result == null);
     }
 
-    private Object LockScript(long leaseTime) {
+    protected Object LockScript(long leaseTime) {
         List<String> keys = Collections.singletonList(path);
         List<String> args = new ArrayList<>();
         args.add(String.valueOf(leaseTime));
@@ -70,24 +70,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
         return execute(AWAKEN_LOCK_LUA_SCRIPT, keys, args);
     }
 
-    public void unLock() {
-        if (!isLock) {
-            //为获取锁，不执行解锁脚本
-            return;
-        }
-        Object result = unLockScript();
-        if (result == null) {
-            isLock = false;
-            log.info("unlock fail:redis未上该锁");
-        } else if (1 == (long) result) {
-            isLock = false;
-            log.info("unlock success");
-        } else if (0 == (long) result) {
-            log.info("count down:减少重入次数，并且刷新了锁定时间");
-        }
-    }
-
-    private Object unLockScript() {
+    protected Object unLockScript() {
         ArrayList<String> keys = new ArrayList<>();
         keys.add(path);
         keys.add(getChannelName());

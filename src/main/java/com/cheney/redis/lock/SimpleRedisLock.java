@@ -35,7 +35,7 @@ public class SimpleRedisLock extends RedisLockAdaptor {
         leaseTime = timeUnit.toMillis(leaseTime);
         long beginTime = System.currentTimeMillis();
         //执行加锁脚本,返回null则获取锁成功
-        Object result = LockScript(leaseTime, timeUnit);
+        Object result = LockScript(leaseTime);
         this.leaseTimeTemp = leaseTime;
 
         try {
@@ -45,36 +45,25 @@ public class SimpleRedisLock extends RedisLockAdaptor {
                     || beginTime + waitTime > System.currentTimeMillis())) {
                 log.debug("未能抢到锁，轮询ing...");
                 Thread.sleep(POLLING_INTERVAL);
-                result = LockScript(leaseTime, timeUnit);
+                result = LockScript(leaseTime);
             }
         } catch (Exception e) {
             log.error("try lock error", e);
             return false;
         }
 
-        return result == null;
+        return isLock = (result == null);
     }
 
-    private Object LockScript(long leaseTime, TimeUnit timeUnit) {
+    protected Object LockScript(long leaseTime) {
         List<String> keys = Collections.singletonList(path);
         List<String> args = new ArrayList<>();
-        args.add(String.valueOf(timeUnit.toMillis(leaseTime)));
+        args.add(String.valueOf(leaseTime));
         args.add(getCurrentThreadID());
         return execute(LOCK_LUA_SCRIPT, keys, args);
     }
 
-    public void unLock() {
-        Object result = unLockScript();
-        if (result == null) {
-            log.info("解锁失败:redis未上该锁");
-        } else if (1 == (long) result) {
-            log.info("unLock success");
-        } else if (0 == (long) result) {
-            log.info("减少重入次数，并且刷新了锁定时间");
-        }
-    }
-
-    private Object unLockScript() {
+    protected Object unLockScript() {
         List<String> keys = Collections.singletonList(path);
         ArrayList<String> args = new ArrayList<>();
         args.add(String.valueOf(leaseTimeTemp));
