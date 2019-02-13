@@ -22,6 +22,8 @@ public abstract class RedisLockAdaptor implements RedisLock {
 
     protected final String path;
 
+    protected boolean isLock;
+
     protected final RedisTemplate redisTemplate;
 
     private static final String SERVER_ID = UUID.randomUUID().toString();

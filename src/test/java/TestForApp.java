@@ -31,7 +31,7 @@ public class TestForApp {
             threads.add(() -> {
                 try (RedisLock lock = new AwakenRedisLock("test")) {
                     if (lock.tryLock(5, 5, TimeUnit.SECONDS)) {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                         System.out.println("线程完成");
                     } else {
                         System.out.println("线程失败");
