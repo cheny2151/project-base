@@ -3,6 +3,8 @@ package com.cheney.listener.properties;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,13 +19,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PropertiesListener {
 
-    /*private RefreshScope refreshScope;
+    private RefreshScope refreshScope;
 
     @Autowired
     public PropertiesListener(RefreshScope refreshScope) {
         this.refreshScope = refreshScope;
     }
-*/
+
     @ApolloConfigChangeListener
     public void onchange(ConfigChangeEvent event) {
         for (String key : event.changedKeys()) {
@@ -32,8 +34,8 @@ public class PropertiesListener {
             System.out.println("oldVal:" + change.getOldValue());
             System.out.println("newVal:" + change.getNewValue());
         }
-        //刷新指定的配置，入参为配置的bean的name
-//        refreshScope.refresh()
+        //刷新指定的配置，入参为配置的bean的name,该bean需要加@RefreshScope注解
+        refreshScope.refresh("exampleProperties");
 //        refreshScope.refreshAll();
     }
 
