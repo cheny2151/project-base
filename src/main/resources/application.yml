@@ -3,7 +3,7 @@
 mybatis:
   typeAliasesPackage: com.cheney.entity.dto
   mapperLocations: classpath:mybatis/*.xml
-
+spring.rabbitmq.listener.simple.a
 #############################################################
 
 ##other common config
@@ -34,4 +34,6 @@ spring:
   rabbitmq:
     listener:
       simple:
+        acknowledge-mode: manual
+      direct:
         acknowledge-mode: manual
