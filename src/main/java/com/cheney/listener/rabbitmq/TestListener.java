@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
+/**
+ * xml配置的方式实现监听
+ */
 @Slf4j
 public class TestListener implements ChannelAwareMessageListener {
 

@@ -21,15 +21,16 @@ import java.nio.charset.Charset;
 public class TestListenerAnnotation {
 
     @RabbitListener(queues = "test_for_exchange")
-    public void onMessage(Message message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel) throws IOException {
+    public void onMessage(Message message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag
+            , Channel channel) throws IOException {
         try {
             String body = new String(message.getBody(), Charset.forName("utf-8"));
             log.info(Thread.currentThread().getId() + ":" + body);
-            //手动确认需要在application.yml中配置
-            channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             log.error("error", e);
-            channel.basicReject(deliveryTag, false);
+        } finally {
+            //手动确认需要在application.yml中配置
+            channel.basicAck(deliveryTag, false);
         }
     }
 
