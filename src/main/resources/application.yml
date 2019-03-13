@@ -3,7 +3,7 @@
 mybatis:
   typeAliasesPackage: com.cheney.entity.dto
   mapperLocations: classpath:mybatis/*.xml
-spring.rabbitmq.listener.simple.a
+
 #############################################################
 
 ##other common config
