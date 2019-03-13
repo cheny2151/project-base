@@ -20,10 +20,6 @@ public class JsonMessage implements Serializable {
 
     private static final long serialVersionUID = 4268904972338027637L;
 
-    private static final int ERROR_CODE = 0;
-
-    private static final int SUCCESS_CODE = 1;
-
     /**
      * 状态码
      */
@@ -40,25 +36,40 @@ public class JsonMessage implements Serializable {
      * 存放错误信息
      */
     @JsonProperty
-    private String error;
+    private String msg;
 
     /**
      * 禁止手动实例化
      */
     private JsonMessage(int code, Object data) {
         this.code = code;
-        if (code == SUCCESS_CODE) {
+        if (code == ResponseCode.SUCCESS.getStatus()) {
             this.data = data;
+            this.msg = ResponseCode.SUCCESS.getMsg();
         } else {
-            this.error = (String) data;
+            this.msg = (String) data;
         }
     }
 
     /**
      * 用于返回错误信息
      */
+    public static JsonMessage error(int code, String message) {
+        return new JsonMessage(code, message);
+    }
+
+    /**
+     * 用于返回错误信息
+     */
     public static JsonMessage error(String message) {
-        return new JsonMessage(ERROR_CODE, message);
+        return new JsonMessage(ResponseCode.ERROR.getStatus(), message);
+    }
+
+    /**
+     * 用于返回错误信息
+     */
+    public static JsonMessage error(ResponseCode responseCode) {
+        return new JsonMessage(responseCode.getStatus(), responseCode.getMsg());
     }
 
     /**
@@ -69,7 +80,7 @@ public class JsonMessage implements Serializable {
     public static JsonMessage success(Object... args) {
         //单一数据
         if (args.length == 1) {
-            return new JsonMessage(SUCCESS_CODE, args[0]);
+            return new JsonMessage(ResponseCode.SUCCESS.getStatus(), args[0]);
         } else {
             if ((args.length & 1) == 1) {
                 throw new IllegalArgumentException("The args must be even");
@@ -79,7 +90,7 @@ public class JsonMessage implements Serializable {
             for (int i = 0; i < args.length; i++) {
                 map.put((String) args[i], args[++i]);
             }
-            return new JsonMessage(SUCCESS_CODE, map);
+            return new JsonMessage(ResponseCode.SUCCESS.getStatus(), map);
         }
     }
 

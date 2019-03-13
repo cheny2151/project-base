@@ -5,6 +5,7 @@ import com.cheney.exception.MultiRequestException;
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
 import com.cheney.system.message.JsonMessage;
+import com.cheney.system.message.ResponseCode;
 import com.cheney.utils.http.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -41,7 +42,7 @@ public class ControllerAdviceHolder {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
         log.info(e.getMessage(), e);
-        return JsonMessage.error("username not found");
+        return JsonMessage.error(ResponseCode.USERNAME_NOT_FOUND);
     }
 
     /**
