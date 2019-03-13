@@ -1,8 +1,8 @@
 ##spring common config
 #mybatis
 mybatis:
-  typeAliasesPackage: com.cheney.entity.dto
-  mapperLocations: classpath:mybatis/*.xml
+  type-aliases-package: com.cheney.entity.dto
+  mapper-locations: classpath:mybatis/*.xml
 
 #############################################################
 
