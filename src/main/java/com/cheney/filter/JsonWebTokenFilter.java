@@ -1,19 +1,8 @@
 package com.cheney.filter;
 
-import com.cheney.service.security.MyUserDetailsService;
-import com.cheney.utils.jwt.JwtPrincipal;
-import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,15 +18,12 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
 
     private static final String AUTH_REQUEST_HEAD = "AUTH_TOKEN";
 
-    @Resource(name = "userDetailsServiceImpl")
-    private MyUserDetailsService userDetailsService;
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         //从请求头中获取token
         String token = httpServletRequest.getHeader(AUTH_REQUEST_HEAD);
 
-        if (StringUtils.isNotEmpty(token)) {
+     /*   if (StringUtils.isNotEmpty(token)) {
             //redis中获取认证或直接解析token获取
             UserDetails userDetails = (userDetails = userDetailsService.loadUserByToken(token)) != null ? userDetails : loadUserByToken(token);
 
@@ -50,7 +36,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
                         httpServletRequest));
                 securityContext.setAuthentication(authentication);
             }
-        }
+        }*/
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
@@ -60,7 +46,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
      *
      * @param token token
      */
-    private UserDetails loadUserByToken(String token) {
+  /*  private UserDetails loadUserByToken(String token) {
         String username = JwtUtils.parseToUsername(token);
         UserDetails details = null;
         try {
@@ -69,6 +55,6 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
             log.warn("token exist,but username not found");
         }
         return details;
-    }
+    }*/
 
 }

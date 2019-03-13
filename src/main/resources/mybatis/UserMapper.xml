@@ -40,7 +40,7 @@
         </foreach>
     </delete>
 
-    <select id="findByUsername" parameterType="string" resultType="AuthUser">
+    <select id="findByUsername" parameterType="string" resultType="com.cheney.entity.dto.AuthUser">
         select *
         from auth_user
         where username=#{username}

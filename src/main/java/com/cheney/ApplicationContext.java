@@ -4,15 +4,14 @@ import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.cheney"}, excludeFilters = {@ComponentScan.Filter({Controller.class})})
 @EnableTransactionManagement
 @MapperScan(value = "com.cheney.dao.mybatis")
+@ServletComponentScan(basePackages = "com.cheney.filter")
 @EnableApolloConfig
 @RefreshScope
 public class ApplicationContext {

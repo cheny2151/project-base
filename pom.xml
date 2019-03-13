@@ -54,12 +54,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--Spring Security依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
         <!--spring data-->
         <dependency>
             <groupId>org.springframework.data</groupId>

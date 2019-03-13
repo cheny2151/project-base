@@ -22,13 +22,16 @@ import java.util.Map;
 
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
+/**
+ * 使用webFilter必须在启动类上加@ServletComponentScan
+ */
 @WebFilter
+@Order(0)
 @Slf4j
 public class RequestParamFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("---------------------");
         String method = httpServletRequest.getMethod();
         switch (method.toUpperCase()) {
             case HttpSupport.Method.HTTP_METHOD_GET: {

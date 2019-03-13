@@ -5,12 +5,10 @@ import com.cheney.exception.MultiRequestException;
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
 import com.cheney.system.message.JsonMessage;
-import com.cheney.system.message.ResponseCode;
 import com.cheney.utils.http.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -36,13 +34,6 @@ public class ControllerAdviceHolder {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Date.class, dateEditor);
         binder.registerCustomEditor(String.class, stringEditor);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public JsonMessage UsernameNotFoundException(UsernameNotFoundException e) {
-        log.info(e.getMessage(), e);
-        return JsonMessage.error(ResponseCode.USERNAME_NOT_FOUND);
     }
 
     /**
