@@ -1,4 +1,4 @@
-import com.cheney.app.ApplicationContext;
+import com.cheney.ApplicationContext;
 import com.cheney.redis.client.StrRedisClient;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.SimpleRedisLock;

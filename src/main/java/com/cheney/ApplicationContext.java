@@ -1,10 +1,9 @@
-package com.cheney.app;
+package com.cheney;
 
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class ApplicationContext {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(ApplicationContext.class).web(WebApplicationType.SERVLET).run(args);
+        SpringApplication.run(ApplicationContext.class, args);
     }
 
 }
