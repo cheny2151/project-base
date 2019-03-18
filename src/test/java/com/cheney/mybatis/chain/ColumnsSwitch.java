@@ -1,4 +1,4 @@
-package com.cheney.utils.mybatis.chain;
+package com.cheney.mybatis.chain;
 
 public class ColumnsSwitch extends ColumnFieldAbstractSwitch {
 

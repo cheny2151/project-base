@@ -1,7 +1,7 @@
-package com.cheney.utils.mybatis.chain;
+package com.cheney.mybatis.chain;
 
 import com.cheney.utils.BeanUtils;
-import com.cheney.utils.mybatis.XMLGenerator;
+import com.cheney.mybatis.XMLGenerator;
 
 import java.util.Set;
 
