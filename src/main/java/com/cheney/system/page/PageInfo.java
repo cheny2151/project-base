@@ -23,7 +23,7 @@ public class PageInfo implements Serializable {
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    private int pageTotal;
+    private int totalPage;
 
     private long total;
 
@@ -44,12 +44,12 @@ public class PageInfo implements Serializable {
         this.pageSize = pageSize;
     }
 
-    public int getPageTotal() {
-        return pageTotal;
+    public int getTotalPage() {
+        return totalPage;
     }
 
-    public void setPageTotal(int pageTotal) {
-        this.pageTotal = pageTotal;
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
     }
 
     public long getTotal() {
