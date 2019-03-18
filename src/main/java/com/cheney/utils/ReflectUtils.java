@@ -15,7 +15,7 @@ import java.util.TreeSet;
  * 反射工具类
  */
 @Slf4j
-public class BeanUtils {
+public class ReflectUtils {
 
     private final static String GET_PRE = "get";
 
@@ -23,7 +23,7 @@ public class BeanUtils {
 
     private final static String IS_PRE = "is";
 
-    private BeanUtils() {
+    private ReflectUtils() {
     }
 
     /**

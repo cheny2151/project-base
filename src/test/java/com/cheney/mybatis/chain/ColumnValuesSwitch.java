@@ -1,6 +1,6 @@
 package com.cheney.mybatis.chain;
 
-import com.cheney.utils.BeanUtils;
+import com.cheney.utils.ReflectUtils;
 import com.cheney.mybatis.XMLGenerator;
 
 import java.util.Set;
@@ -16,7 +16,7 @@ public class ColumnValuesSwitch extends AbstractSwitch {
     @Override
     public String getReplacement(Class clazz) {
         StringBuilder columnValues = new StringBuilder();
-        Set<String> names = BeanUtils.getAllFieldNames(clazz);
+        Set<String> names = ReflectUtils.getAllFieldNames(clazz);
         names.remove(XMLGenerator.ID);
         int size = names.size();
         int count = 1;

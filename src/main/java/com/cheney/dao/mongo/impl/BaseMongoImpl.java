@@ -4,7 +4,7 @@ import com.cheney.dao.mongo.BaseMongo;
 import com.cheney.entity.mongo.MongoBaseEntity;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.PageInfo;
-import com.cheney.utils.BeanUtils;
+import com.cheney.utils.ReflectUtils;
 import com.cheney.utils.MongoEntityHelp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -53,7 +53,7 @@ class BaseMongoImpl<T extends MongoBaseEntity> implements BaseMongo<T> {
         if (properties != null && properties.length > 0) {
             Update update = new Update();
             for (String s : properties) {
-                update.set(s, BeanUtils.readValue(entity, s));
+                update.set(s, ReflectUtils.readValue(entity, s));
             }
             mongo.updateFirst(Query.query(Criteria.where("id").is(entity.getId())), update, entityType);
         }

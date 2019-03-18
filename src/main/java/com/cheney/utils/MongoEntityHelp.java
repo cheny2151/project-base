@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Set;
 
 /**
  * mongo实体工具类
@@ -29,15 +28,15 @@ public class MongoEntityHelp {
         Update update = new Update();
         boolean hasIgnore = ignoreProperties != null && ignoreProperties.length > 0;
         Class clazz = bean.getClass();
-        List<Field> fields = BeanUtils.getAllFields(clazz, Object.class);
+        List<Field> fields = ReflectUtils.getAllFields(clazz, Object.class);
         for (Field field : fields) {
             String name = field.getName();
             //判断是否为默认忽略字段或者主动忽略字段
             if (defaultIgnore(field, clazz) || (hasIgnore && ArrayUtils.contains(ignoreProperties, name))) {
                 continue;
             }
-            System.out.println(name + ":" + BeanUtils.readValue(bean, name));
-            update.set(name, BeanUtils.readValue(bean, name));
+            System.out.println(name + ":" + ReflectUtils.readValue(bean, name));
+            update.set(name, ReflectUtils.readValue(bean, name));
         }
         return update;
     }
@@ -49,7 +48,7 @@ public class MongoEntityHelp {
     private static boolean defaultIgnore(Field field, Class<?> clazz) {
         return ArrayUtils.contains(DEFAULT_IGNORE_PROPERTIES, field.getName())
                 || field.getAnnotation(Transient.class) != null
-                || BeanUtils.getReadMethod(clazz, field.getName()).getDeclaredAnnotation(Transient.class) != null;
+                || ReflectUtils.getReadMethod(clazz, field.getName()).getDeclaredAnnotation(Transient.class) != null;
     }
 
 

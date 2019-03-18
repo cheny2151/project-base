@@ -1,6 +1,6 @@
 package com.cheney.mybatis.chain;
 
-import com.cheney.utils.BeanUtils;
+import com.cheney.utils.ReflectUtils;
 import com.cheney.mybatis.XMLGenerator;
 
 import java.util.Set;
@@ -18,7 +18,7 @@ public class ResultMapSwitch extends AbstractSwitch {
 
     @Override
     public String getReplacement(Class clazz) {
-        Set<String> fieldNames = BeanUtils.getAllFieldNames(clazz);
+        Set<String> fieldNames = ReflectUtils.getAllFieldNames(clazz);
         StringBuilder resultMap = new StringBuilder();
         String separator = System.getProperty("line.separator");
         resultMap.append("<id property=\"").append(XMLGenerator.ID).append("\" column=\"")
