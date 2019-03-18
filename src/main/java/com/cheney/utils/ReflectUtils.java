@@ -46,22 +46,28 @@ public class ReflectUtils {
         if (StringUtils.isEmpty(property)) {
             throw new IllegalArgumentException("property must not empty");
         }
-        Method method;
-        try {
-            method = clazz.getMethod(GET_PRE + toUpperFirstLetter(property));
-        } catch (NoSuchMethodException e) {
-            method = null;
+        String[] withToTry = {property, ""};
+        if (!property.startsWith("get") && !property.startsWith("is")) {
+            buildGetMethodName(withToTry, property);
         }
-        if (method != null) {
-            return method;
+        for (String toTry : withToTry) {
+            try {
+                if ("".equals(toTry))
+                    continue;
+                Method method = clazz.getDeclaredMethod(toTry);
+                method.setAccessible(true);
+                return method;
+            } catch (NoSuchMethodException e) {
+                //change to RuntimeException
+            }
         }
-        try {
-            method = clazz.getMethod(IS_PRE + toUpperFirstLetter(property));
-        } catch (NoSuchMethodException e) {
-            log.error("反射获取方法失败", e);
-            throw new BeanReflectException("反射获取方法失败", e);
-        }
-        return method;
+        throw new RuntimeException("fail to reflect method:not such method");
+    }
+
+    private static void buildGetMethodName(String[] withToTry, String name) {
+        name = toUpperFirstLetter(name);
+        withToTry[0] = GET_PRE + name;
+        withToTry[1] = IS_PRE + name;
     }
 
     /**
@@ -73,7 +79,9 @@ public class ReflectUtils {
             throw new IllegalArgumentException("property must not empty");
         }
         try {
-            return clazz.getMethod(SET_PRE + toUpperFirstLetter(property), propertyType);
+            Method method = clazz.getMethod(SET_PRE + toUpperFirstLetter(property), propertyType);
+            method.setAccessible(true);
+            return method;
         } catch (NoSuchMethodException e) {
             log.error("反射获取方法失败", e);
             throw new BeanReflectException("反射获取方法失败", e);
@@ -98,6 +106,39 @@ public class ReflectUtils {
                 names.add(field.getName())
         );
         return names;
+    }
+
+    /**
+     * 通过反射字段获取字段值
+     *
+     * @param object 实例对象
+     * @param name   字段名
+     * @param <T>    返回类型
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T reflectValueByField(Object object, String name) {
+        Field field = field(object.getClass(), name);
+        try {
+            return (T) field.get(object);
+        } catch (Exception e) {
+            //change to RuntimeException
+            throw new RuntimeException("reflect value error", e);
+        }
+    }
+
+    private static Field field(Class<?> clazz, String name) {
+        try {
+            if (name == null || "".equals(name)) {
+                throw new IllegalArgumentException();
+            }
+            Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+            return field;
+        } catch (NoSuchFieldException e) {
+            //change to RuntimeException
+            throw new RuntimeException("reflect field error", e);
+        }
     }
 
     private static String toUpperFirstLetter(String fieldName) {
