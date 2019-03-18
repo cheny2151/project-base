@@ -1,10 +1,13 @@
 package com.cheney.system.page;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * 基本分页信息
  */
+@Data
 public class PageInfo implements Serializable {
 
     private static final long serialVersionUID = 7439257553404129509L;
@@ -26,39 +29,6 @@ public class PageInfo implements Serializable {
     private int totalPage;
 
     private long total;
-
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
 
     /**
      * 分页起始位置
