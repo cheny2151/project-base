@@ -79,7 +79,11 @@ public abstract class AbstractSwitch implements Switch {
     }
 
     String toJavaPackage(String pack) {
-        return pack.replaceAll("\\\\", ".").replaceAll("src.main.java.", "");
+        String javaPage = pack.replaceAll("\\\\", ".");
+        if (javaPage.contains("src.test.java") || javaPage.contains("src.main.java")) {
+            return javaPage.substring(14);
+        }
+        return null;
     }
 
     private char[] resize(char[] chars) {

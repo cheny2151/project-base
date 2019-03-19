@@ -90,18 +90,22 @@
     </select>
 
     <insert id="persist" parameterType="@{package}">
-        insert into @{tableName} (
+        insert into @{tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
 @{cloumns}
-        )
-        values(
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
 @{columnValues}
-        )
+        </trim>
     </insert>
 
     <update id="merge" parameterType="@{package}">
         update @{tableName}
         set
+        <trim suffixOverrides=",">
 @{setValue}
+        </trim>
         where @{idColumn} = @{idField}
     </update>
 
