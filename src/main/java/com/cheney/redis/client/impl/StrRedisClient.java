@@ -1,6 +1,8 @@
-package com.cheney.redis.client;
+package com.cheney.redis.client.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.cheney.redis.client.AbstractRedisClient;
+import com.cheney.redis.client.ObjectRedisApi;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,7 @@ import java.util.Map;
  * String序列化的redis存储方式
  */
 @Component("strRedisClient")
-public class StrRedisClient<V> extends AbstractRedisClient<String> implements GenericsRedisClient<V> {
+public class StrRedisClient extends AbstractRedisClient<String> implements ObjectRedisApi {
 
     @Resource(name = "strRedisTemplate")
     private RedisTemplate<String, String> redis;
@@ -30,13 +32,13 @@ public class StrRedisClient<V> extends AbstractRedisClient<String> implements Ge
     }
 
     @Override
-    public void HMSetForObject(String k, V kv, int days) {
+    public <V> void HMSetObject(String k, V kv, int days) {
         getHashOperationForObject().putAll(k, JSON.parseObject(JSON.toJSONString(kv)));
         expire(k, days);
     }
 
     @Override
-    public void HMSetForObject(String k, V kv) {
+    public <V> void HMSetObject(String k, V kv) {
         getHashOperationForObject().putAll(k, JSON.parseObject(JSON.toJSONString(kv)));
     }
 
@@ -51,7 +53,7 @@ public class StrRedisClient<V> extends AbstractRedisClient<String> implements Ge
     }
 
     @Override
-    public V HMGetForObject(String k, Class<V> clazz) {
+    public <V> V HMGetObject(String k, Class<V> clazz) {
         if (!exists(k)) {
             return null;
         }

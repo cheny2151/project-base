@@ -145,47 +145,14 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
     //------------------------------ hash ------------------------------
 
     @Override
-    public void HMSetForMap(String k, Map<String, V> kv, int days) {
-        HMSetForMap(k, kv);
-        expire(k, days);
-    }
-
-    @Override
-    public void HMSetForMap(String k, Map<String, V> kv) {
-        getHashOperationForMap().putAll(k, kv);
-    }
-
-    @Override
-    public void HSetForMap(String k, String hk, V v) {
-        getHashOperationForMap().put(k, hk, v);
-    }
-
-    @Override
-    public V HGetForMap(String k, String hk) {
-        return getHashOperationForMap().get(k, hk);
-    }
-
-    @Override
     public boolean HHasKey(String k, String hk) {
         return getHashOperationForMap().hasKey(k, hk);
-    }
-
-    @Override
-    public Map<String, V> HMGetForMap(String k) {
-        Map<String, V> map;
-        return (map = getHashOperationForMap().entries(k)) == null || map.size() == 0 ? null : map;
     }
 
     @Override
     public Set<String> HKeys(String k) {
         Set<String> keys;
         return (keys = getHashOperationForMap().keys(k)) == null || keys.size() == 0 ? null : keys;
-    }
-
-    @Override
-    public List<V> HValuesForMap(String k) {
-        List<V> values;
-        return (values = getHashOperationForMap().values(k)) == null || values.size() == 0 ? null : values;
     }
 
     @Override
