@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component("jdkRedisClient")
-public class JdkRedisClient<V> extends GenericsAbstractRedisClient<V> {
+public class JdkRedisClient<V> extends AbstractRedisClient<V> {
 
     @Resource(name = "jdkRedisTemplate")
     private RedisTemplate<String,V> redis;

@@ -5,7 +5,7 @@ package com.cheney.redis.client;
  *
  * @param <V>
  */
-public interface GenericsRedisClient<V> extends RedisClient<V> {
+public interface GenericsRedisClient<V> {
 
     //------------------------------ hash for object------------------------------
 
