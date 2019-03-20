@@ -28,17 +28,6 @@ import java.util.Map;
 @AutoConfigureAfter(value = RedisAutoConfiguration.class)
 public class RedisConfig {
 
-    @Bean("strRedisTemplate")
-    public RedisTemplate strTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new StringRedisSerializer());
-        return template;
-    }
-
     @Bean("jsonRedisTemplate")
     public RedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();

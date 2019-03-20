@@ -1,5 +1,4 @@
 import com.cheney.ApplicationContext;
-import com.cheney.redis.client.impl.StrRedisClient;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.SimpleRedisLock;
 import com.cheney.redis.lock.awaken.AwakenRedisLock;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Base64Utils;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -19,9 +17,6 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationContext.class)
 public class TestForApp {
-
-    @Resource(name = "strRedisClient")
-    private StrRedisClient redisClient;
 
     @Test
     public void test() throws InterruptedException {
