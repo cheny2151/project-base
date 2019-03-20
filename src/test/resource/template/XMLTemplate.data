@@ -84,7 +84,7 @@
         where @{idColumn} = #{id}
     </select>
 
-    <select id="findByFilter" resultMap="base">
+    <select id="filter" resultMap="base">
         select *
         from @{tableName}
         where

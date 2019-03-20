@@ -29,6 +29,11 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> impl
     }
 
     @Override
+    public T filter(List<Filter> filters) {
+        return baseMapper.filter(filters);
+    }
+
+    @Override
     public List<T> findAll() {
         return baseMapper.findAll();
     }

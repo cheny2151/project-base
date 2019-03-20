@@ -24,6 +24,11 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     T find(ID id);
 
     /**
+     * 根据filter查找
+     */
+    T filter(List<Filter> filters);
+
+    /**
      * 查找所有实体
      */
     List<T> findAll();
