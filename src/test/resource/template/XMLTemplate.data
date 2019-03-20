@@ -87,7 +87,6 @@
     <select id="filter" resultMap="base">
         select *
         from @{tableName}
-        where
         <include refid="filters"/>
     </select>
 
