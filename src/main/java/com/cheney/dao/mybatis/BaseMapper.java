@@ -19,6 +19,11 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     T find(ID id);
 
     /**
+     * 根据filter查找
+     */
+    T findByFilter(@Param("filters") List<Filter> filters);
+
+    /**
      * 查找所有实体
      */
     List<T> findAll();

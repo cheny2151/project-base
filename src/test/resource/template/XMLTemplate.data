@@ -84,6 +84,13 @@
         where @{idColumn} = #{id}
     </select>
 
+    <select id="findByFilter" resultMap="base">
+        select *
+        from @{tableName}
+        where
+        <include refid="filters"/>
+    </select>
+
     <select id="findAll" resultMap="base">
         select *
         from @{tableName}
