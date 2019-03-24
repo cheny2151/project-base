@@ -19,6 +19,10 @@ public class Pageable extends PageInfo {
 
     private Order order;
 
+    public Pageable(int pageNumber, int pageSize) {
+        super(pageNumber,pageSize);
+    }
+
     public List<Filter> getFilters() {
         return filters;
     }
@@ -34,4 +38,13 @@ public class Pageable extends PageInfo {
     public void setOrder(Order order) {
         this.order = order;
     }
+
+    public static Pageable createByPageInfo(PageInfo pageInfo) {
+        return new Pageable(pageInfo.getPageNumber(), pageInfo.getPageSize());
+    }
+
+    public void addFilters(List<Filter> filters) {
+        this.filters.addAll(filters);
+    }
+
 }

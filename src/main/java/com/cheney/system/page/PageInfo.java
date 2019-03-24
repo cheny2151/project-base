@@ -30,6 +30,14 @@ public class PageInfo implements Serializable {
 
     private long total;
 
+    public PageInfo() {
+    }
+
+    public PageInfo(int pageNumber, int pageSize) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+    }
+
     /**
      * 分页起始位置
      */
