@@ -4,7 +4,6 @@ import com.cheney.system.filter.Filter;
 import com.cheney.system.order.Order;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +17,9 @@ public class Pageable extends PageInfo {
     private List<Filter> filters = new ArrayList<>();
 
     private Order order;
+
+    public Pageable() {
+    }
 
     public Pageable(int pageNumber, int pageSize) {
         super(pageNumber,pageSize);
