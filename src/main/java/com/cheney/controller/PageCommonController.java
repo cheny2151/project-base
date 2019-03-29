@@ -21,7 +21,7 @@ public class PageCommonController {
     @Resource(name = "userMapper")
     private UserMapper userMapper;
 
-    @Resource(name = "strRedisClient")
+    @Resource(name = "jsonRedisClient")
     private RedisClient<String> redisClient;
 
     @Autowired

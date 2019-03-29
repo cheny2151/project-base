@@ -1,7 +1,0 @@
-package @{servicePackage};
-
-import @{package};
-
-public interface @{simpleClassName}Service extends BaseService<@{simpleClassName}, @{idSimpleClassName}> {
-
-}

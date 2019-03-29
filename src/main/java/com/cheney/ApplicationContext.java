@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @MapperScan(value = "com.cheney.dao.mybatis")
 @ServletComponentScan(basePackages = "com.cheney.filter")
-@EnableApolloConfig
-@RefreshScope
+//@EnableApolloConfig
+//@RefreshScope
 public class ApplicationContext {
 
     public static void main(String[] args) {

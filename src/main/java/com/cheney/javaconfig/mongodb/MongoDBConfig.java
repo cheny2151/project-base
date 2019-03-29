@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-@Configuration
+//@Configuration
 //@EnableMongoRepositories(basePackages = {"com.cheney"})
 public class MongoDBConfig {
 

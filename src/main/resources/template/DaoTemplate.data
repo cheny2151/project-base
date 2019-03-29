@@ -1,9 +1,0 @@
-package @{daoPackage};
-
-import @{package};
-import org.springframework.stereotype.Repository;
-
-@Repository("@{lowSimpleClassName}Mapper")
-public interface @{simpleClassName}Mapper extends BaseMapper<@{simpleClassName}, @{idSimpleClassName}> {
-
-}
