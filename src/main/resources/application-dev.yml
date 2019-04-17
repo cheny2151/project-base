@@ -39,6 +39,3 @@ mongodb:
  database: blog
  username: root
  password: cheney@mongo
-
-properties:
- test: ${test}
