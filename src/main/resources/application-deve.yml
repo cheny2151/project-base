@@ -40,3 +40,5 @@ mongodb:
  username: root
  password: cheney@mongo
 
+properties:
+ test: ${test}
