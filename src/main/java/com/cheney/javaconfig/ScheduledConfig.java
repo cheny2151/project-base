@@ -34,7 +34,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
             }
         };
         executor.setPoolSize(20);
-        executor.setThreadNamePrefix("executorForAnnotation-");
+        executor.setThreadNamePrefix("SpringTask-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
         return executor;
