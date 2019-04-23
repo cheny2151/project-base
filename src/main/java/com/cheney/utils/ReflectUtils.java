@@ -1,8 +1,10 @@
 package com.cheney.utils;
 
 import com.cheney.exception.BeanReflectException;
+import com.cheney.utils.tree.TreeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.reflection.ReflectionException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -46,13 +48,13 @@ public class ReflectUtils {
         if (StringUtils.isEmpty(property)) {
             throw new IllegalArgumentException("property must not empty");
         }
-        String[] withToTry = {property, ""};
+        String[] withToTry = {property, null};
         if (!property.startsWith("get") && !property.startsWith("is")) {
             buildGetMethodName(withToTry, property);
         }
         for (String toTry : withToTry) {
             try {
-                if ("".equals(toTry))
+                if (toTry == null)
                     continue;
                 Method method = clazz.getDeclaredMethod(toTry);
                 method.setAccessible(true);
@@ -68,6 +70,18 @@ public class ReflectUtils {
         name = toUpperFirstLetter(name);
         withToTry[0] = GET_PRE + name;
         withToTry[1] = IS_PRE + name;
+    }
+
+    /**
+     * 反射写入字段值
+     */
+    public static <V> void writeValue(Object obj, String property, Class<V> propertyType, V value) {
+        try {
+            getWriterMethod(obj.getClass(), property, propertyType).invoke(obj, value);
+        } catch (Exception e) {
+            log.error("反射写入字段值错误", e);
+            throw new BeanReflectException("反射写入字段值错误", e);
+        }
     }
 
     /**
@@ -88,6 +102,13 @@ public class ReflectUtils {
         }
     }
 
+    /**
+     * 获取所有字段
+     *
+     * @param clazz 所属对象class
+     * @param stop  终止递归父类
+     * @return
+     */
     public static List<Field> getAllFields(Class clazz, Class stop) {
         List<Field> fields = new ArrayList<>();
         for (; clazz != stop; clazz = clazz.getSuperclass()) {
@@ -99,6 +120,12 @@ public class ReflectUtils {
         return fields;
     }
 
+    /**
+     * 获取所有字段名
+     *
+     * @param clazz 所属对象class
+     * @return
+     */
     public static Set<String> getAllFieldNames(Class clazz) {
         List<Field> fields = getAllFields(clazz, Object.class);
         TreeSet<String> names = new TreeSet<>();
@@ -127,6 +154,13 @@ public class ReflectUtils {
         }
     }
 
+    /**
+     * 获取字段
+     *
+     * @param clazz 所属class
+     * @param name  字段名
+     * @return
+     */
     private static Field field(Class<?> clazz, String name) {
         try {
             if (name == null || "".equals(name)) {
@@ -138,6 +172,25 @@ public class ReflectUtils {
         } catch (NoSuchFieldException e) {
             //change to RuntimeException
             throw new RuntimeException("reflect field error", e);
+        }
+    }
+
+    /**
+     * 反射构造对象
+     *
+     * @param clazz          class
+     * @param parameterClass 构造函数参数class
+     * @param args           构造函数参数
+     * @param <T>            返回类型
+     * @return
+     */
+    public static <T extends TreeType<T>> T newObject(Class<T> clazz, Class<?>[] parameterClass, Object[] args) {
+        try {
+            return parameterClass == null || parameterClass.length == 0 ?
+                    clazz.getConstructor().newInstance() :
+                    clazz.getConstructor(parameterClass).newInstance(args);
+        } catch (Exception e) {
+            throw new ReflectionException("reflect:can no new object");
         }
     }
 
