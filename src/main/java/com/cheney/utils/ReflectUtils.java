@@ -31,9 +31,9 @@ public class ReflectUtils {
     /**
      * 反射获取字段值
      */
-    public static Object readValue(Object obj, String property) {
+    public static Object readValue(Object bean, String property) {
         try {
-            return getReadMethod(obj.getClass(), property).invoke(obj);
+            return getReadMethod(bean.getClass(), property).invoke(bean);
         } catch (Exception e) {
             log.error("反射获取字段值错误", e);
             throw new BeanReflectException("反射获取字段值错误", e);
@@ -75,9 +75,9 @@ public class ReflectUtils {
     /**
      * 反射写入字段值
      */
-    public static <V> void writeValue(Object obj, String property, Class<V> propertyType, V value) {
+    public static void writeValue(Object bean, String property, Object value) {
         try {
-            getWriterMethod(obj.getClass(), property, propertyType).invoke(obj, value);
+            getWriterMethod(bean.getClass(), property, value.getClass()).invoke(bean, value);
         } catch (Exception e) {
             log.error("反射写入字段值错误", e);
             throw new BeanReflectException("反射写入字段值错误", e);
