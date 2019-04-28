@@ -59,7 +59,7 @@ public abstract class RedisLockAdaptor implements RedisLock {
 
     public void unLock() {
         if (!isLock) {
-            //为获取锁，不执行解锁脚本
+            //未获取锁，不执行解锁脚本
             return;
         }
         Object result = unLockScript();
