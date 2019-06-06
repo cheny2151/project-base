@@ -22,7 +22,7 @@ public class SimpleRedisLock extends RedisLockAdaptor {
     private long leaseTimeTemp;
 
     /**
-     * 轮询间隔时间
+     * 轮询间隔时间（毫秒）
      */
     private final long POLLING_INTERVAL = 10;
 

@@ -4,7 +4,6 @@ import com.cheney.redis.lock.RedisLockAdaptor;
 import com.cheney.redis.lock.RedisLockFactory;
 import com.cheney.redis.lock.awaken.listener.LockListener;
 import com.cheney.redis.lock.awaken.listener.SubLockManager;
-import com.cheney.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -65,6 +64,12 @@ public class AwakenRedisLock extends RedisLockAdaptor {
         return isLock = (result == null);
     }
 
+    /**
+     * 执行上锁脚本
+     *
+     * @param leaseTime 超时释放锁时间
+     * @return redis执行脚本返回值
+     */
     protected Object LockScript(long leaseTime) {
         List<String> keys = Collections.singletonList(path);
         List<String> args = new ArrayList<>();
@@ -73,6 +78,11 @@ public class AwakenRedisLock extends RedisLockAdaptor {
         return execute(AWAKEN_LOCK_LUA_SCRIPT, keys, args);
     }
 
+    /**
+     * 执行解锁脚本
+     *
+     * @return redis执行脚本返回值
+     */
     protected Object unLockScript() {
         ArrayList<String> keys = new ArrayList<>();
         keys.add(path);
