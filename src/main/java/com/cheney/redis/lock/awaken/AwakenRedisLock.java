@@ -1,6 +1,9 @@
 package com.cheney.redis.lock.awaken;
 
 import com.cheney.redis.lock.RedisLockAdaptor;
+import com.cheney.redis.lock.RedisLockFactory;
+import com.cheney.redis.lock.awaken.listener.LockListener;
+import com.cheney.redis.lock.awaken.listener.SubLockManager;
 import com.cheney.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +33,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
 
     public AwakenRedisLock(String path) {
         super(path);
-        subLockManager = SpringUtils.getBean("subLockManager", SubLockManager.class);
+        subLockManager = RedisLockFactory.getSpringSubLockManager();
     }
 
     public boolean tryLock(long waitTime, long leaseTime, TimeUnit timeUnit) {

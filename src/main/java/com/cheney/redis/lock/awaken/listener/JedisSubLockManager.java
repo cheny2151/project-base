@@ -1,27 +1,33 @@
-package com.cheney.redis.lock.awaken;
+package com.cheney.redis.lock.awaken.listener;
 
 import com.cheney.redis.lock.LockConstant;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
+import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.JedisPubSub;
 
 import java.util.LinkedList;
 
 /**
- * 订阅redis解锁信息
+ * todo 未实现
  *
  * @author cheney
+ * @date 2019/6/6
  */
-public class SubLockManager implements MessageListener {
+@Slf4j
+public class JedisSubLockManager extends JedisPubSub implements SubLockManager {
 
-    public LinkedList<LockListener> LockListeners = new LinkedList<>();
+    private LinkedList<LockListener> LockListeners = new LinkedList<>();
 
     private final Object lock = new Object();
 
+    public JedisSubLockManager() {
+        super();
+        super.psubscribe(LockConstant.LOCK_CHANNEL + "*");
+    }
+
     @Override
-    public void onMessage(Message message, byte[] bytes) {
-        String unlockMsg = new String(message.getBody());
-        String channel = new String(message.getChannel());
-        if (LockConstant.UNLOCK_MESSAGE.equals(unlockMsg)) {
+    public void onPMessage(String pattern, String channel, String message) {
+        log.info("收到解锁信号{}", channel);
+        if (LockConstant.UNLOCK_MESSAGE.equals(message)) {
             synchronized (lock) {
                 LockListeners.stream()
                         .filter(lockListener -> channel.equals(lockListener.getListenerChannel()))
@@ -31,10 +37,10 @@ public class SubLockManager implements MessageListener {
         }
     }
 
+    @Override
     public void addMessageListener(LockListener lockListener) {
         synchronized (lock) {
             LockListeners.add(lockListener);
         }
     }
-
 }

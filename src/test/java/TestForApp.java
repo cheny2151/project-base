@@ -51,22 +51,22 @@ public class TestForApp {
 
     @Test
     public void test3() throws InterruptedException {
-//        SimpleRedisLockForLettuce simpleRedisLock = new SimpleRedisLockForLettuce("test:test");
-        SimpleRedisLock simpleRedisLock = new SimpleRedisLock("test:test");
+//        SimpleRedisLockForLettuce redisLock = new SimpleRedisLockForLettuce("test:test");
+//        SimpleRedisLock redisLock = new SimpleRedisLock("test:test");
+        RedisLock redisLock = new AwakenRedisLock("test:test");
         try {
             boolean b;
-            b = simpleRedisLock.tryLock(100, 10, TimeUnit.SECONDS);
+            b = redisLock.tryLock(100, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
-            Thread.sleep(5 * 1000);
-            b = simpleRedisLock.tryLock(100, 20, TimeUnit.SECONDS);
+            b = redisLock.tryLock(100, 20, TimeUnit.SECONDS);
             System.out.println("second lock result:" + b);
             Thread.sleep(5 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            simpleRedisLock.unLock();
+            redisLock.unLock();
             Thread.sleep(20 * 1000);
-            simpleRedisLock.unLock();
+            redisLock.unLock();
         }
     }
 

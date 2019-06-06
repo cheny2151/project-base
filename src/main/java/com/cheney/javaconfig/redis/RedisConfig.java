@@ -1,7 +1,7 @@
 package com.cheney.javaconfig.redis;
 
 import com.cheney.redis.lock.LockConstant;
-import com.cheney.redis.lock.awaken.SubLockManager;
+import com.cheney.redis.lock.awaken.listener.SpringSubLockManager;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -60,9 +60,9 @@ public class RedisConfig {
         return container;
     }
 
-    @Bean
-    public SubLockManager subLockManager() {
-        return new SubLockManager();
+    @Bean("springSubLockManager")
+    public SpringSubLockManager subLockManager() {
+        return new SpringSubLockManager();
     }
 
 }

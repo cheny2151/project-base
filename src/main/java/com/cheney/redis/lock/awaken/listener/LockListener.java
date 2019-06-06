@@ -1,4 +1,4 @@
-package com.cheney.redis.lock.awaken;
+package com.cheney.redis.lock.awaken.listener;
 
 import lombok.Data;
 
