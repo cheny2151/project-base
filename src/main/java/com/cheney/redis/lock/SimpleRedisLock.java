@@ -52,7 +52,10 @@ public class SimpleRedisLock extends RedisLockAdaptor {
             return false;
         }
 
-        return isLock = (result == null);
+        boolean isLock = result == null;
+        this.isLock.set(isLock);
+
+        return isLock;
     }
 
     protected Object LockScript(long leaseTime) {

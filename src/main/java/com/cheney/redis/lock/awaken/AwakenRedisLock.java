@@ -61,7 +61,10 @@ public class AwakenRedisLock extends RedisLockAdaptor {
             return false;
         }
 
-        return isLock = (result == null);
+        boolean isLock = result == null;
+        this.isLock.set(isLock);
+
+        return isLock;
     }
 
     /**

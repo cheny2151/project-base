@@ -16,13 +16,16 @@ import java.util.UUID;
  * 加了{ } 就只会用花括号里面的字符串做哈希，所以同样{}的key一定可以在同一个slot，而lua脚本里有多个key的情况下，为了保证
  * 原子性操作，如果有两个或以上key落在不同的slot则会报错--> No way to dispatch this command to Redis Cluster because keys have different slots.
  * 所以为了保证每个key都落在同一个slot上，可以在key上引入相同的{ }字符串
+ *
+ * update log
+ * v1.1 20190624 isLock修改为ThreadLocal<Boolean> 保证一个锁对象被多线程使用时的线程安全
  */
 @Slf4j
 public abstract class RedisLockAdaptor implements RedisLock {
 
     protected final String path;
 
-    protected boolean isLock;
+    protected ThreadLocal<Boolean> isLock = new ThreadLocal<>();
 
     protected final RedisTemplate redisTemplate;
 
@@ -58,16 +61,17 @@ public abstract class RedisLockAdaptor implements RedisLock {
     protected abstract Object unLockScript();
 
     public void unLock() {
+        Boolean isLock = this.isLock.get();
         if (!isLock) {
             //未获取锁，不执行解锁脚本
             return;
         }
         Object result = unLockScript();
         if (result == null) {
-            isLock = false;
+            this.isLock.set(false);
             log.info("unlock fail:redis未上该锁");
         } else if (1 == (long) result) {
-            isLock = false;
+            this.isLock.set(false);
             log.info("unlock success");
         } else if (0 == (long) result) {
             log.info("count down:减少重入次数，并且刷新了锁定时间");
