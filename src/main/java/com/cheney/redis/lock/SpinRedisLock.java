@@ -12,12 +12,12 @@ import static com.cheney.redis.lock.LockConstant.UNLOCK_LUA_SCRIPT;
 
 /**
  * redis轮询重入锁
- * 获取重入锁成功则返回，失败则轮询直到获取到锁或者waitTime时间结束
+ * 获取重入锁成功则返回，失败则自旋轮询直到获取到锁或者waitTime时间结束
  *
  * @author cheney
  */
 @Slf4j
-public class SimpleRedisLock extends RedisLockAdaptor {
+public class SpinRedisLock extends RedisLockAdaptor {
 
     private long leaseTimeTemp;
 
@@ -26,7 +26,7 @@ public class SimpleRedisLock extends RedisLockAdaptor {
      */
     private final long POLLING_INTERVAL = 10;
 
-    public SimpleRedisLock(String path) {
+    public SpinRedisLock(String path) {
         super(path);
     }
 

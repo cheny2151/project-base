@@ -7,12 +7,16 @@ public class LockConstant {
 
     public static final String AWAKEN_LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
             "redis.call('hset', KEYS[1], ARGV[2], 1); " +
+            "if (tonumber(ARGV[1]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[1]); " +
+            "end;"+
             "return nil; " +
             "end; " +
             "if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then " +
             "redis.call('hincrby', KEYS[1], ARGV[2], 1); " +
+            "if (tonumber(ARGV[1]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[1]); " +
+            "end;" +
             "return nil; " +
             "end; " +
             "return redis.call('pttl', KEYS[1]);";
@@ -26,7 +30,9 @@ public class LockConstant {
             "end; " +
             "local counter = redis.call('hincrby', KEYS[1], ARGV[3], -1); " +
             "if (counter > 0) then " +
+            "if (tonumber(ARGV[2]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[2]); " +
+            "end;"+
             "return 0; " +
             "else " +
             "redis.call('del', KEYS[1]); " +

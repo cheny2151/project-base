@@ -1,6 +1,5 @@
 import com.cheney.ApplicationContext;
 import com.cheney.redis.lock.RedisLock;
-import com.cheney.redis.lock.SimpleRedisLock;
 import com.cheney.redis.lock.awaken.AwakenRedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,12 +51,13 @@ public class TestForApp {
     @Test
     public void test3() throws InterruptedException {
 //        SimpleRedisLockForLettuce redisLock = new SimpleRedisLockForLettuce("test:test");
-//        SimpleRedisLock redisLock = new SimpleRedisLock("test:test");
+//        SpinRedisLock redisLock = new SpinRedisLock("test:test");
         RedisLock redisLock = new AwakenRedisLock("test:test");
         try {
             boolean b;
-            b = redisLock.tryLock(100, 10, TimeUnit.SECONDS);
+            b = redisLock.tryLock(100, -1, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
+            Thread.sleep(5 * 1000);
             b = redisLock.tryLock(100, 20, TimeUnit.SECONDS);
             System.out.println("second lock result:" + b);
             Thread.sleep(5 * 1000);
