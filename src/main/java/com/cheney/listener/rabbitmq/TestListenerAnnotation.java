@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * @RabbitListener,@RabbitHandler
  */
 @Slf4j
-@Component
+//@Component
 public class TestListenerAnnotation {
 
     @RabbitListener(queues = "test_for_exchange")

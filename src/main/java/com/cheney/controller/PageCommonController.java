@@ -9,6 +9,7 @@ import com.cheney.system.protocol.BaseRequest;
 import com.cheney.utils.RequestParamHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,9 @@ public class PageCommonController {
     @Resource(name = "jsonRedisClient")
     private RedisClient<String> redisClient;
 
+    @Resource(name = "strKafkaTemplate")
+    private KafkaTemplate<String, String> kafkaTemplate;
+
     @Autowired
     private Environment environment;
 
@@ -38,4 +42,9 @@ public class PageCommonController {
         return JsonMessage.success("123");
     }
 
+    @RequestMapping("/test2")
+    @ResponseBody
+    public void test2() {
+        kafkaTemplate.send("test", "template send msg");
+    }
 }

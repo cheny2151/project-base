@@ -1,7 +1,8 @@
 package com.cheney.mybatis.chain;
 
-import com.cheney.utils.ReflectUtils;
 import com.cheney.mybatis.XMLGenerator;
+import com.cheney.utils.PropertyNameUtils;
+import com.cheney.utils.ReflectUtils;
 
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public abstract class ColumnFieldAbstractSwitch extends AbstractSwitch {
             String column = s;
             String next;
             if (!XMLGenerator.HUMP) {
-                column = underline(s);
+                column = PropertyNameUtils.underline(s);
             }
             if (count != size) {
                 next = ifFlag(s, column, false);

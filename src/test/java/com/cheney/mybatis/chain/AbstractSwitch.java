@@ -58,26 +58,6 @@ public abstract class AbstractSwitch implements Switch {
         return PRE + name + END;
     }
 
-    String underline(String name) {
-        char[] chars = name.toCharArray();
-        int len = chars.length + 3;
-        char[] newChars = new char[len];
-        int j = 0;
-        for (int i = 0; i < chars.length; i++, j++) {
-            char c = chars[i];
-            if (c >= 65 && c <= 90) {
-                if (j == len) {
-                    newChars = resize(newChars);
-                    len = newChars.length;
-                }
-                newChars[j++] = UNDERLINE;
-                c = (char) (c + 32);
-            }
-            newChars[j] = c;
-        }
-        return new String(newChars, 0, j);
-    }
-
     String toJavaPackage(String pack) {
         String javaPage = pack.replaceAll("\\\\", ".");
         if (javaPage.contains("src.test.java") || javaPage.contains("src.main.java")) {

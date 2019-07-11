@@ -1,7 +1,8 @@
 package com.cheney.mybatis.chain;
 
-import com.cheney.utils.ReflectUtils;
 import com.cheney.mybatis.XMLGenerator;
+import com.cheney.utils.PropertyNameUtils;
+import com.cheney.utils.ReflectUtils;
 
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class ResultMapSwitch extends AbstractSwitch {
         for (String field : fieldNames) {
             column = field;
             if (!XMLGenerator.HUMP) {
-                column = underline(field);
+                column = PropertyNameUtils.underline(field);
             }
             if (XMLGenerator.ID.equalsIgnoreCase(column)) {
                 continue;

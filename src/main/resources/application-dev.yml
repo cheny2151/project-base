@@ -7,7 +7,23 @@ spring:
      password: cheney@mysql
      driver-class-name: com.mysql.cj.jdbc.Driver
 
-## redis
+ ## kafka
+ kafka:
+  bootstrap-servers: '192.168.99.100:9092'
+  producer:
+   acks: 1
+   key-serializer: org.apache.kafka.common.serialization.StringSerializer
+   value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  consumer:
+   enable-auto-commit: false
+   group-id: test
+   value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  listener:
+   ## 手动确认消费
+   ack-mode: manual
+
+ ## redis
  redis:
   host: 127.0.0.1
   port: 6379

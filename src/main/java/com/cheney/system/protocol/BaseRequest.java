@@ -1,6 +1,5 @@
 package com.cheney.system.protocol;
 
-import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import com.cheney.utils.RequestParamHolder;
 import lombok.AllArgsConstructor;
@@ -12,10 +11,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * 功能描述：
- *
- * @param <T>
- * @作者 luozhh 创建时间： 2018年2月6日 下午8:21:51
+ * 基础请求协议包装
  */
 @Data
 @AllArgsConstructor
