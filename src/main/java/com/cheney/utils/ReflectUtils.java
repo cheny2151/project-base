@@ -166,7 +166,7 @@ public class ReflectUtils {
             throw new IllegalArgumentException();
         }
         Class currentClass = clazz;
-        // 尝试查找filed直到Object类
+        // 尝试查找Field直到Object类
         while (!Object.class.equals(currentClass)) {
             try {
                 Field field = currentClass.getDeclaredField(name);
