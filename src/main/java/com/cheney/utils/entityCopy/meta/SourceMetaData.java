@@ -24,12 +24,25 @@ public class SourceMetaData<T> extends ClassMetaData<T> {
     @Override
     public void load() {
         Map<String, Method> hasCopayAsFieldMethod = ReflectUtils.getAllReadMethodHasAnnotation(super.getClazz(), CopyAsField.class);
-        hasCopayAsFieldMethod = hasCopayAsFieldMethod.values().stream()
-                .collect(Collectors.toMap(method -> method.getDeclaredAnnotation(CopyAsField.class).as(), method -> method));
+        hasCopayAsFieldMethod = hasCopayAsFieldMethod.entrySet().stream()
+                .collect(Collectors.toMap(entity -> {
+                    String propertyName = entity.getKey();
+                    Method method = entity.getValue();
+                    String as = method.getDeclaredAnnotation(CopyAsField.class).as();
+                    // as为空则默认使用属性名
+                    return "".equals(as) ? propertyName : as;
+                }, Map.Entry::getValue));
         this.addReadMethod(hasCopayAsFieldMethod);
+
         Map<String, Field> hasCopayAsFieldField = ReflectUtils.getAllFieldHasAnnotation(super.getClazz(), CopyAsField.class);
-        hasCopayAsFieldField = hasCopayAsFieldField.values().stream()
-                .collect(Collectors.toMap(field -> field.getDeclaredAnnotation(CopyAsField.class).as(), field -> field));
+        hasCopayAsFieldField = hasCopayAsFieldField.entrySet().stream()
+                .collect(Collectors.toMap(entity -> {
+                    String propertyName = entity.getKey();
+                    Field field = entity.getValue();
+                    String as = field.getDeclaredAnnotation(CopyAsField.class).as();
+                    // as为空则默认使用属性名
+                    return "".equals(as) ? propertyName : as;
+                }, Map.Entry::getValue));
         this.addFields(hasCopayAsFieldField);
     }
 
