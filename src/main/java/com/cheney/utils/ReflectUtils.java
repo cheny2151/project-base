@@ -1,17 +1,15 @@
 package com.cheney.utils;
 
 import com.cheney.exception.ReflectException;
-import com.cheney.utils.tree.TreeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.reflection.ReflectionException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 反射工具类
@@ -35,7 +33,6 @@ public class ReflectUtils {
         try {
             return getReadMethod(bean.getClass(), property).invoke(bean);
         } catch (Exception e) {
-            log.error("反射获取字段值错误", e);
             throw new ReflectException("反射获取字段值错误", e);
         }
     }
@@ -52,25 +49,46 @@ public class ReflectUtils {
         if (!property.startsWith("get") && !property.startsWith("is")) {
             buildGetMethodName(withToTry, property);
         }
-        for (String toTry : withToTry) {
-            try {
-                if (toTry == null)
-                    continue;
-                Method method = clazz.getDeclaredMethod(toTry);
-                method.setAccessible(true);
-                return method;
-            } catch (NoSuchMethodException e) {
-                //change to RuntimeException
+        Class<?> currentClass = clazz;
+        while (!Object.class.equals(currentClass)) {
+            for (String toTry : withToTry) {
+                try {
+                    if (toTry == null)
+                        continue;
+                    Method method = currentClass.getDeclaredMethod(toTry);
+                    method.setAccessible(true);
+                    return method;
+                } catch (NoSuchMethodException e) {
+                    // try next
+                }
             }
+            currentClass = currentClass.getSuperclass();
         }
-        throw new RuntimeException("fail to reflect method:not such method");
+        throw new ReflectException("can not find read method with '" + property + "' in " + clazz.getName());
     }
 
+    /**
+     * 获取待尝试的read方法名
+     *
+     * @param withToTry 待尝试方法名
+     * @param name      属性名
+     */
     private static void buildGetMethodName(String[] withToTry, String name) {
         name = toUpperFirstLetter(name);
         withToTry[0] = GET_PRE + name;
         withToTry[1] = IS_PRE + name;
     }
+
+    /**
+     * 获取所有read方法
+     *
+     * @return k:属性名,v:readMethod
+     */
+    public static Map<String, Method> getAllReadMethod() {
+        // todo
+        return null;
+    }
+
 
     /**
      * 反射写入字段值
@@ -79,7 +97,6 @@ public class ReflectUtils {
         try {
             getWriterMethod(bean.getClass(), property, value.getClass()).invoke(bean, value);
         } catch (Exception e) {
-            log.error("反射写入字段值错误", e);
             throw new ReflectException("反射写入字段值错误", e);
         }
     }
@@ -92,14 +109,95 @@ public class ReflectUtils {
         if (StringUtils.isEmpty(property)) {
             throw new IllegalArgumentException("property must not empty");
         }
-        try {
-            Method method = clazz.getMethod(SET_PRE + toUpperFirstLetter(property), propertyType);
-            method.setAccessible(true);
-            return method;
-        } catch (NoSuchMethodException e) {
-            log.error("反射获取方法失败", e);
-            throw new ReflectException("反射获取方法失败", e);
+        String methodName = SET_PRE + toUpperFirstLetter(property);
+        Class<?> currentClass = clazz;
+        while (!Object.class.equals(currentClass)) {
+            try {
+                Method method = currentClass.getDeclaredMethod(methodName, propertyType);
+                method.setAccessible(true);
+                return method;
+            } catch (NoSuchMethodException e) {
+                // try next superClass
+            }
+            currentClass = currentClass.getSuperclass();
         }
+        throw new ReflectException("can not find write method '" + methodName + "' in " + clazz.getName());
+    }
+
+    /**
+     * 获取所有write方法
+     *
+     * @return k:属性名,v:writeMethod
+     */
+    public static Map<String, Method> getAllWriterMethod() {
+        // todo
+        return null;
+    }
+
+    /**
+     * 获取含有注解的方法
+     * 注意返回Map的key为方法名
+     *
+     * @param clazz           实体类
+     * @param annotationClass 注解类
+     * @return k:方法名,v:方法
+     */
+    public static Map<String, Method> getAllMethodHasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        HashMap<String, Method> result = new HashMap<>();
+        Class<?> currentClass = clazz;
+        while (!Object.class.equals(currentClass)) {
+            Method[] declaredMethods = currentClass.getDeclaredMethods();
+            for (Method method : declaredMethods) {
+                Annotation declaredAnnotation = method.getDeclaredAnnotation(annotationClass);
+                if (declaredAnnotation != null) {
+                    method.setAccessible(true);
+                    result.put(method.getName(), method);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+
+        return result;
+    }
+
+    /**
+     * 获取含有注解的write方法
+     *
+     * @param clazz           类
+     * @param annotationClass 注解类
+     * @return
+     */
+    public static Map<String, Method> getAllWriteMethodHasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        Map<String, Method> methodMap = getAllMethodHasAnnotation(clazz, annotationClass);
+        HashMap<String, Method> result = new HashMap<>();
+        for (Map.Entry<String, Method> methodEntry : methodMap.entrySet()) {
+            Method method = methodEntry.getValue();
+            if (isWriteMethod(method)) {
+                result.put(extractPropertyName(method), method);
+            }
+        }
+        methodMap.clear();
+        return result;
+    }
+
+    /**
+     * 获取含有注解的read方法
+     *
+     * @param clazz           类
+     * @param annotationClass 注解类
+     * @return
+     */
+    public static Map<String, Method> getAllReadMethodHasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        Map<String, Method> methodMap = getAllMethodHasAnnotation(clazz, annotationClass);
+        HashMap<String, Method> result = new HashMap<>();
+        for (Map.Entry<String, Method> methodEntry : methodMap.entrySet()) {
+            Method method = methodEntry.getValue();
+            if (isReadMethod(method)) {
+                result.put(extractPropertyName(method), method);
+            }
+        }
+        methodMap.clear();
+        return result;
     }
 
     /**
@@ -114,6 +212,7 @@ public class ReflectUtils {
         for (; clazz != stop; clazz = clazz.getSuperclass()) {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getName().equalsIgnoreCase("serialVersionUID")) continue;
+                field.setAccessible(true);
                 fields.add(field);
             }
         }
@@ -161,7 +260,7 @@ public class ReflectUtils {
      * @param name  字段名
      * @return
      */
-    private static Field field(Class<?> clazz, String name) {
+    public static Field field(Class<?> clazz, String name) {
         if (name == null || "".equals(name)) {
             throw new IllegalArgumentException();
         }
@@ -177,7 +276,20 @@ public class ReflectUtils {
             }
             currentClass = currentClass.getSuperclass();
         }
-        throw new ReflectException("can no find field '" + name + "' in " + clazz.getSimpleName());
+        throw new ReflectException("can not find field '" + name + "' in " + clazz.getName());
+    }
+
+    /**
+     * 获取所有包含注解的字段
+     *
+     * @param clazz           类
+     * @param annotationClass 注解类
+     * @return K:属性名,v:字段
+     */
+    public static Map<String, Field> getAllFieldHasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        List<Field> allFields = getAllFields(clazz, Object.class);
+        return allFields.stream().filter(field -> field.getDeclaredAnnotation(annotationClass) != null)
+                .collect(Collectors.toMap(Field::getName, field -> field));
     }
 
     /**
@@ -189,7 +301,7 @@ public class ReflectUtils {
      * @param <T>            返回类型
      * @return
      */
-    public static <T extends TreeType<T>> T newObject(Class<T> clazz, Class<?>[] parameterClass, Object[] args) {
+    public static <T> T newObject(Class<T> clazz, Class<?>[] parameterClass, Object[] args) {
         try {
             return parameterClass == null || parameterClass.length == 0 ?
                     clazz.getConstructor().newInstance() :
@@ -201,6 +313,60 @@ public class ReflectUtils {
 
     private static String toUpperFirstLetter(String fieldName) {
         return fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
+    private static String toLowerFirstLetter(String fieldName) {
+        return fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+    }
+
+
+    /**
+     * 判断是否是read方法
+     *
+     * @param method 方法
+     * @return boolean
+     */
+    private static boolean isReadMethod(Method method) {
+        String methodName = method.getName();
+        if (methodName.startsWith(GET_PRE) || methodName.startsWith(IS_PRE)) {
+            return method.getParameterCount() == 0 && !method.getReturnType().getName().equals("void");
+        }
+        return false;
+    }
+
+    /**
+     * 提取方法对应的属性名
+     * 不为write/read方法则返回原方法名
+     *
+     * @param method 方法
+     * @return 属性名
+     */
+    private static String extractPropertyName(Method method) {
+        String methodName = method.getName();
+        String pre = "";
+        if (methodName.startsWith(IS_PRE)) {
+            pre = IS_PRE;
+        } else if (methodName.startsWith(GET_PRE)) {
+            pre = GET_PRE;
+        } else if (methodName.startsWith(SET_PRE)) {
+            pre = SET_PRE;
+        }
+
+        return toLowerFirstLetter(methodName.substring(pre.length()));
+    }
+
+    /**
+     * 判断是否是write方法
+     *
+     * @param method 方法
+     * @return boolean
+     */
+    private static boolean isWriteMethod(Method method) {
+        String methodName = method.getName();
+        if (methodName.startsWith(SET_PRE)) {
+            return method.getParameterCount() == 1 && method.getReturnType().getName().equals("void");
+        }
+        return false;
     }
 
 }

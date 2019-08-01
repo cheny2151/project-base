@@ -1,6 +1,8 @@
 package com.cheney.entity.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +12,8 @@ import java.util.Set;
  * 用户统一认证表
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class AuthUser extends BaseEntity {
 
     private static final long serialVersionUID = -8511714083272416828L;
