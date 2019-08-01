@@ -80,7 +80,10 @@ public class EntityCopyUtils {
             Field targetField = targetFields.get(propertyName);
             if (targetField != null) {
                 try {
-                    targetField.set(target, readMethod.invoke(source));
+                    CopyAsField copyAsField = readMethod.getDeclaredAnnotation(CopyAsField.class);
+                    Class<? extends FieldCopyAdopt> fieldCopyAdoptClass = copyAsField.use();
+                    FieldCopyAdopt fieldCopyAdopt = getFieldCopyAdopt(fieldCopyAdoptClass);
+                    targetField.set(target, fieldCopyAdopt.format(readMethod.invoke(source)));
                 } catch (Exception e) {
                     // do nothing
                 }
@@ -94,6 +97,9 @@ public class EntityCopyUtils {
         return fieldCopyAdopt.computeIfAbsent(clazz, key -> ReflectUtils.newObject(key, null, null));
     }
 
+    /**
+     * 测试方法
+     */
     public static void main(String[] args) {
         TestCopyEntity testCopyEntity = new TestCopyEntity();
         testCopyEntity.setV1(10L);
