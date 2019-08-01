@@ -1,6 +1,6 @@
 package com.cheney.utils;
 
-import com.cheney.exception.BeanReflectException;
+import com.cheney.exception.ReflectException;
 import com.cheney.utils.tree.TreeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +36,7 @@ public class ReflectUtils {
             return getReadMethod(bean.getClass(), property).invoke(bean);
         } catch (Exception e) {
             log.error("反射获取字段值错误", e);
-            throw new BeanReflectException("反射获取字段值错误", e);
+            throw new ReflectException("反射获取字段值错误", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class ReflectUtils {
             getWriterMethod(bean.getClass(), property, value.getClass()).invoke(bean, value);
         } catch (Exception e) {
             log.error("反射写入字段值错误", e);
-            throw new BeanReflectException("反射写入字段值错误", e);
+            throw new ReflectException("反射写入字段值错误", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class ReflectUtils {
             return method;
         } catch (NoSuchMethodException e) {
             log.error("反射获取方法失败", e);
-            throw new BeanReflectException("反射获取方法失败", e);
+            throw new ReflectException("反射获取方法失败", e);
         }
     }
 
@@ -162,17 +162,22 @@ public class ReflectUtils {
      * @return
      */
     private static Field field(Class<?> clazz, String name) {
-        try {
-            if (name == null || "".equals(name)) {
-                throw new IllegalArgumentException();
-            }
-            Field field = clazz.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (NoSuchFieldException e) {
-            //change to RuntimeException
-            throw new RuntimeException("reflect field error", e);
+        if (name == null || "".equals(name)) {
+            throw new IllegalArgumentException();
         }
+        Class currentClass = clazz;
+        // 尝试查找filed直到Object类
+        while (!Object.class.equals(currentClass)) {
+            try {
+                Field field = currentClass.getDeclaredField(name);
+                field.setAccessible(true);
+                return field;
+            } catch (NoSuchFieldException e) {
+                // try to find field on superClass
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        throw new ReflectException("can no find field '" + name + "' in " + clazz.getSimpleName());
     }
 
     /**
