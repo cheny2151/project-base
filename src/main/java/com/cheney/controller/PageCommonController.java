@@ -22,7 +22,7 @@ public class PageCommonController {
     @Resource(name = "userMapper")
     private UserMapper userMapper;
 
-    @Resource(name = "jsonRedisClient")
+    @Resource(name = "redisClientWithLog")
     private RedisClient<String> redisClient;
 
     @Resource(name = "strKafkaTemplate")

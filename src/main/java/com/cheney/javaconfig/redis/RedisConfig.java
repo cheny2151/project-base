@@ -1,7 +1,10 @@
 package com.cheney.javaconfig.redis;
 
+import com.cheney.redis.client.RedisClient;
+import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.redis.lock.LockConstant;
 import com.cheney.redis.lock.awaken.listener.SpringSubLockManager;
+import com.cheney.redis.proxy.RedisLogProxy;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -65,4 +68,11 @@ public class RedisConfig {
         return new SpringSubLockManager();
     }
 
+    /**
+     * jdk proxy测试类
+     */
+    @Bean
+    public RedisClient redisClientWithLog(JsonRedisClient redisClient) {
+        return RedisLogProxy.newProxyInstance(redisClient);
+    }
 }
