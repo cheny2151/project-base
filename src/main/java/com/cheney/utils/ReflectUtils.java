@@ -84,9 +84,20 @@ public class ReflectUtils {
      *
      * @return k:属性名,v:readMethod
      */
-    public static Map<String, Method> getAllReadMethod() {
-        // todo
-        return null;
+    public static Map<String, Method> getAllReadMethod(Class<?> targetClass, Class<?> stopClass) {
+        Class<?> currentClass = targetClass;
+        Map<String, Method> methods = new HashMap<>();
+        while (!currentClass.equals(stopClass)) {
+            Method[] declaredMethods = currentClass.getDeclaredMethods();
+            for (Method method : declaredMethods) {
+                if (isReadMethod(method)) {
+                    method.setAccessible(true);
+                    methods.put(extractPropertyName(method), method);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        return methods;
     }
 
 
@@ -129,9 +140,20 @@ public class ReflectUtils {
      *
      * @return k:属性名,v:writeMethod
      */
-    public static Map<String, Method> getAllWriterMethod() {
-        // todo
-        return null;
+    public static Map<String, Method> getAllWriterMethod(Class<?> targetClass, Class<?> stopClass) {
+        Class<?> currentClass = targetClass;
+        Map<String, Method> methods = new HashMap<>();
+        while (!currentClass.equals(stopClass)) {
+            Method[] declaredMethods = currentClass.getDeclaredMethods();
+            for (Method method : declaredMethods) {
+                if (isWriteMethod(method)) {
+                    method.setAccessible(true);
+                    methods.put(extractPropertyName(method), method);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        return methods;
     }
 
     /**
