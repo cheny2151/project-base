@@ -79,13 +79,13 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 //设置分页
                 case "currentPage": {
                     int currentPage = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
-                            ? Integer.valueOf(v[0]) : PageInfo.DEFAULT_PAGE_NUMBER;
+                            ? Integer.parseInt(v[0]) : PageInfo.DEFAULT_PAGE_NUMBER;
                     param.getPageable().setPageNumber(currentPage);
                     break;
                 }
                 case "pageSize": {
                     int pageSize = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
-                            ? Integer.valueOf(v[0]) : DEFAULT_PAGE_SIZE;
+                            ? Integer.parseInt(v[0]) : DEFAULT_PAGE_SIZE;
                     param.getPageable().setPageSize(pageSize);
                     break;
                 }
