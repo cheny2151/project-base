@@ -24,9 +24,9 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
 
 /**
  * 使用webFilter必须在启动类上加@ServletComponentScan
+ * filter根据类全名自然排序
  */
 @WebFilter
-@Order(0)
 @Slf4j
 public class RequestParamFilter extends OncePerRequestFilter {
 
