@@ -2,7 +2,7 @@ package com.cheney.javaconfig.redis;
 
 public enum RedisKey {
 
-    AUTH_TOKEN_KEY("auth.details.%s");
+    AUTH_TOKEN_KEY("auth.token:%s");
 
     private final static String KEY_PRE = "base";
 
