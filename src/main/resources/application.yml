@@ -35,3 +35,8 @@ spring:
         acknowledge-mode: manual
       direct:
         acknowledge-mode: manual
+
+# ConfigurationProperties示例{@link ExampleProperties}
+example:
+  properties:
+    test: success

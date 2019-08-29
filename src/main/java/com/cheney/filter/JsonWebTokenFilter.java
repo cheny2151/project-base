@@ -9,6 +9,7 @@ import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
@@ -31,7 +32,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
 
     @Resource(name = "jsonRedisClient")
     private JsonRedisClient<JwtPrincipal> redisClient;
-    @Resource(name = "user.auth.urlPatterns")
+    @Value("${user.auth.urlPatterns}")
     private String urlPatterns;
 
     private static final String AUTH_REQUEST_HEAD = "AUTH_TOKEN";
