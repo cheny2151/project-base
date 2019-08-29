@@ -4,20 +4,18 @@ mybatis:
   type-aliases-package: com.cheney.entity.dto
   mapper-locations: classpath:mybatis/*.xml
 
-#############################################################
-
 ##other common config
-## Freemarker Template Config
-template:
-  number_format: 0.\#\#\#\#\#\#
-  datetime_format: yyyy-MM-dd
-  time_format: HH\:mm\:ss
-  boolean_format: true,false
-  update_delay: 0
-  encoding: UTF-8
-  date_format: yyyy-MM-dd
-  loader_path: /WEB-INF/template
-  tag_syntax: auto_detect
+
+#jsonWebToken
+jwt:
+  indate: 30
+  sha256:
+    key: 182234c3-a3dd-48d5-a107-c628cc80f2df
+
+#filter url
+user:
+  auth:
+    urlPatterns: /user/*
 
 #java mail
 mail:

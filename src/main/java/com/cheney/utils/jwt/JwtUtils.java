@@ -7,7 +7,9 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultJwtBuilder;
 import io.jsonwebtoken.impl.DefaultJwtParser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 
 import java.util.Date;
@@ -17,11 +19,12 @@ import java.util.Map;
 /**
  * JsonWebToken工具类
  */
+@Slf4j
 public class JwtUtils {
 
     static {
         Environment environment = SpringUtils.getBean("environment", Environment.class);
-        IN_DATE = environment.getProperty("jwt.indate", int.class);
+        IN_DATE = environment.getRequiredProperty("jwt.indate", int.class);
         SHA256_KEY = environment.getProperty("jwt.sha256.key");
     }
 
@@ -32,13 +35,16 @@ public class JwtUtils {
     /**
      * 签证有效时间(day)
      */
-    private static int IN_DATE;
+    public static int IN_DATE;
 
     /**
      * 签证key
      */
     private static String SHA256_KEY;
 
+    private String token;
+
+    private Claims claims;
 
     /**
      * 生成token
@@ -68,14 +74,21 @@ public class JwtUtils {
     /**
      * token提取Claims
      */
-    private static Claims parseToken(String token) {
-        if (token == null) throw new NullPointerException();
+    public static JwtUtils parseToken(String token) {
+        if (token == null) {
+            throw new NullPointerException();
+        }
         try {
-            return JWT_PARSER
+            Claims claims = JWT_PARSER
                     .setSigningKey(SHA256_KEY)
                     .parseClaimsJws(token)
                     .getBody();
+            JwtUtils jwtUtils = new JwtUtils();
+            jwtUtils.setToken(token);
+            jwtUtils.setClaims(claims);
+            return jwtUtils;
         } catch (Exception e) {
+            log.error("解析token失败,e:", e);
             return null;
         }
     }
@@ -83,20 +96,34 @@ public class JwtUtils {
     /**
      * 提取username
      */
-    public static String parseToUsername(String token) {
-        Claims claims;
-        return (claims = parseToken(token)) == null ? null : claims.getSubject();
+    public String username() {
+        return claims == null ? null : claims.getSubject();
     }
 
     /**
-     * 1,token签证未过期
-     * 2,用户最后一次修改密码时间为null || token签证创建时间在修改密码时间之后
+     * token签证有效并未过期
      */
-    public static boolean validate(String token, JwtPrincipal auth) {
-        Claims claims = parseToken(token);
+    public boolean validate() {
         return claims != null
-                && claims.getExpiration().after(new Date())
-                && (auth.getLastPasswordReset() == null || claims.getIssuedAt().after(auth.getLastPasswordReset()));
+                && !StringUtils.isEmpty(claims.getSubject())
+                && claims.getExpiration() != null
+                && claims.getExpiration().after(new Date());
+    }
+
+    public Claims getClaims() {
+        return claims;
+    }
+
+    private void setClaims(Claims claims) {
+        this.claims = claims;
+    }
+
+    private void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 
 }
