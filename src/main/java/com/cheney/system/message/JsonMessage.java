@@ -3,6 +3,7 @@ package com.cheney.system.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.util.List;
  * 便于返回指定属性json的工具类
  * Created by cheny on 2017/7/24.
  */
+@Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class JsonMessage implements Serializable {
 
@@ -23,19 +25,16 @@ public class JsonMessage implements Serializable {
     /**
      * 状态码
      */
-    @JsonProperty
     private Integer code;
 
     /**
      * 存放数据
      */
-    @JsonProperty
     private Object data;
 
     /**
      * 存放错误信息
      */
-    @JsonProperty
     private String msg;
 
     /**
@@ -202,7 +201,7 @@ public class JsonMessage implements Serializable {
         if (Character.isUpperCase(s.charAt(0))) {
             return s;
         } else {
-            return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+            return Character.toUpperCase(s.charAt(0)) + s.substring(1);
         }
     }
 
