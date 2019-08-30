@@ -38,7 +38,7 @@ public class BaseRequest<T> implements Serializable {
     /**
      * 分页参数
      */
-    private Pageable pageable = new Pageable();
+    private Pageable pageable;
 
     public static <T> BaseRequest<T> createNew(T data, Pageable page) {
         BaseRequest<T> request = new BaseRequest<>();
@@ -59,6 +59,13 @@ public class BaseRequest<T> implements Serializable {
                 param.requestId, String.valueOf(System.currentTimeMillis())
                 , requestData, page
         );
+    }
+
+    public Pageable getPageable() {
+        if (pageable == null) {
+            pageable = new Pageable();
+        }
+        return pageable;
     }
 
 }

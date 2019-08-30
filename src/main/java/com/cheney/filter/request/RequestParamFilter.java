@@ -8,7 +8,6 @@ import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -107,7 +106,9 @@ public class RequestParamFilter extends OncePerRequestFilter {
         try {
             ServletInputStream inputStream = request.getInputStream();
             BaseRequest<JSONObject> requestParam = JSON.parseObject(inputStream, BaseRequest.class);
-            if (requestParam.getData() == null) {
+            if (requestParam == null) {
+                requestParam = new BaseRequest<>();
+            } else if (requestParam.getData() == null) {
                 //防止空指针
                 requestParam.setData(new JSONObject());
             }
