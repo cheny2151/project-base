@@ -2,7 +2,7 @@ package com.cheney.service;
 
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.system.filter.Filter;
-import com.cheney.system.order.Order;
+import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 
@@ -61,7 +61,7 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤
      */
-    List<T> findList(Filter filter, Order order);
+    List<T> findList(Filter filter, Orders orders);
 
     /**
      * 过滤
@@ -71,7 +71,7 @@ public interface BaseService<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤
      */
-    List<T> findList(Collection<Filter> filters, Order order);
+    List<T> findList(Collection<Filter> filters, Orders orders);
 
     /**
      * 过滤count

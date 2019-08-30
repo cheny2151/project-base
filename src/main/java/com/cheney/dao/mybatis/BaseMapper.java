@@ -2,7 +2,7 @@ package com.cheney.dao.mybatis;
 
 import com.cheney.entity.dto.BaseEntity;
 import com.cheney.system.filter.Filter;
-import com.cheney.system.order.Order;
+import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import org.apache.ibatis.annotations.Param;
@@ -51,7 +51,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤排序查找
      */
-    List<T> findList(@Param("filters") Collection<Filter> filters, @Param("order") Order order);
+    List<T> findList(@Param("filters") Collection<Filter> filters, @Param("orders") Orders orders);
 
     /**
      * 过滤count
