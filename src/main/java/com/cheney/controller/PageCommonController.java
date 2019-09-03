@@ -1,12 +1,9 @@
 package com.cheney.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.cheney.dao.mybatis.UserMapper;
-import com.cheney.entity.dto.AuthUser;
 import com.cheney.redis.client.RedisClient;
+import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.system.message.JsonMessage;
-import com.cheney.system.protocol.BaseRequest;
-import com.cheney.utils.RequestParamHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -28,17 +25,16 @@ public class PageCommonController {
     @Resource(name = "strKafkaTemplate")
     private KafkaTemplate<String, String> kafkaTemplate;
 
+    @Resource(name = "defaultClusterTaskPublisher")
+    private ClusterTaskPublisher clusterTaskPublisher;
+
     @Autowired
     private Environment environment;
 
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
-        BaseRequest<JSONObject> jsonObjectBaseRequest = RequestParamHolder.currentRequestParam();
-        System.out.println(jsonObjectBaseRequest);
-        System.out.println(redisClient.getValue("test"));
-        AuthUser byUsername = userMapper.findByUsername("test");
-        System.out.println(byUsername);
+        clusterTaskPublisher.publish("test", 100, 10, 4);
         return JsonMessage.success("123");
     }
 

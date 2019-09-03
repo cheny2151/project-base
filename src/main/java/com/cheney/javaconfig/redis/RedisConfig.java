@@ -2,6 +2,7 @@ package com.cheney.javaconfig.redis;
 
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.client.impl.JsonRedisClient;
+import com.cheney.redis.clustertask.sub.ClusterTaskRedisSub;
 import com.cheney.redis.lock.LockConstant;
 import com.cheney.redis.lock.awaken.listener.SpringSubLockManager;
 import com.cheney.redis.proxy.RedisLogProxy;
@@ -17,12 +18,15 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK_CHANNEL_PRE_KEY;
 
 /**
  * redis配置
@@ -53,12 +57,25 @@ public class RedisConfig {
         return template;
     }
 
+    @Bean("strRedisTemplate")
+    public RedisTemplate<String, Object> strRedisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(factory);
+        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+        redisTemplate.setKeySerializer(redisSerializer);
+        redisTemplate.setHashKeySerializer(redisSerializer);
+        redisTemplate.setValueSerializer(redisSerializer);
+        redisTemplate.setHashValueSerializer(redisSerializer);
+        return redisTemplate;
+    }
+
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         Map<MessageListener, Collection<? extends Topic>> messageListeners = new HashMap<>();
         messageListeners.put(subLockManager(), Collections.singleton(new PatternTopic(LockConstant.LOCK_CHANNEL + "*")));
+        messageListeners.put(clusterTaskRedisSub(), Collections.singleton(new PatternTopic(CLUSTER_TASK_CHANNEL_PRE_KEY + "*")));
         container.setMessageListeners(messageListeners);
         return container;
     }
@@ -66,6 +83,11 @@ public class RedisConfig {
     @Bean("springSubLockManager")
     public SpringSubLockManager subLockManager() {
         return new SpringSubLockManager();
+    }
+
+    @Bean("clusterTaskSub")
+    public ClusterTaskRedisSub clusterTaskRedisSub() {
+        return new ClusterTaskRedisSub();
     }
 
     /**

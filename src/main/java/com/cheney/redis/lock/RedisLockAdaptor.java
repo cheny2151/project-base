@@ -1,11 +1,9 @@
 package com.cheney.redis.lock;
 
+import com.cheney.redis.RedisEval;
 import com.cheney.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +19,7 @@ import java.util.UUID;
  * v1.1 20190624 isLock修改为ThreadLocal<Boolean> 保证一个锁对象被多线程使用时的线程安全
  */
 @Slf4j
-public abstract class RedisLockAdaptor implements RedisLock {
+public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
 
     protected final String path;
 
@@ -38,22 +36,7 @@ public abstract class RedisLockAdaptor implements RedisLock {
 
 
     protected Object execute(String script, List<String> keys, List<String> args) {
-        return redisTemplate.execute((RedisCallback<Object>) (redisConnection) -> {
-            Object nativeConnection = redisConnection.getNativeConnection();
-
-            Object result = null;
-
-            // 集群模式
-            if (nativeConnection instanceof JedisCluster) {
-                result = ((JedisCluster) nativeConnection).eval(script, keys, args);
-            }
-            // 单机模式
-            else if (nativeConnection instanceof Jedis) {
-                result = ((Jedis) nativeConnection).eval(script, keys, args);
-            }
-
-            return result;
-        });
+        return execute(redisTemplate, script, keys, args);
     }
 
     protected abstract Object LockScript(long leaseTime);

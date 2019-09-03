@@ -10,6 +10,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * 任务调度配置
  * @author cheney
@@ -65,5 +68,9 @@ public class ScheduledConfig implements SchedulingConfigurer {
         return executor;
     }
 
+    @Bean(name = "clusterTaskExecutor", destroyMethod = "shutdown")
+    public ExecutorService clusterTask() {
+        return Executors.newFixedThreadPool(20);
+    }
 
 }

@@ -13,7 +13,7 @@
         <console name="Console" target="SYSTEM_OUT">
 
             <!--输出日志的格式-->
-            <PatternLayout pattern="[cheney][%d{yyyy-MM-dd HH:mm:ss}] [%p] - %l - %m%n"/>
+            <PatternLayout pattern="[cheney][%d{yyyy-MM-dd HH:mm:ss}] [%p][%t] - %l - %m%n"/>
 
         </console>
 

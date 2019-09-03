@@ -2,7 +2,11 @@ package com.cheney.javaconfig.redis;
 
 public enum RedisKey {
 
-    AUTH_TOKEN_KEY("auth.token:%s");
+    AUTH_TOKEN_KEY("auth.token:%s"),
+
+    CLUSTER_TASK_PRE_KEY("CLUSTER_TASK:"),
+
+    CLUSTER_TASK_CHANNEL_PRE_KEY("CLUSTER_TASK_CHANNEL:");
 
     private final static String KEY_PRE = "base";
 

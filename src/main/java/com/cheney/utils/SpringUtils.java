@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+
 /**
  * 创建ApplicationContext时的钩子
  * <p>
@@ -35,6 +37,10 @@ public class SpringUtils implements ApplicationContextAware {
 
     public static Object getBean(String name) {
         return applicationContext.getBean(name);
+    }
+
+    public static <T> Collection<T> getBeansOfType(Class<T> tClass) {
+        return applicationContext.getBeansOfType(tClass).values();
     }
 
     public static Environment getEnvironment() {
