@@ -28,18 +28,14 @@ public interface ClusterTaskSubscriber {
     void execute(TaskInfo taskInfo, Limit limit);
 
     /**
-     * before method
-     *
-     * @param taskInfo 任务信息
+     * 任务开始前执行
      */
-    void before(TaskInfo taskInfo);
+    void before();
 
     /**
-     * after method
-     *
-     * @param taskInfo 任务信息
+     * 所有线程任务执行后执行
      */
-    void after(TaskInfo taskInfo);
+    void afterAllTask();
 
     /**
      * error method
@@ -52,6 +48,11 @@ public interface ClusterTaskSubscriber {
      * 主动停止任务，不保证立刻停止
      */
     void stop();
+
+    /**
+     * 重置状态值
+     */
+    void resetActive();
 
     /**
      * 是否继续执行任务

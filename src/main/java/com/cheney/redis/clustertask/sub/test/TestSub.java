@@ -33,4 +33,9 @@ public class TestSub extends AbstractClusterTaskSubscriber {
         }
     }
 
+    @Override
+    public void afterAllTask() {
+        System.out.println("=======================finish task=======================");
+    }
+
 }

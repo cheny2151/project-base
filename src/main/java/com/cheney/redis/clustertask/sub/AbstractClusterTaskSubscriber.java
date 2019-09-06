@@ -18,20 +18,18 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
     @Override
     public void execute(TaskInfo taskInfo, Limit limit) {
         try {
-            before(taskInfo);
             subscribe(taskInfo, limit);
-            after(taskInfo);
         } catch (Exception e) {
             error(e);
         }
     }
 
     @Override
-    public void before(TaskInfo taskInfo) {
+    public void before() {
     }
 
     @Override
-    public void after(TaskInfo taskInfo) {
+    public void afterAllTask() {
     }
 
     @Override
@@ -42,6 +40,11 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
     @Override
     public void stop() {
         this.active = false;
+    }
+
+    @Override
+    public void resetActive() {
+        this.active = true;
     }
 
     @Override

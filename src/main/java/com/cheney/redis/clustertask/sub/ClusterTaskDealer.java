@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import static com.cheney.redis.clustertask.TaskLuaScript.ADD_STEP_LUA_SCRIPT;
@@ -42,31 +43,66 @@ public class ClusterTaskDealer implements RedisEval {
 
     public void dealTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber) {
 
+        // 重置活动状态
+        subscriber.resetActive();
+        // 选取主节点
+        final boolean[] master = {false};
+
         TaskInfo taskInfo = getTaskInfo(taskId);
 
         if (!taskInfo.isValid()) {
             return;
         }
 
+        // 统计线程执行
+        CountDownLatch taskCountDownLatch = new CountDownLatch(concurrentNums);
+
         List<Callable<String>> tasks = new ArrayList<>();
-        for (int i = 0; i <= concurrentNums; i++) {
+        for (int i = 0; i < concurrentNums; i++) {
             Callable<String> task = () -> {
-                ResultAndFlag<Limit> limit;
-                while (subscriber.isActive() && (limit = getLimit(taskInfo)).isSuccess()) {
-                    log.info("开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit.getResult()));
-                    subscriber.execute(taskInfo, limit.getResult());
+                ResultAndFlag<Limit> limitResult;
+                while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
+                    Limit limit = limitResult.getResult();
+                    log.info("开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit));
+                    try {
+                        subscriber.execute(taskInfo, limit);
+                    } catch (Exception e) {
+                        log.error("执行线程任务limit:{}-{}异常:{}", limit.getNum(), limit.getSize(), e);
+                    }
                 }
-                redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
+                // after all tasks finished
+                subscriber.stop();
+                // 成功删除的节点视为主节点
+                Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
+                if (delete != null && delete) {
+                    master[0] = true;
+                }
+                taskCountDownLatch.countDown();
                 return "success";
             };
             tasks.add(task);
         }
 
+        subscriber.before();
         try {
+            // 开始执行线程
             taskExecutor.invokeAll(tasks);
         } catch (InterruptedException e) {
             log.error("集群任务线程中断", e);
         }
+
+        try {
+            // 完成线程任务回调
+            taskCountDownLatch.await();
+            if (master[0]) {
+                // 只有主节点执行回调
+                subscriber.afterAllTask();
+            }
+        } catch (Exception e) {
+            log.error("执行afterAllTask报错", e);
+        }
+
+
     }
 
     /**
@@ -114,7 +150,7 @@ public class ClusterTaskDealer implements RedisEval {
             // 已经执行完毕
             return ResultAndFlag.fail();
         } else if (startNum + stepSize >= dataNums) {
-            // 最后一步大于总数
+            // 最后一步
             stepSize = dataNums - startNum;
         }
         return ResultAndFlag.success(Limit.create(startNum, stepSize));
