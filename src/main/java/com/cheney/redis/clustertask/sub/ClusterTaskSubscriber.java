@@ -49,7 +49,7 @@ public interface ClusterTaskSubscriber {
     void error(Throwable t);
 
     /**
-     * 主动停止任务，补保证立刻停止
+     * 主动停止任务，不保证立刻停止
      */
     void stop();
 
