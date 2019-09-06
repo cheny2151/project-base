@@ -11,14 +11,53 @@ import com.cheney.system.page.Limit;
  */
 public interface ClusterTaskSubscriber {
 
+    /**
+     * 订阅集群任务
+     *
+     * @param taskInfo 任务信息
+     * @param limit    分页信息
+     */
     void subscribe(TaskInfo taskInfo, Limit limit);
 
+    /**
+     * 执行集群任务
+     *
+     * @param taskInfo 任务信息
+     * @param limit    分页信息
+     */
     void execute(TaskInfo taskInfo, Limit limit);
 
+    /**
+     * before method
+     *
+     * @param taskInfo 任务信息
+     */
     void before(TaskInfo taskInfo);
 
+    /**
+     * after method
+     *
+     * @param taskInfo 任务信息
+     */
     void after(TaskInfo taskInfo);
 
+    /**
+     * error method
+     *
+     * @param t 异常
+     */
     void error(Throwable t);
+
+    /**
+     * 主动停止任务，补保证立刻停止
+     */
+    void stop();
+
+    /**
+     * 是否继续执行任务
+     *
+     * @return boolean
+     */
+    boolean isActive();
 
 }

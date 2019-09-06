@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscriber {
 
+    private volatile boolean active = true;
+
     @Override
     public void execute(TaskInfo taskInfo, Limit limit) {
         try {
@@ -37,4 +39,13 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
         log.error("订阅器执行集群任务异常", t);
     }
 
+    @Override
+    public void stop() {
+        this.active = false;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
 }

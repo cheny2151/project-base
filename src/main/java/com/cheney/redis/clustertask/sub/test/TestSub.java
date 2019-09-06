@@ -7,6 +7,8 @@ import com.cheney.redis.clustertask.sub.SubTask;
 import com.cheney.system.page.Limit;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+
 /**
  * 集群任务调度测试类
  * 继承AbstractClusterTaskSubscriber并存放于spring容器中
@@ -23,7 +25,12 @@ public class TestSub extends AbstractClusterTaskSubscriber {
 
     @Override
     public void subscribe(TaskInfo taskInfo, Limit limit) {
-
+        Calendar instance = Calendar.getInstance();
+        int i = instance.get(Calendar.MINUTE);
+        if (i == 14) {
+            System.out.println("====================invoke stop method=====================");
+            stop();
+        }
     }
 
 }

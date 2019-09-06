@@ -52,7 +52,7 @@ public class ClusterTaskDealer implements RedisEval {
         for (int i = 0; i <= concurrentNums; i++) {
             Callable<String> task = () -> {
                 ResultAndFlag<Limit> limit;
-                while ((limit = getLimit(taskInfo)).isSuccess()) {
+                while (subscriber.isActive() && (limit = getLimit(taskInfo)).isSuccess()) {
                     log.info("开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit.getResult()));
                     subscriber.execute(taskInfo, limit.getResult());
                 }
