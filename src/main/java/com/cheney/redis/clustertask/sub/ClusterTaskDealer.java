@@ -153,6 +153,11 @@ public class ClusterTaskDealer implements RedisEval {
             // 最后一步
             stepSize = dataNums - startNum;
         }
+
+        if (taskInfo.isDesc()) {
+            // 倒序
+            startNum = dataNums - startNum - stepSize;
+        }
         return ResultAndFlag.success(Limit.create(startNum, stepSize));
     }
 }

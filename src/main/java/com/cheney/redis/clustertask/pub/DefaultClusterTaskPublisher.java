@@ -29,20 +29,20 @@ public class DefaultClusterTaskPublisher implements ClusterTaskPublisher {
     }
 
     @Override
-    public void publish(String taskId, int dataNums, int stepSize, int concurrentNums) {
+    public void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc) {
 
-        String taskIdKey = CLUSTER_TASK_PRE_KEY + taskId;
-        Boolean exists = redisTemplate.hasKey(taskIdKey);
+        String taskRedisKey = CLUSTER_TASK_PRE_KEY + taskId;
+        Boolean exists = redisTemplate.hasKey(taskRedisKey);
         if (exists != null && exists) {
             log.info("任务taskId:{}未结束，无法分配新任务", taskId);
             return;
         }
         // set taskInfo
-        Map<String, String> taskInfo = new TaskInfo(taskIdKey, dataNums, 0, stepSize);
-        redisTemplate.opsForHash().putAll(taskIdKey, taskInfo);
+        Map<String, String> taskInfo = new TaskInfo(taskId, dataNums, 0, stepSize, desc);
+        redisTemplate.opsForHash().putAll(taskRedisKey, taskInfo);
 
         // pub task
-        redisTemplate.convertAndSend(CLUSTER_TASK_CHANNEL_PRE_KEY + taskIdKey, String.valueOf(concurrentNums));
+        redisTemplate.convertAndSend(CLUSTER_TASK_CHANNEL_PRE_KEY + taskId, String.valueOf(concurrentNums));
     }
 
 }

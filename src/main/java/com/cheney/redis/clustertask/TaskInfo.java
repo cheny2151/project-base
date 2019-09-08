@@ -9,12 +9,13 @@ import java.util.Map;
  */
 public class TaskInfo extends HashMap<String, String> {
 
-    public TaskInfo(String taskId, int dataNums, int StepCount, int StepSize) {
+    public TaskInfo(String taskId, int dataNums, int StepCount, int StepSize, boolean desc) {
         super(8);
         setStepCount(StepCount);
         setDataNums(dataNums);
         setTaskId(taskId);
         setStepSize(StepSize);
+        setDesc(desc);
     }
 
     public TaskInfo(Map<String, String> params) {
@@ -63,6 +64,17 @@ public class TaskInfo extends HashMap<String, String> {
 
     public void setStepSize(int StepSize) {
         put("stepSize", String.valueOf(StepSize));
+    }
+
+    /**
+     * 是否倒序
+     */
+    public boolean isDesc() {
+        return Boolean.parseBoolean(get("desc"));
+    }
+
+    public void setDesc(boolean StepSize) {
+        put("desc", String.valueOf(StepSize));
     }
 
     public boolean isValid() {

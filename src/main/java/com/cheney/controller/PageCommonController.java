@@ -34,7 +34,7 @@ public class PageCommonController {
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
-        clusterTaskPublisher.publish("test", 1000, 100, 4);
+        clusterTaskPublisher.publish("test", 999, 100, 4, true);
         return JsonMessage.success("123");
     }
 

@@ -27,7 +27,8 @@ public interface ClusterTaskPublisher {
      * @param dataNums       待处理数据个数
      * @param stepSize       步长
      * @param concurrentNums 单个服务器并发数量
+     * @param desc           是否倒序
      */
-    void publish(String taskId, int dataNums, int stepSize, int concurrentNums);
+    void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc);
 
 }
