@@ -94,7 +94,10 @@ public class ClusterTaskDealer implements RedisEval {
         try {
             // 完成线程任务回调
             taskCountDownLatch.await();
-            // todo 暂时所有节点都执行回调（由于是分布式，没有做注册中心无法发现一共有几个服务正在执行，所以无法得知是否所有服务都执行完线程）
+
+             // todo 暂时所有节点都执行回调
+             //  （CountDownLatch只能保证单台服务器所有线程任务执行完毕）
+             //  （由于是分布式，没有做注册中心无法发现一共有几个服务正在执行，所以无法得知是否所有服务都执行完线程）
 //            if (master[0]) {
                 // 只有主节点执行回调
                 subscriber.afterAllTask();

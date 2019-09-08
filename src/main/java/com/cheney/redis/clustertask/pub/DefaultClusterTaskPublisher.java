@@ -42,6 +42,7 @@ public class DefaultClusterTaskPublisher implements ClusterTaskPublisher {
         redisTemplate.opsForHash().putAll(taskRedisKey, taskInfo);
 
         // pub task
+        log.info("发布集群任务：taskId->{},数量->{}", taskId, dataNums);
         redisTemplate.convertAndSend(CLUSTER_TASK_CHANNEL_PRE_KEY + taskId, String.valueOf(concurrentNums));
     }
 
