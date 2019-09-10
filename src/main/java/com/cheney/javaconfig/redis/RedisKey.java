@@ -8,7 +8,7 @@ public enum RedisKey {
 
     CLUSTER_TASK_CHANNEL_PRE_KEY("CLUSTER_TASK_CHANNEL:");
 
-    private final static String KEY_PRE = "base";
+    private final static String KEY_PRE = "BASE:";
 
     private String key;
 

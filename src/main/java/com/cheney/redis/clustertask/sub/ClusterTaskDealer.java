@@ -2,6 +2,7 @@ package com.cheney.redis.clustertask.sub;
 
 import com.alibaba.fastjson.JSON;
 import com.cheney.redis.RedisEval;
+import com.cheney.redis.clustertask.TaskConfig;
 import com.cheney.redis.clustertask.TaskInfo;
 import com.cheney.system.page.Limit;
 import com.cheney.utils.ResultAndFlag;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.cheney.redis.clustertask.TaskLuaScript.ADD_STEP_LUA_SCRIPT;
 import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK_PRE_KEY;
@@ -60,24 +62,30 @@ public class ClusterTaskDealer implements RedisEval {
         List<Callable<String>> tasks = new ArrayList<>();
         for (int i = 0; i < concurrentNums; i++) {
             Callable<String> task = () -> {
-                ResultAndFlag<Limit> limitResult;
-                while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
-                    Limit limit = limitResult.getResult();
-                    log.info("开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit));
-                    try {
-                        subscriber.execute(taskInfo, limit);
-                    } catch (Exception e) {
-                        log.error("执行线程任务limit:{}-{}异常:{}", limit.getNum(), limit.getSize(), e);
+                try {
+                    ResultAndFlag<Limit> limitResult;
+                    while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
+                        Limit limit = limitResult.getResult();
+                        log.info("【集群任务】开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit));
+                        try {
+                            subscriber.execute(taskInfo, limit);
+                        } catch (Exception e) {
+                            log.error("【集群任务】执行线程任务limit:{}-{}异常:{}", limit.getNum(), limit.getSize(), e);
+                        }
                     }
+                    // after all tasks finished
+                    subscriber.stop();
+                } catch (Throwable t) {
+                    log.error("【集群任务】任务线程执行异常", t);
+                } finally {
+                    // 成功删除的节点视为主节点
+                    Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
+                    if (delete != null && delete) {
+                        master[0] = true;
+                    }
+                    // count down信号量
+                    taskCountDownLatch.countDown();
                 }
-                // after all tasks finished
-                subscriber.stop();
-                // 成功删除的节点视为主节点
-                Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
-                if (delete != null && delete) {
-                    master[0] = true;
-                }
-                taskCountDownLatch.countDown();
                 return "success";
             };
             tasks.add(task);
@@ -88,7 +96,7 @@ public class ClusterTaskDealer implements RedisEval {
             // 开始执行线程
             taskExecutor.invokeAll(tasks);
         } catch (InterruptedException e) {
-            log.error("集群任务线程中断", e);
+            log.error("【集群任务】集群任务线程中断", e);
         }
 
         try {
@@ -103,7 +111,7 @@ public class ClusterTaskDealer implements RedisEval {
                 subscriber.afterAllTask();
 //            }
         } catch (Exception e) {
-            log.error("执行afterAllTask报错", e);
+            log.error("【集群任务】执行afterAllTask报错", e);
         }
 
 
@@ -133,7 +141,8 @@ public class ClusterTaskDealer implements RedisEval {
         Integer stepSize = taskInfo.getStepSize();
         Integer dataNums = taskInfo.getDataNums();
         List<String> keys = new ArrayList<>();
-        keys.add(CLUSTER_TASK_PRE_KEY + taskId);
+        String taskRedisKey = CLUSTER_TASK_PRE_KEY + taskId;
+        keys.add(taskRedisKey);
         keys.add("stepCount");
         long stepCount;
         try {
@@ -145,7 +154,7 @@ public class ClusterTaskDealer implements RedisEval {
             }
             stepCount = (long) executeResult;
         } catch (Exception e) {
-            log.error("执行lua脚本异常", e);
+            log.error("【集群任务】执行lua脚本异常", e);
             return ResultAndFlag.fail();
         }
         // 分页开始数
@@ -156,6 +165,9 @@ public class ClusterTaskDealer implements RedisEval {
         } else if (startNum + stepSize >= dataNums) {
             // 最后一步
             stepSize = dataNums - startNum;
+        } else {
+            // 延长过期时间
+            extendedExpire(taskRedisKey);
         }
 
         if (taskInfo.isDesc()) {
@@ -163,5 +175,14 @@ public class ClusterTaskDealer implements RedisEval {
             startNum = dataNums - startNum - stepSize;
         }
         return ResultAndFlag.success(Limit.create(startNum, stepSize));
+    }
+
+    /**
+     * 延长key过期时间
+     *
+     * @param key 任务key
+     */
+    private void extendedExpire(String key) {
+        redisTemplate.expire(key, TaskConfig.KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
     }
 }
