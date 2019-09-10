@@ -28,9 +28,14 @@ public interface ClusterTaskSubscriber {
     void execute(TaskInfo taskInfo, Limit limit);
 
     /**
-     * 任务开始前执行
+     * 单个分页任务开始前执行
      */
     void before();
+
+    /**
+     * 单个分页任务执行后执行
+     */
+    void after();
 
     /**
      * 所有线程任务执行后执行

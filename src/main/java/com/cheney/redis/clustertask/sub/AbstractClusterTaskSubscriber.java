@@ -13,19 +13,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscriber {
 
-    private volatile boolean active = true;
+    private InheritableThreadLocal<Boolean> active = new InheritableThreadLocal<>();
 
     @Override
     public void execute(TaskInfo taskInfo, Limit limit) {
-        try {
-            subscribe(taskInfo, limit);
-        } catch (Exception e) {
-            error(e);
-        }
+        before();
+        subscribe(taskInfo, limit);
+        after();
     }
 
     @Override
     public void before() {
+    }
+
+    @Override
+    public void after() {
     }
 
     @Override
@@ -34,21 +36,20 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
 
     @Override
     public void error(Throwable t) {
-        log.error("订阅器执行集群任务异常", t);
     }
 
     @Override
     public void stop() {
-        this.active = false;
+        this.active.set(Boolean.FALSE);
     }
 
     @Override
     public void resetActive() {
-        this.active = true;
+        this.active.set(Boolean.TRUE);
     }
 
     @Override
     public boolean isActive() {
-        return active;
+        return active.get();
     }
 }
