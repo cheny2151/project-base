@@ -14,7 +14,7 @@ import java.util.Calendar;
  * 继承AbstractClusterTaskSubscriber并存放于spring容器中
  * 再通过@SubTask指定执行的任务ID
  * <p>
- * (任务推送，调用{@link ClusterTaskPublisher#publish(String, int, int, int)})
+ * (任务推送，调用{@link ClusterTaskPublisher#publish(String, int, int, int, boolean)})
  *
  * @author cheney
  * @date 2019-09-03
@@ -25,9 +25,10 @@ public class TestSub extends AbstractClusterTaskSubscriber {
 
     @Override
     public void subscribe(TaskInfo taskInfo, Limit limit) {
+        System.out.println("----------------------subscribe test----------------------");
         Calendar instance = Calendar.getInstance();
         int i = instance.get(Calendar.MINUTE);
-        if (i == 14) {
+        if (i == 40) {
             System.out.println("====================invoke stop method=====================");
             stop();
         }

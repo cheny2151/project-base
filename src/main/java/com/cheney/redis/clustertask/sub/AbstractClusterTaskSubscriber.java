@@ -13,7 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscriber {
 
-    private InheritableThreadLocal<Boolean> active = new InheritableThreadLocal<>();
+    /**
+     * 任务激活状态
+     */
+    private boolean active = true;
 
     @Override
     public void execute(TaskInfo taskInfo, Limit limit) {
@@ -40,16 +43,16 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
 
     @Override
     public void stop() {
-        this.active.set(Boolean.FALSE);
+        this.active = false;
     }
 
     @Override
     public void resetActive() {
-        this.active.set(Boolean.TRUE);
+        this.active = true;
     }
 
     @Override
     public boolean isActive() {
-        return active.get();
+        return active;
     }
 }
