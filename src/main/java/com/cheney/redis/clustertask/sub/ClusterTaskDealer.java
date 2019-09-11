@@ -1,6 +1,5 @@
 package com.cheney.redis.clustertask.sub;
 
-import com.alibaba.fastjson.JSON;
 import com.cheney.redis.RedisEval;
 import com.cheney.redis.clustertask.TaskConfig;
 import com.cheney.redis.clustertask.TaskInfo;
@@ -66,11 +65,11 @@ public class ClusterTaskDealer implements RedisEval {
                     ResultAndFlag<Limit> limitResult;
                     while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
                         Limit limit = limitResult.getResult();
-                        log.info("【集群任务】开始执行集群任务，数据总数:{},limit:{}", taskInfo.getDataNums(), JSON.toJSONString(limit));
+                        log.info("【集群任务】开始执行集群任务,ID:'{}'，数据总数:{},limit:{}-{}", taskId, taskInfo.getDataNums(), limit.getNum(), limit.getSize());
                         try {
                             subscriber.execute(taskInfo, limit);
                         } catch (Exception e) {
-                            log.error("【集群任务】执行线程任务limit:{}-{}异常:{}", limit.getNum(), limit.getSize(), e);
+                            log.error("【集群任务】执行线程任务,ID:'{}'，limit:{}-{}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
                             subscriber.error(e);
                         }
                     }
