@@ -78,7 +78,7 @@ public class ClusterTaskDealer implements RedisEval {
                         try {
                             subscriber.execute(taskInfo, limit);
                         } catch (Exception e) {
-                            log.error("【集群任务】执行线程任务,ID:'{}'，limit:{}-{}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
+                            log.error("【集群任务】执行线程任务,ID:'{}'，limit:{{},{}}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
                             subscriber.error(e);
                         } finally {
                             if (limitResult.isSuccess() && limitResult.isLast()) {
