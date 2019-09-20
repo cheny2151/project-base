@@ -35,7 +35,7 @@ public class TestSub extends AbstractClusterTaskSubscriber {
     }
 
     @Override
-    public void afterAllTask() {
+    public void afterAllTask(boolean isMaster) {
         System.out.println("=======================finish task=======================");
     }
 

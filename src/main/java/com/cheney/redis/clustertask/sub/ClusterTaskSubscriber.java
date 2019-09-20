@@ -39,8 +39,10 @@ public interface ClusterTaskSubscriber {
 
     /**
      * 所有线程任务执行后执行
+     *
+     * @param isMaster 是否Master节点
      */
-    void afterAllTask();
+    void afterAllTask(boolean isMaster);
 
     /**
      * error method
