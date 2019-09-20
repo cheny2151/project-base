@@ -58,6 +58,7 @@ public class ClusterTaskDealer implements RedisEval {
         TaskInfo taskInfo = getTaskInfo(taskId);
 
         if (!taskInfo.isValid()) {
+            log.info("【集群任务】无需执行任务,所有分页已被其他节点消费");
             return;
         }
 
@@ -67,16 +68,23 @@ public class ClusterTaskDealer implements RedisEval {
         List<Callable<String>> tasks = new ArrayList<>();
         for (int i = 0; i < concurrentNums; i++) {
             Callable<String> task = () -> {
-                LimitResult limitResult = null;
+                // last limit signal
+                boolean last = false;
                 try {
+                    LimitResult limitResult;
                     while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
                         Limit limit = limitResult.getResult();
-                        log.info("【集群任务】开始执行集群任务,ID:'{}'，数据总数:{},limit:{}-{}", taskId, taskInfo.getDataNums(), limit.getNum(), limit.getSize());
+                        log.info("【集群任务】开始执行集群任务,ID:'{}'，数据总数:{},limit:{{},{}}", taskId, taskInfo.getDataNums(), limit.getNum(), limit.getSize());
                         try {
                             subscriber.execute(taskInfo, limit);
                         } catch (Exception e) {
                             log.error("【集群任务】执行线程任务,ID:'{}'，limit:{}-{}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
                             subscriber.error(e);
+                        } finally {
+                            if (limitResult.isSuccess() && limitResult.isLast()) {
+                                // last limit
+                                last = true;
+                            }
                         }
                     }
                     // all tasks finished or stop
@@ -85,7 +93,7 @@ public class ClusterTaskDealer implements RedisEval {
                     log.error("【集群任务】任务线程执行异常", t);
                 } finally {
                     Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
-                    selectMaster(master, delete, limitResult);
+                    selectMaster(master, delete, last);
                     // count down信号量
                     taskCountDownLatch.countDown();
                 }
@@ -185,13 +193,13 @@ public class ClusterTaskDealer implements RedisEval {
      *
      * @param master      主节点标识位
      * @param delete      是否执行了redis删除任务
-     * @param limitResult 分页信号
+     * @param last        分页信号
      */
-    private void selectMaster(boolean[] master, Boolean delete, LimitResult limitResult) {
+    private void selectMaster(boolean[] master, Boolean delete, boolean last) {
         switch (master_flag) {
             case MasterFlag.LAST: {
                 // 执行最后一个分页的节点视为主节点
-                MasterFlag.executeLast(master, limitResult);
+                MasterFlag.executeLast(master, last);
                 break;
             }
             case MasterFlag.DELETE: {
@@ -200,7 +208,7 @@ public class ClusterTaskDealer implements RedisEval {
                 break;
             }
             default: {
-                MasterFlag.executeLast(master, limitResult);
+                MasterFlag.executeLast(master, last);
             }
         }
 
@@ -226,8 +234,8 @@ public class ClusterTaskDealer implements RedisEval {
         // 删除任务标识视为主节点
         private final static String DELETE = "delete";
 
-        static void executeLast(boolean[] master, LimitResult limitResult) {
-            if (limitResult != null && limitResult.isLast()) {
+        static void executeLast(boolean[] master, boolean last) {
+            if (last) {
                 master[0] = true;
             }
         }
