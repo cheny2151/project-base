@@ -15,7 +15,7 @@ import org.springframework.kafka.support.ProducerListener;
  * @author cheney
  * @date 2019-07-02
  */
-@Configuration
+//@Configuration
 @EnableConfigurationProperties({KafkaProperties.class})
 public class KafkaConfig {
 

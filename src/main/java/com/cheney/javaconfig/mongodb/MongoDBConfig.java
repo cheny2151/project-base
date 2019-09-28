@@ -9,9 +9,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 //@Configuration
-//@EnableMongoRepositories(basePackages = {"com.cheney"})
+@EnableMongoRepositories(basePackages = {"com.cheney"})
 public class MongoDBConfig {
 
     private final Environment env;

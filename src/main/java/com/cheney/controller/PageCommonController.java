@@ -22,8 +22,8 @@ public class PageCommonController {
     @Resource(name = "redisClientWithLog")
     private RedisClient<String> redisClient;
 
-    @Resource(name = "strKafkaTemplate")
-    private KafkaTemplate<String, String> kafkaTemplate;
+//    @Resource(name = "strKafkaTemplate")
+//    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Resource(name = "defaultClusterTaskPublisher")
     private ClusterTaskPublisher clusterTaskPublisher;
@@ -41,6 +41,6 @@ public class PageCommonController {
     @RequestMapping("/test2")
     @ResponseBody
     public void test2() {
-        kafkaTemplate.send("test", "template send msg");
+//        kafkaTemplate.send("test", "template send msg");
     }
 }
