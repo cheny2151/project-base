@@ -19,7 +19,7 @@ public class RedisExceptionAop {
     /**
      * 是否抛出异常
      */
-    @Value("${redis.throwRedisException}")
+    @Value("${redis.throwRedisException:true}")
     private boolean throwRedisException;
 
     /**
