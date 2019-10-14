@@ -64,6 +64,10 @@ public class AwakenRedisLock extends RedisLockAdaptor {
         boolean isLock = result == null;
         this.isLock.set(isLock);
 
+        if (!isLock) {
+            log.info("Redis try lock fail,lock path:{}", getPath());
+        }
+
         return isLock;
     }
 
