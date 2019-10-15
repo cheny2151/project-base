@@ -26,6 +26,11 @@ public class TestSub extends AbstractClusterTaskSubscriber {
     @Override
     public void subscribe(TaskInfo taskInfo, Limit limit) {
         System.out.println("----------------------subscribe test----------------------");
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Calendar instance = Calendar.getInstance();
         int i = instance.get(Calendar.MINUTE);
         if (i == 40) {
@@ -35,11 +40,8 @@ public class TestSub extends AbstractClusterTaskSubscriber {
     }
 
     @Override
-    public void afterAllTask(boolean isMaster) {
+    public void afterAllTask() {
         System.out.println("=======================finish task=======================");
-        if (isMaster) {
-            System.out.println("=======================I am master=======================");
-        }
     }
 
 }

@@ -34,7 +34,7 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
     }
 
     @Override
-    public void afterAllTask(boolean isMaster) {
+    public void afterAllTask() {
     }
 
     @Override

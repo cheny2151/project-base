@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.cheney.redis.clustertask.TaskLuaScript.ADD_STEP_LUA_SCRIPT;
+import static com.cheney.redis.clustertask.TaskLuaScript.REGISTERED_LUA_SCRIPT;
 import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK_PRE_KEY;
 
 /**
@@ -28,13 +29,21 @@ import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK
  * 负责集群任务的分页的获取，线程任务的分配与执行，
  * 任务执行结束后的回调。
  *
+ * v1.1.0 更新：执行任务完成回调函数afterAllTask()变更：
+ *             订阅到任务时通过redis脚本注册执行任务的分布式服务器数,
+ *             每个服务器执行完毕任务时再减少注册数，直至0视为所有任务执行完毕,
+ *             此时执行清除redis任务数据,回调afterAllTask()。
+ *             见{@link ClusterTaskDealer#registeredTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber)}
+ *
  * @author cheney
  * @date 2019-09-03
- * @version 1.0.1
+ * @version 1.1.0
  */
 @Component
 @Slf4j
 public class ClusterTaskDealer implements RedisEval {
+
+    private final static String REGISTERED_LABEL = "REGISTERED_COUNT";
 
     @Value("${cluster.task.masterFlag:last}")
     private String master_flag;
@@ -48,12 +57,51 @@ public class ClusterTaskDealer implements RedisEval {
         this.taskExecutor = taskExecutor;
     }
 
-    public void dealTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber) {
+
+    /**
+     * 注册任务
+     * v1.1.0新增
+     *
+     * @param taskId         任务id
+     * @param concurrentNums 任务线程数
+     * @param subscriber     订阅者
+     */
+    public void registeredTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber) {
+
+        List<String> keys = new ArrayList<>();
+        String fullKey = CLUSTER_TASK_PRE_KEY + taskId;
+        keys.add(fullKey);
+        keys.add(REGISTERED_LABEL);
+
+        long time = System.currentTimeMillis();
+        try {
+            // 执行lua脚本注册任务 v1.1.0
+            execute(redisTemplate, REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("1"));
+            this.distributionTask(taskId, concurrentNums, subscriber);
+            log.info("【集群任务】任务taskId:{},本机执行完毕,本机耗时:{}秒", taskId, (System.currentTimeMillis() - time) / 1000);
+        } finally {
+            // 执行lua脚本获取当前剩余注册数
+            Object RemainingNum = execute(redisTemplate, REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("-1"));
+            if ((long) RemainingNum == 0) {
+                log.info("【集群任务】任务taskId:{},所有服务器执行完毕", taskId);
+                // 清除任务
+                redisTemplate.delete(fullKey);
+                // 执行任务完成回调
+                subscriber.afterAllTask();
+            }
+        }
+
+    }
+
+    /**
+     * 分配任务
+     */
+    private void distributionTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber) {
 
         // 重置活动状态
         subscriber.resetActive();
-        // 选取主节点
-        final boolean[] master = {false};
+        /*// 选取主节点
+        final boolean[] master = {false};*/
 
         TaskInfo taskInfo = getTaskInfo(taskId);
 
@@ -80,22 +128,22 @@ public class ClusterTaskDealer implements RedisEval {
                         } catch (Exception e) {
                             log.error("【集群任务】执行线程任务,ID:'{}'，limit:{{},{}}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
                             subscriber.error(e);
-                        } finally {
+                        } /*finally {
                             if (limitResult.isSuccess() && limitResult.isLast()) {
                                 // last limit
                                 last = true;
                             }
-                        }
+                        }*/
                     }
                     // all tasks finished or stop
                     subscriber.stop();
                 } catch (Throwable t) {
                     log.error("【集群任务】任务线程执行异常", t);
                 } finally {
-                    Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
-                    selectMaster(master, delete, last);
                     // count down信号量
                     taskCountDownLatch.countDown();
+                    /*Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
+                    selectMaster(master, delete, last);*/
                 }
                 return "success";
             };
@@ -111,17 +159,11 @@ public class ClusterTaskDealer implements RedisEval {
         }
 
         try {
-            // 完成线程任务回调
+            // 主线程等待任务结束
             taskCountDownLatch.await();
-
-             // todo 暂时所有节点都执行回调
-             //  （CountDownLatch只能保证单台服务器所有线程任务执行完毕）
-             //  （由于是分布式，没有做注册中心无法发现一共有几个服务正在执行，所以无法得知是否所有服务都执行完线程）
-            subscriber.afterAllTask(master[0]);
         } catch (Exception e) {
-            log.error("【集群任务】执行afterAllTask报错", e);
+            log.error("【集群任务】主线程等待任务执行报错", e);
         }
-
 
     }
 

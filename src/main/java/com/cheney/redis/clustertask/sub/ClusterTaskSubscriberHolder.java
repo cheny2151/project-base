@@ -27,7 +27,7 @@ public class ClusterTaskSubscriberHolder {
             }
             String subTaskId = subTask.taskId();
             if (taskId.equals(subTaskId)) {
-                clusterTaskDealer.dealTask(taskId, concurrentNums, subscriber);
+                clusterTaskDealer.registeredTask(taskId, concurrentNums, subscriber);
             }
         }
     }
