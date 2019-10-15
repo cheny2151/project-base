@@ -43,6 +43,7 @@ import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK
 @Slf4j
 public class ClusterTaskDealer implements RedisEval {
 
+    // 服务器注册执行任务标识
     private final static String REGISTERED_LABEL = "REGISTERED_COUNT";
 
     @Value("${cluster.task.masterFlag:last}")
