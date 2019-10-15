@@ -6,7 +6,6 @@ import com.cheney.redis.clustertask.TaskInfo;
 import com.cheney.system.page.Limit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -45,9 +44,6 @@ public class ClusterTaskDealer implements RedisEval {
 
     // 服务器注册执行任务标识
     private final static String REGISTERED_LABEL = "REGISTERED_COUNT";
-
-    @Value("${cluster.task.masterFlag:last}")
-    private String master_flag;
 
     private RedisTemplate<String, Object> redisTemplate;
 
