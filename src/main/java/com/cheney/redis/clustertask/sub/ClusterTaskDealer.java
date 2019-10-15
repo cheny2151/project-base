@@ -101,8 +101,6 @@ public class ClusterTaskDealer implements RedisEval {
 
         // 重置活动状态
         subscriber.resetActive();
-        /*// 选取主节点
-        final boolean[] master = {false};*/
 
         TaskInfo taskInfo = getTaskInfo(taskId);
 
@@ -117,8 +115,6 @@ public class ClusterTaskDealer implements RedisEval {
         List<Callable<String>> tasks = new ArrayList<>();
         for (int i = 0; i < concurrentNums; i++) {
             Callable<String> task = () -> {
-                // last limit signal
-                boolean last = false;
                 try {
                     LimitResult limitResult;
                     while (subscriber.isActive() && (limitResult = getLimit(taskInfo)).isSuccess()) {
@@ -129,12 +125,7 @@ public class ClusterTaskDealer implements RedisEval {
                         } catch (Exception e) {
                             log.error("【集群任务】执行线程任务,ID:'{}'，limit:{{},{}}异常:{}", taskId, limit.getNum(), limit.getSize(), e);
                             subscriber.error(e);
-                        } /*finally {
-                            if (limitResult.isSuccess() && limitResult.isLast()) {
-                                // last limit
-                                last = true;
-                            }
-                        }*/
+                        }
                     }
                     // all tasks finished or stop
                     subscriber.stop();
@@ -143,8 +134,6 @@ public class ClusterTaskDealer implements RedisEval {
                 } finally {
                     // count down信号量
                     taskCountDownLatch.countDown();
-                    /*Boolean delete = redisTemplate.delete(CLUSTER_TASK_PRE_KEY + taskId);
-                    selectMaster(master, delete, last);*/
                 }
                 return "success";
             };
@@ -231,63 +220,12 @@ public class ClusterTaskDealer implements RedisEval {
     }
 
     /**
-     * 选取主节点
-     * v1.0.1新增
-     *
-     * @param master      主节点标识位
-     * @param delete      是否执行了redis删除任务
-     * @param last        分页信号
-     */
-    private void selectMaster(boolean[] master, Boolean delete, boolean last) {
-        switch (master_flag) {
-            case MasterFlag.LAST: {
-                // 执行最后一个分页的节点视为主节点
-                MasterFlag.executeLast(master, last);
-                break;
-            }
-            case MasterFlag.DELETE: {
-                // 成功删除的节点视为主节点
-                MasterFlag.executeDelete(master, delete);
-                break;
-            }
-            default: {
-                MasterFlag.executeLast(master, last);
-            }
-        }
-
-    }
-
-    /**
      * 延长key过期时间
      *
      * @param key 任务key
      */
     private void extendedExpire(String key) {
         redisTemplate.expire(key, TaskConfig.KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
-    }
-
-
-    /**
-     * 主节点模式
-     */
-    private static class MasterFlag {
-        // 执行最后一个分页视为主节点
-        private final static String LAST = "last";
-
-        // 删除任务标识视为主节点
-        private final static String DELETE = "delete";
-
-        static void executeLast(boolean[] master, boolean last) {
-            if (last) {
-                master[0] = true;
-            }
-        }
-
-        static void executeDelete(boolean[] master, Boolean delete) {
-            if (delete != null && delete) {
-                master[0] = true;
-            }
-        }
     }
 
 }
