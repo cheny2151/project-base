@@ -111,10 +111,11 @@ public class HttpUtils {
         return restTemplate.postForObject(url, requestEntity, resultType, uriVariables);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> HttpEntity<T> wrapRequest(T requestBody) {
-        HttpEntity requestEntity;
+        HttpEntity<T> requestEntity;
         if (requestBody instanceof HttpEntity) {
-            requestEntity = (HttpEntity) requestBody;
+            requestEntity = (HttpEntity<T>) requestBody;
         } else {
             //默认为application/json;charset=utf-8请求
             requestEntity = new HttpEntity<>(requestBody, head);
