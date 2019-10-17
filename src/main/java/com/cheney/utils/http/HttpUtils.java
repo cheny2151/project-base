@@ -75,7 +75,7 @@ public class HttpUtils {
      * @return 响应体
      */
     public <T, R> ResponseEntity<BaseResponse<R>> postForResponseEntity(String url, T requestBody, ParameterizedTypeReference<BaseResponse<R>> resultType, Object... uriVariables) {
-        HttpEntity<T> requestEntity = wrapRequest(requestBody);
+        HttpEntity<?> requestEntity = wrapRequest(requestBody);
         return restTemplate.exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
     }
 
@@ -91,7 +91,7 @@ public class HttpUtils {
      * @return 响应体
      */
     public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity requestEntity = wrapRequest(requestBody);
+        HttpEntity<?> requestEntity = wrapRequest(requestBody);
         return restTemplate.postForEntity(url, requestEntity, resultType, uriVariables);
     }
 
@@ -107,12 +107,12 @@ public class HttpUtils {
      * @return 响应体
      */
     public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity requestEntity = wrapRequest(requestBody);
+        HttpEntity<?> requestEntity = wrapRequest(requestBody);
         return restTemplate.postForObject(url, requestEntity, resultType, uriVariables);
     }
 
-    private HttpEntity wrapRequest(Object requestBody) {
-        HttpEntity requestEntity;
+    private HttpEntity<?> wrapRequest(Object requestBody) {
+        HttpEntity<?> requestEntity;
         if (requestBody instanceof HttpEntity) {
             requestEntity = (HttpEntity) requestBody;
         } else {
