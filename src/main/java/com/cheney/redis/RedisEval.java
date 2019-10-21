@@ -31,7 +31,15 @@ public interface RedisEval {
             // 单机模式
             else if (nativeConnection instanceof Jedis) {
                 result = ((Jedis) nativeConnection).eval(script, finalKeys, finalArgs);
-            }
+            } /*else if (nativeConnection instanceof RedisAsyncCommandsImpl) {
+                try {
+                    result = ((RedisAsyncCommandsImpl) nativeConnection).eval(script, ScriptOutputType.INTEGER, (Object[]) finalKeys.toArray(), (Object[])finalArgs.toArray()).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                }
+
+            }*/
 
             return result;
         });
