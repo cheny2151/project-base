@@ -1,4 +1,4 @@
-package com.cheney.system.message;
+package com.cheney.system.response;
 
 public enum ResponseCode {
 

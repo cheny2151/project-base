@@ -1,10 +1,15 @@
 package com.cheney.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.cheney.exception.FailHttpStatusResponseException;
+import com.cheney.exception.FailRCResponseException;
 import com.cheney.exception.MultiRequestException;
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
-import com.cheney.system.message.JsonMessage;
+import com.cheney.system.protocol.BaseResponse;
+import com.cheney.system.response.JsonMessage;
+import com.cheney.system.response.ResponseCode;
+import com.cheney.utils.RequestParamHolder;
 import com.cheney.utils.http.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -34,6 +39,39 @@ public class ControllerAdviceHolder {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Date.class, dateEditor);
         binder.registerCustomEditor(String.class, stringEditor);
+    }
+
+    /**
+     * 透传内部服务调用rc不为200的响应
+     *
+     * @param e FailRCResponseException
+     * @return 响应
+     */
+    @ExceptionHandler(FailRCResponseException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> failResponseException(FailRCResponseException e) {
+        BaseResponse<?> response = e.getResponse();
+        if (response == null) {
+            return BaseResponse.SERVER_ERROR;
+        }
+        response.setRequestId(RequestParamHolder.currentRequestId().orElse(null));
+        log.info("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
+        return response;
+    }
+
+    /**
+     * 服务调用异常
+     *
+     * @param e FailHttpStatusResponseException
+     * @return 响应
+     */
+    @ExceptionHandler(FailHttpStatusResponseException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> failHttpStatusResponseException(FailHttpStatusResponseException e) {
+        ResponseCode code = e.getCode();
+        String message = e.getMessage();
+        log.info("内部服务调用失败，msg->{}，code->{}", message, code);
+        return BaseResponse.error(code.getStatus(), message);
     }
 
     /**

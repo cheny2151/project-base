@@ -1,10 +1,9 @@
 package com.cheney.controller.user.common;
 
 import com.cheney.service.UserService;
-import com.cheney.system.message.JsonMessage;
+import com.cheney.system.response.JsonMessage;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
