@@ -42,7 +42,7 @@ public class ControllerAdviceHolder {
     }
 
     /**
-     * 透传内部服务调用rc不为200的响应
+     * 透传内部服务调用业务code不为成功的响应
      *
      * @param e FailRCResponseException
      * @return 响应
