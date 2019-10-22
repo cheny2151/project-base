@@ -111,7 +111,7 @@ public class HttpUtils {
     public <R, B extends BaseResponse<R>> B getForBaseResponseThrowFail(String url, ParameterizedTypeReference<B> resultType, Object... uriVariables)
             throws FailRCResponseException {
         ResponseEntity<B> response = getForBaseResponse(url, resultType, uriVariables);
-        BaseResponse<R> responseBody = response.getBody();
+        B responseBody = response.getBody();
         int statusCodeValue = response.getStatusCodeValue();
         //http请求异常
         if (statusCodeValue < 200 || statusCodeValue > 299) {
@@ -127,7 +127,7 @@ public class HttpUtils {
         if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
             throw new FailRCResponseException(responseBody);
         }
-        return response.getBody();
+        return responseBody;
     }
 
     /**
