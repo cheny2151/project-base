@@ -23,7 +23,7 @@ public class BaseResponse<T> {
      * @return BaseResponse
      */
     public static BaseResponse<?> success(Object... data) {
-        BaseResponse baseResponse = new BaseResponse<>();
+        BaseResponse<Object> baseResponse = new BaseResponse<>();
         int len = data.length;
         if (len == 1) {
             baseResponse.setData(data[0]);
