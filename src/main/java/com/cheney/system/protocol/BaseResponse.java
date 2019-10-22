@@ -16,6 +16,12 @@ public class BaseResponse<T> {
 
     public final static BaseResponse SERVER_ERROR = error(ResponseCode.ERROR);
 
+    public static <T> BaseResponse<T> success(T data) {
+        BaseResponse<T> baseResponse = new BaseResponse<>();
+        baseResponse.setResponseCode(ResponseCode.SUCCESS);
+        baseResponse.setData(data);
+        return baseResponse;
+    }
     /**
      * 成功请求，包装数据
      *
