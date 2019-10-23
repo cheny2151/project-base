@@ -351,7 +351,7 @@ public class ReflectUtils {
     private static boolean isReadMethod(Method method) {
         String methodName = method.getName();
         if (methodName.startsWith(GET_PRE) || methodName.startsWith(IS_PRE)) {
-            return method.getParameterCount() == 0 && !method.getReturnType().getName().equals("void");
+            return method.getParameterCount() == 0 && !void.class.equals(method.getReturnType());
         }
         return false;
     }
