@@ -386,7 +386,7 @@ public class ReflectUtils {
     private static boolean isWriteMethod(Method method) {
         String methodName = method.getName();
         if (methodName.startsWith(SET_PRE)) {
-            return method.getParameterCount() == 1 && method.getReturnType().getName().equals("void");
+            return method.getParameterCount() == 1 && void.class.equals(method.getReturnType());
         }
         return false;
     }
