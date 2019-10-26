@@ -50,8 +50,6 @@ public class TestForApp {
 
     @Test
     public void test3() throws InterruptedException {
-//        SimpleRedisLockForLettuce redisLock = new SimpleRedisLockForLettuce("test:test");
-//        SpinRedisLock redisLock = new SpinRedisLock("test:test");
         RedisLock redisLock = new AwakenRedisLock("test:test");
         try {
             boolean b;
