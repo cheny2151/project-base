@@ -55,9 +55,8 @@ public class TestForApp {
         RedisLock redisLock = new AwakenRedisLock("test:test");
         try {
             boolean b;
-            b = redisLock.tryLock(100, -1, TimeUnit.SECONDS);
+            b = redisLock.tryLock(100, 20, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
-            Thread.sleep(5 * 1000);
             b = redisLock.tryLock(100, 20, TimeUnit.SECONDS);
             System.out.println("second lock result:" + b);
             Thread.sleep(5 * 1000);

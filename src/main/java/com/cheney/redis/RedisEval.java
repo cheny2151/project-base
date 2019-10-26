@@ -1,5 +1,7 @@
 package com.cheney.redis;
 
+import io.lettuce.core.ScriptOutputType;
+import io.lettuce.core.api.async.RedisScriptingAsyncCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.Jedis;
@@ -31,18 +33,27 @@ public interface RedisEval {
             // 单机模式
             else if (nativeConnection instanceof Jedis) {
                 result = ((Jedis) nativeConnection).eval(script, finalKeys, finalArgs);
-            } /*else if (nativeConnection instanceof RedisAsyncCommandsImpl) {
+            } else if (nativeConnection instanceof RedisScriptingAsyncCommands) {
                 try {
-                    result = ((RedisAsyncCommandsImpl) nativeConnection).eval(script, ScriptOutputType.INTEGER, (Object[]) finalKeys.toArray(), (Object[])finalArgs.toArray()).get();
+                    @SuppressWarnings("unchecked")
+                    RedisScriptingAsyncCommands<Object, Object> commands = (RedisScriptingAsyncCommands<Object, Object>) nativeConnection;
+                    result = commands
+                            .eval(script, ScriptOutputType.INTEGER,
+                                    toBytes(finalKeys),
+                                    toBytes(finalArgs))
+                            .get();
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException();
                 }
 
-            }*/
+            }
 
             return result;
         });
     }
 
+    default Object[] toBytes(List<String> list) {
+        return list.stream().map(String::getBytes).toArray();
+    }
 }
