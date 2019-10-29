@@ -2,6 +2,7 @@ package com.cheney.javaconfig.spring;
 
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
+import com.cheney.utils.http.HttpsClientRequestFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -52,6 +53,18 @@ public class BeanConfig {
     public RestTemplate restTemplate() {
         //httpClient
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(5000);
+        requestFactory.setReadTimeout(10000);
+        return new RestTemplate(requestFactory);
+    }
+
+    /**
+     * httpsRestTemplate
+     */
+    @Bean("httpsRestTemplate")
+    public RestTemplate httpsRestTemplate() {
+        //httpClient
+        HttpsClientRequestFactory requestFactory = new HttpsClientRequestFactory();
         requestFactory.setConnectTimeout(5000);
         requestFactory.setReadTimeout(10000);
         return new RestTemplate(requestFactory);

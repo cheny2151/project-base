@@ -54,6 +54,9 @@ public class HttpUtils {
     @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
 
+    @Resource(name = "httpsRestTemplate")
+    private RestTemplate httpsRestTemplate;
+
     /**
      * get请求，返回包括响应状态的entity
      *
@@ -65,7 +68,7 @@ public class HttpUtils {
      */
     public <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
         try {
-            ResponseEntity<R> responseEntity = restTemplate.getForEntity(url, resultType, uriVariables);
+            ResponseEntity<R> responseEntity = getTemplate(url).getForEntity(url, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
@@ -87,7 +90,7 @@ public class HttpUtils {
     public <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url, ParameterizedTypeReference<B> resultType, Object... uriVariables) {
         HttpEntity<?> requestEntity = new HttpEntity<>(getHeader());
         try {
-            ResponseEntity<B> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, resultType, uriVariables);
+            ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.GET, requestEntity, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
@@ -143,7 +146,7 @@ public class HttpUtils {
     public <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody, ParameterizedTypeReference<B> resultType, Object... uriVariables) {
         HttpEntity<?> requestEntity = wrapRequest(requestBody);
         try {
-            ResponseEntity<B> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
+            ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
@@ -198,7 +201,7 @@ public class HttpUtils {
      */
     public <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
         try {
-            R responseBody = restTemplate.getForObject(url, resultType, uriVariables);
+            R responseBody = getTemplate(url).getForObject(url, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
             return responseBody;
@@ -222,7 +225,7 @@ public class HttpUtils {
     public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity requestEntity = wrapRequest(requestBody);
         try {
-            ResponseEntity<R> responseEntity = restTemplate.postForEntity(url, requestEntity, resultType, uriVariables);
+            ResponseEntity<R> responseEntity = getTemplate(url).postForEntity(url, requestEntity, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
@@ -247,7 +250,7 @@ public class HttpUtils {
     public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity requestEntity = wrapRequest(requestBody);
         try {
-            R responseBody = restTemplate.postForObject(url, requestEntity, resultType, uriVariables);
+            R responseBody = getTemplate(url).postForObject(url, requestEntity, resultType, uriVariables);
             if (isDug)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseBody));
@@ -285,4 +288,17 @@ public class HttpUtils {
         return httpHeaders != null ? httpHeaders : defaultHeader;
     }
 
+    /**
+     * 根据协议头选择restTemplate
+     *
+     * @param url 请求url
+     * @return restTemplate
+     */
+    private RestTemplate getTemplate(String url) {
+        RestTemplate restTemplate = this.restTemplate;
+        if (url.toLowerCase().startsWith("https")) {
+            restTemplate = this.httpsRestTemplate;
+        }
+        return restTemplate;
+    }
 }
