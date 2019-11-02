@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Transactional
-public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable> implements BaseService<T, ID> {
+public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> implements BaseService<T, ID> {
 
     private BaseMapper<T, ID> baseMapper;
 

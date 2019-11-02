@@ -16,7 +16,7 @@ import java.util.List;
  * @param <T>  entity
  * @param <ID> id
  */
-public interface BaseService<T extends BaseEntity, ID extends Serializable> {
+public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> {
 
     /**
      * 根据id查找对象

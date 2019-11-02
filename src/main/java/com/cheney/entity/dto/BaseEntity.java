@@ -9,14 +9,14 @@ import java.util.Date;
  * entity基类
  */
 @Data
-public class BaseEntity implements Serializable {
+public class BaseEntity<ID> implements Serializable {
 
     private static final long serialVersionUID = 9043258922225188076L;
 
     /**
      * id
      */
-    private Long id;
+    private ID id;
 
     /**
      * 创建时间

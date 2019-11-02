@@ -3,7 +3,7 @@ package com.cheney.entity.dto;
 /**
  * 角色
  */
-public class Role extends BaseEntity {
+public class Role extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -960190065903091695L;
 

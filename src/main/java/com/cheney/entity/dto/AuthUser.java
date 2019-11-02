@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class AuthUser extends BaseEntity {
+public class AuthUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8511714083272416828L;
 

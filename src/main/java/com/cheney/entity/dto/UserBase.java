@@ -7,7 +7,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class UserBase extends BaseEntity {
+public class UserBase extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 3896539459527873185L;
 
