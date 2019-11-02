@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class XMLGenerator {
 
+    private final static Class TARGET_ENTITY_CLASS = Admin.class;
+
     public final static String TABLE_NAME = "m_admin";
 
     public final static String ID_COLUMN = "id";
@@ -60,7 +62,7 @@ public class XMLGenerator {
     }
 
     public static void main(String[] args) throws IOException {
-        generate(Admin.class);
+        generate(TARGET_ENTITY_CLASS);
     }
 
     private static void generate(Class target) {
