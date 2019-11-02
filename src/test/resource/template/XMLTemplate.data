@@ -50,22 +50,20 @@
     </sql>
 
     <sql id="orders">
-      <if test="order != null">
+      <if test="orders != null and orders.valid == true">
           order by
-          <foreach collection="order.properties" separator="," item="property">
-              ${property}
+          <foreach collection="orders.orders" separator="," item="_order">
+              ${_order.property} #{_order.type}
           </foreach>
-          ${order.type}
       </if>
     </sql>
 
     <sql id="pageOrders">
-        <if test="pageable.order != null">
+        <if test="pageable.orders != null and pageable.orders.valid == true">
             order by
-            <foreach collection="pageable.order.properties" separator="," item="property">
-                ${property}
+            <foreach collection="pageable.orders.orders" separator="," item="_order">
+                ${_order.property} #{_order.type}
             </foreach>
-            ${pageable.order.type}
         </if>
     </sql>
 
