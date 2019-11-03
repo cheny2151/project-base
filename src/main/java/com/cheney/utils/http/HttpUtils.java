@@ -6,10 +6,20 @@ import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.response.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -261,17 +271,6 @@ public class HttpUtils {
         }
     }
 
-    private HttpEntity<?> wrapRequest(Object requestBody) {
-        HttpEntity<?> requestEntity;
-        if (requestBody instanceof HttpEntity) {
-            requestEntity = (HttpEntity<?>) requestBody;
-        } else {
-            //默认为application/json;charset=utf-8请求
-            requestEntity = new HttpEntity<>(requestBody, getHeader());
-        }
-        return requestEntity;
-    }
-
     public static void setCurrentHeader(Map<String, String> headers) {
         if (headers == null)
             throw new NullPointerException();
@@ -281,6 +280,65 @@ public class HttpUtils {
         }
         headers.forEach(httpHeaders::set);
         currentHeader.set(httpHeaders);
+    }
+
+    /**
+     * CloseableHttpClient发送简单的post请求
+     *
+     * @param url         请求url
+     * @param requestBody 请求数据
+     * @param contentType content-type
+     */
+    public String simpleGet(String url, Object requestBody, ContentType contentType) {
+        HttpGet httpGet = new HttpGet(url);
+        return simpleExecute(url, httpGet);
+    }
+
+    /**
+     * CloseableHttpClient发送简单的post请求
+     *
+     * @param url         请求url
+     * @param requestBody 请求数据
+     * @param contentType content-type
+     */
+    public String simplePost(String url, Object requestBody, ContentType contentType) {
+        HttpPost httpPost = new HttpPost(url);
+        StringEntity stringEntity = new StringEntity(JSON.toJSONString(requestBody), contentType);
+        httpPost.setEntity(stringEntity);
+        return simpleExecute(url, httpPost);
+    }
+
+    /**
+     * closeableHttpClient 简单的请求
+     *
+     * @param url         请求url
+     * @param httpRequest 请求实体
+     * @return 报文
+     */
+    private String simpleExecute(String url, HttpRequestBase httpRequest) {
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpHeaders httpHeaders = currentHeader.get();
+        if (!CollectionUtils.isEmpty(httpHeaders)) {
+            httpHeaders.forEach((k, v) -> httpRequest.addHeader(k, String.valueOf(v)));
+        }
+        try {
+            CloseableHttpResponse response = client.execute(httpRequest);
+            return EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private HttpEntity<?> wrapRequest(Object requestBody) {
+        HttpEntity<?> requestEntity;
+        if (requestBody instanceof HttpEntity) {
+            requestEntity = (HttpEntity<?>) requestBody;
+        } else {
+            //默认为application/json;charset=utf-8请求
+            requestEntity = new HttpEntity<>(requestBody, getHeader());
+        }
+        return requestEntity;
     }
 
     private static HttpHeaders getHeader() {
