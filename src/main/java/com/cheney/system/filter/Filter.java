@@ -8,10 +8,13 @@ public class Filter {
     // 转为下划线
     private final static boolean USE_UNDERLINE = true;
 
+    // 过滤符号
     private String symbol;
 
+    // 过滤值
     private Object value;
 
+    // 过滤属性
     private String property;
 
     public Filter(String symbol) {
