@@ -4,7 +4,7 @@ public enum ResponseCode {
 
     SUCCESS("Success", 200),
 
-    ERROR("Server Error", 500),
+    ERROR("Server Error", -500),
 
     USER_NOT_LOGIN("用户未登录", -1),
 

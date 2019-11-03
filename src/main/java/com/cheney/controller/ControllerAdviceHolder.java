@@ -104,9 +104,9 @@ public class ControllerAdviceHolder {
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public JsonMessage exceptionHandler(Exception e) {
+    public BaseResponse<?> exceptionHandler(Exception e) {
         log.error(e.getMessage(), e);
-        return JsonMessage.error(e.getMessage());
+        return BaseResponse.SERVER_ERROR;
     }
 
 }
