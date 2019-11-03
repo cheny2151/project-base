@@ -81,7 +81,6 @@
         <logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="OFF" />
         <logger name="com.cheney.dao.mybatis" level="INFO" additivity="false">
             <appender-ref ref="Console"/>
-<!--            <appender-ref ref="RollingFileInfo"/>-->
         </logger>
 
         <root level="INFO">
