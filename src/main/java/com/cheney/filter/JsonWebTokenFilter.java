@@ -11,6 +11,7 @@ import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
@@ -60,6 +61,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         String requestURI = httpServletRequest.getRequestURI();
         if (requiredLogin(requestURI) && !loginUser.isPresent()) {
             log.info("请求url:{},用户未登录", requestURI);
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
             JsonMessage errorMsg = JsonMessage.error(ResponseCode.USER_NOT_LOGIN);
             ServletOutputStream outputStream = httpServletResponse.getOutputStream();

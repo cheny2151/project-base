@@ -15,6 +15,7 @@ import com.cheney.utils.http.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -43,6 +44,20 @@ public class ControllerAdviceHolder {
     }
 
     /**
+     * 业务异常
+     *
+     * @param e BusinessRunTimeException
+     * @return 响应
+     */
+    @ExceptionHandler(BusinessRunTimeException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> BusinessRunTimeException(BusinessRunTimeException e) {
+        BaseResponse errorResponse = e.getErrorResponse();
+        log.info("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
+        return errorResponse;
+    }
+
+    /**
      * 透传内部服务调用业务code不为成功的响应
      *
      * @param e FailRCResponseException
@@ -58,20 +73,6 @@ public class ControllerAdviceHolder {
         response.setRequestId(RequestParamHolder.currentRequestId().orElse(null));
         log.info("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
         return response;
-    }
-
-    /**
-     * 服务调用异常
-     *
-     * @param e FailHttpStatusResponseException
-     * @return 响应
-     */
-    @ExceptionHandler(BusinessRunTimeException.class)
-    @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<?> BusinessRunTimeException(BusinessRunTimeException e) {
-        BaseResponse errorResponse = e.getErrorResponse();
-        log.info("内部服务调用失败，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
-        return errorResponse;
     }
 
     /**
@@ -96,7 +97,7 @@ public class ControllerAdviceHolder {
      * @return http响应
      */
     @ExceptionHandler(MultiRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public JsonMessage multiRequestException(MultiRequestException e) {
         final RequestInfo requestInfo = e.getRequestInfo();
         final HttpEntity responseEntity = e.getResponseEntity();
@@ -108,6 +109,19 @@ public class ControllerAdviceHolder {
         } else {
             log.error("HTTP请求异常", e.getCause());
         }
+        return JsonMessage.error(e.getMessage());
+    }
+
+    /**
+     * 聚合Http请求异常拦截响应
+     *
+     * @param e MultiRequestException
+     * @return http响应
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public JsonMessage HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        log.error("不支持的请求,{}", e.getMessage());
         return JsonMessage.error(e.getMessage());
     }
 
