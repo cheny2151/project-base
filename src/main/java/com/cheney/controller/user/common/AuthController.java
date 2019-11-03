@@ -46,7 +46,7 @@ public class AuthController {
             String token = JwtUtils.generateToken(jwtPrincipal);
             redisClient.setValue(RedisKey.AUTH_TOKEN_KEY.getKey(token), jwtPrincipal, JwtUtils.IN_DATE);
             return JsonMessage.success(
-                    "user", JsonMessage.extract(jwtPrincipal, "username", "authorities"),
+                    "user", JsonMessage.extract(jwtPrincipal, "username", "roles"),
                     "token", token
             );
         }
