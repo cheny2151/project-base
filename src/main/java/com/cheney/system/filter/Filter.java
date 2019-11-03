@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 public class Filter {
 
     // 转为下划线
-    private static boolean USE_UNDERLINE = true;
+    private final static boolean USE_UNDERLINE = true;
 
     private String symbol;
 
