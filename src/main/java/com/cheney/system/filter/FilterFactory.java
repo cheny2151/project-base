@@ -1,9 +1,6 @@
 package com.cheney.system.filter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 过滤器工厂
@@ -88,8 +85,8 @@ public class FilterFactory {
         return new NotLikeFilter(property, value);
     }
 
-    public static List<Filter> create(Filter... filters) {
-        return new ArrayList<>(Arrays.asList(filters));
+    public static Filters create(Filter filters) {
+        return new Filters(filters);
     }
 
 }
