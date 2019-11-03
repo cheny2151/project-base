@@ -17,11 +17,14 @@ public class JwtPrincipal extends AuthUser {
 
     private static final long serialVersionUID = 2764317447462499613L;
 
+    private String token;
+
     public JwtPrincipal() {
     }
 
     public JwtPrincipal(String username, String password, boolean enabled, Set<Role> roles, Long originId, Date lastPasswordReset) {
         super(username, password, enabled, roles, originId, lastPasswordReset);
+        this.token = JwtUtils.generateToken(this);
     }
 
 }

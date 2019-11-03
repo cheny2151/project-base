@@ -1,7 +1,6 @@
 package com.cheney.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.cheney.entity.dto.AuthUser;
 import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.system.response.JsonMessage;
@@ -45,7 +44,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         // 从请求头中获取token
         String token = httpServletRequest.getHeader(AUTH_REQUEST_HEAD);
 
-        Optional<AuthUser> loginUser = Optional.empty();
+        Optional<JwtPrincipal> loginUser = Optional.empty();
         if (StringUtils.isNotEmpty(token)) {
             // 校验并解析token
             JwtUtils jwtUtils = JwtUtils.parseToken(token);
@@ -81,7 +80,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
      *
      * @param jwtUtils 用户jwt信息
      */
-    private AuthUser loadUserByJwt(JwtUtils jwtUtils) {
+    private JwtPrincipal loadUserByJwt(JwtUtils jwtUtils) {
         String token = jwtUtils.getToken();
         return redisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
     }

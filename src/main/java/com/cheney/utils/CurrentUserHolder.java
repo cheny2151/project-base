@@ -1,6 +1,6 @@
 package com.cheney.utils;
 
-import com.cheney.entity.dto.AuthUser;
+import com.cheney.utils.jwt.JwtPrincipal;
 
 /**
  * 登录用户Holder类
@@ -10,13 +10,13 @@ import com.cheney.entity.dto.AuthUser;
  */
 public class CurrentUserHolder {
 
-    private static ThreadLocal<AuthUser> authUserThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<JwtPrincipal> authUserThreadLocal = new ThreadLocal<>();
 
-    public static AuthUser getCurrentUser() {
+    public static JwtPrincipal getCurrentUser() {
         return authUserThreadLocal.get();
     }
 
-    public static void setCurrentUser(AuthUser authUser) {
+    public static void setCurrentUser(JwtPrincipal authUser) {
         authUserThreadLocal.set(authUser);
     }
 
