@@ -3,7 +3,10 @@ package com.cheney.service.impl;
 import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.entity.dto.AuthUser;
+import com.cheney.exception.BusinessRunTimeException;
 import com.cheney.service.UserService;
+import com.cheney.system.response.ResponseCode;
+import com.cheney.utils.Md5Utils;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +31,16 @@ public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements 
     }
 
     @Override
-    public AuthUser findByUsername(String username) {
-        return userMapper.findByUsername(username);
-    }
-
-    @Override
     public JwtPrincipal authenticated(String username, String password) {
-        return null;
+        AuthUser auth = userMapper.findByUsername(username);
+        if (auth == null) {
+            throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+        }
+        boolean validate = Md5Utils.getSaltverifyMD5(password, auth.getPassword());
+        if (!validate) {
+            throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+        }
+        return new JwtPrincipal(username, password, true, null, auth.getOriginId(), null);
     }
 
 }

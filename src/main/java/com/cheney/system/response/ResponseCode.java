@@ -8,6 +8,8 @@ public enum ResponseCode {
 
     USER_NOT_LOGIN("用户未登录", -1),
 
+    USERNAME_OR_PASSWORD_ERROR("用户名或密码错误", -2),
+
     USERNAME_NOT_FOUND("Username not found", -100);
 
     private String msg;

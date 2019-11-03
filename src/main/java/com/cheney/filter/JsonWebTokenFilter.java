@@ -2,9 +2,11 @@ package com.cheney.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.cheney.entity.dto.AuthUser;
+import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.system.response.ResponseCode;
+import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,8 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
             JwtUtils jwtUtils = JwtUtils.parseToken(token);
             if (jwtUtils != null && jwtUtils.validate()) {
                 loginUser = Optional.ofNullable(loadUserByJwt(jwtUtils));
+                // 缓存线程变量：当前登录用户
+                loginUser.ifPresent(CurrentUserHolder::setCurrentUser);
             } else {
                 log.error("用户token校验失败:token:{}", token);
             }
@@ -67,6 +71,9 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
 
         doFilter(httpServletRequest, httpServletResponse, filterChain);
 
+        // 移除当前登录对象缓存
+        CurrentUserHolder.remove();
+
     }
 
     /**
@@ -75,7 +82,8 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
      * @param jwtUtils 用户jwt信息
      */
     private AuthUser loadUserByJwt(JwtUtils jwtUtils) {
-        return null;
+        String token = jwtUtils.getToken();
+        return redisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.cheney.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.cheney.exception.BusinessRunTimeException;
 import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.exception.MultiRequestException;
@@ -57,6 +58,20 @@ public class ControllerAdviceHolder {
         response.setRequestId(RequestParamHolder.currentRequestId().orElse(null));
         log.info("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
         return response;
+    }
+
+    /**
+     * 服务调用异常
+     *
+     * @param e FailHttpStatusResponseException
+     * @return 响应
+     */
+    @ExceptionHandler(BusinessRunTimeException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> BusinessRunTimeException(BusinessRunTimeException e) {
+        BaseResponse errorResponse = e.getErrorResponse();
+        log.info("内部服务调用失败，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
+        return errorResponse;
     }
 
     /**

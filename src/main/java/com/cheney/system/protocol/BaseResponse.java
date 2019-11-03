@@ -60,6 +60,10 @@ public class BaseResponse<T> {
         return baseResponse;
     }
 
+    public static BaseResponse error(String msg) {
+        return error(ResponseCode.ERROR.getStatus(), msg);
+    }
+
     public static BaseResponse error(int code, String msg) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode(code);
