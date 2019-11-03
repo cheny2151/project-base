@@ -29,8 +29,19 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
 @Slf4j
 public class RequestParamFilter extends OncePerRequestFilter {
 
+    // 忽略的url正则表达式
+    private final static String[] IGNORE_PATTERN = new String[]{".*.ico", ".*.html"};
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = httpServletRequest.getRequestURI();
+        // 放行忽略的url
+        for (String ignore : IGNORE_PATTERN) {
+            if (requestURI.matches(ignore)) {
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+                break;
+            }
+        }
         String method = httpServletRequest.getMethod();
         switch (method.toUpperCase()) {
             case HttpSupport.Method.HTTP_METHOD_GET: {
@@ -53,7 +64,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 log.warn("unSupport Http Request Method");
             }
         }
-        log.info("请求url->{},请求requestBody->{}", httpServletRequest.getRequestURI()
+        log.info("请求url->{},请求requestBody->{}", requestURI
                 , JSON.toJSONString(RequestParamHolder.currentRequestParam()));
         filterChain.doFilter(httpServletRequest, httpServletResponse);
         RequestParamHolder.remove();
