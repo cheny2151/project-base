@@ -1,6 +1,6 @@
 package com.cheney.service;
 
-import com.cheney.entity.dto.BaseEntity;
+import com.cheney.entity.BaseEntity;
 import com.cheney.system.filter.Filter;
 import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;

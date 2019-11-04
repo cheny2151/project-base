@@ -1,6 +1,6 @@
 package com.cheney.system.page;
 
-import com.cheney.entity.dto.BaseEntity;
+import com.cheney.entity.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;

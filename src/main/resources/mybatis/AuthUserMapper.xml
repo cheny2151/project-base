@@ -3,11 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace命名空间对应要映射的dao接口的全限定名 -->
-<mapper namespace="com.cheney.dao.mybatis.AdminMapper">
+<mapper namespace="com.cheney.dao.mybatis.AuthUserMapper">
 
-    <resultMap id="base" type="com.cheney.entity.dto.Admin">
+    <resultMap id="base" type="com.cheney.entity.AuthUser">
         <id property="id" column="id"/>
         <result property="createDate" column="createDate"/>
+        <result property="enabled" column="enabled"/>
+        <result property="originId" column="originId"/>
+        <result property="password" column="password"/>
+        <result property="roles" column="roles"/>
+        <result property="updateDate" column="updateDate"/>
         <result property="username" column="username"/>
     </resultMap>
 
@@ -52,22 +57,20 @@
     </sql>
 
     <sql id="orders">
-      <if test="order != null">
+      <if test="orders != null and orders.valid == true">
           order by
-          <foreach collection="order.properties" separator="," item="property">
-              ${property}
+          <foreach collection="orders.orders" separator="," item="_order">
+              ${_order.property} #{_order.type}
           </foreach>
-          ${order.type}
       </if>
     </sql>
 
     <sql id="pageOrders">
-        <if test="pageable.order != null">
+        <if test="pageable.orders != null and pageable.orders.valid == true">
             order by
-            <foreach collection="pageable.order.properties" separator="," item="property">
-                ${property}
+            <foreach collection="pageable.orders.orders" separator="," item="_order">
+                ${_order.property} #{_order.type}
             </foreach>
-            ${pageable.order.type}
         </if>
     </sql>
 
@@ -75,61 +78,121 @@
         <result property="total" column="count"/>
         <result property="pageSize" column="pageSize"/>
         <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="com.cheney.entity.dto.Admin" >
+        <collection property="content" ofType="com.cheney.entity.AuthUser" >
             <id property="id" column="id"/>
         <result property="createDate" column="createDate"/>
+        <result property="enabled" column="enabled"/>
+        <result property="originId" column="originId"/>
+        <result property="password" column="password"/>
+        <result property="roles" column="roles"/>
+        <result property="updateDate" column="updateDate"/>
         <result property="username" column="username"/>
         </collection>
     </resultMap>
 
     <select id="find" parameterType="Long" resultMap="base">
         select *
-        from m_admin
+        from sys_auth_user
         where id = #{id}
+    </select>
+
+    <select id="filter" resultMap="base">
+        select *
+        from sys_auth_user
+        <include refid="filters"/>
     </select>
 
     <select id="findAll" resultMap="base">
         select *
-        from m_admin
+        from sys_auth_user
     </select>
 
-    <insert id="persist" parameterType="com.cheney.entity.dto.Admin">
-        insert into m_admin (
+    <insert id="persist" parameterType="com.cheney.entity.AuthUser">
+        insert into sys_auth_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
 		<if test="createDate != null">
 			createDate,
+		</if>
+		<if test="enabled != null">
+			enabled,
+		</if>
+		<if test="originId != null">
+			originId,
+		</if>
+		<if test="password != null">
+			password,
+		</if>
+		<if test="roles != null">
+			roles,
+		</if>
+		<if test="updateDate != null">
+			updateDate,
 		</if>
 		<if test="username != null">
 			username
 		</if>
-        )
-        values(
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
 		<if test="createDate != null">
 			#{createDate},
+		</if>
+		<if test="enabled != null">
+			#{enabled},
+		</if>
+		<if test="originId != null">
+			#{originId},
+		</if>
+		<if test="password != null">
+			#{password},
+		</if>
+		<if test="roles != null">
+			#{roles},
+		</if>
+		<if test="updateDate != null">
+			#{updateDate},
 		</if>
 		<if test="username != null">
 			#{username}
 		</if>
-        )
+        </trim>
     </insert>
 
-    <update id="merge" parameterType="com.cheney.entity.dto.Admin">
-        update m_admin
+    <update id="merge" parameterType="com.cheney.entity.AuthUser">
+        update sys_auth_user
         set
+        <trim suffixOverrides=",">
 		<if test="createDate != null">
 			createDate = #{createDate},
+		</if>
+		<if test="enabled != null">
+			enabled = #{enabled},
+		</if>
+		<if test="originId != null">
+			originId = #{originId},
+		</if>
+		<if test="password != null">
+			password = #{password},
+		</if>
+		<if test="roles != null">
+			roles = #{roles},
+		</if>
+		<if test="updateDate != null">
+			updateDate = #{updateDate},
 		</if>
 		<if test="username != null">
 			username = #{username}
 		</if>
+        </trim>
         where id = #{id}
     </update>
 
     <delete id="remove" parameterType="Long">
-        delete from m_admin where id = #{id}
+        delete from sys_auth_user where id = #{id}
     </delete>
 
     <delete id="multiRemove" parameterType="Long">
-        delete from m_admin
+        delete from sys_auth_user
         where id in
         <foreach item="id" collection="ids" open="(" close=")" separator=",">
             #{id}
@@ -140,19 +203,25 @@
         select
         #{pageable.pageSize} as pageSize
         ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from m_admin<include refid="pageFilters"/>) as count
+        ,(select count(*) from sys_auth_user<include refid="pageFilters"/>) as count
         ,t1.*
-        from m_admin t1
+        from sys_auth_user t1
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>
         limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
-    <select id="findList" resultType="com.cheney.entity.dto.Admin">
+    <select id="findList" resultType="com.cheney.entity.AuthUser">
         select *
-        from m_admin
+        from sys_auth_user
         <include refid="filters"/>
         <include refid="orders"/>
+    </select>
+
+    <select id="findByUsername" resultType="com.cheney.entity.AuthUser">
+        select *
+        from sys_auth_user
+        where username = #{username}
     </select>
 
 </mapper>

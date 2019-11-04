@@ -1,10 +1,10 @@
 package com.cheney.service.impl;
 
+import com.cheney.dao.mybatis.AuthUserMapper;
 import com.cheney.dao.mybatis.BaseMapper;
-import com.cheney.dao.mybatis.UserMapper;
-import com.cheney.entity.dto.AuthUser;
+import com.cheney.entity.AuthUser;
 import com.cheney.exception.BusinessRunTimeException;
-import com.cheney.service.UserService;
+import com.cheney.service.AuthUserService;
 import com.cheney.system.response.ResponseCode;
 import com.cheney.utils.Md5Utils;
 import com.cheney.utils.jwt.JwtPrincipal;
@@ -12,17 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-
 /**
- * User - serviceImpl
+ * AuthUser - serviceImpl
  */
-@Service
+@Service("authUserServiceImpl")
 @Transactional
-public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements UserService {
+public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements AuthUserService {
 
-    @Resource(name = "userMapper")
-    private UserMapper userMapper;
+    @Autowired
+    private AuthUserMapper authUserMapper;
 
     @Autowired
     @Override
@@ -32,7 +30,7 @@ public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements 
 
     @Override
     public JwtPrincipal authenticated(String username, String password) {
-        AuthUser auth = userMapper.findByUsername(username);
+        AuthUser auth = authUserMapper.findByUsername(username);
         if (auth == null) {
             throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
@@ -40,7 +38,7 @@ public class UserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements 
         if (!validate) {
             throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
-        return new JwtPrincipal(username, password, true, null, auth.getOriginId(), null);
+        return new JwtPrincipal(username, password, true, null, auth.getOriginId());
     }
 
 }

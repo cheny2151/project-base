@@ -1,6 +1,6 @@
 package com.cheney.mybatis;
 
-import com.cheney.entity.dto.Admin;
+import com.cheney.entity.AuthUser;
 import com.cheney.mybatis.chain.AbstractSwitch;
 import com.cheney.mybatis.chain.SwitchChain;
 
@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class XMLGenerator {
 
-    private final static Class TARGET_ENTITY_CLASS = Admin.class;
+    private final static Class TARGET_ENTITY_CLASS = AuthUser.class;
 
-    public final static String TABLE_NAME = "m_admin";
+    public final static String TABLE_NAME = "sys_auth_user";
 
     public final static String ID_COLUMN = "id";
 
@@ -45,10 +45,10 @@ public class XMLGenerator {
         dataFile.put("ServiceImpl", "src|test|resources|template|ServiceImplTemplate.data");
 
         generatorFilePackage = new HashMap<>();
-        generatorFilePackage.put("Mapper", "src|test|resources|mybatis");
-        generatorFilePackage.put("Dao", "src|test|java|com|cheney|dao|mybatis");
-        generatorFilePackage.put("Service", "src|test|java|com|cheney|service");
-        generatorFilePackage.put("ServiceImpl", "src|test|java|com|cheney|service|impl");
+        generatorFilePackage.put("Mapper", "src|main|resources|mybatis");
+        generatorFilePackage.put("Dao", "src|main|java|com|cheney|dao|mybatis");
+        generatorFilePackage.put("Service", "src|main|java|com|cheney|service");
+        generatorFilePackage.put("ServiceImpl", "src|main|java|com|cheney|service|impl");
 
         buildSystemPath(dataFile);
         buildSystemPath(generatorFilePackage);

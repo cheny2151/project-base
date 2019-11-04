@@ -1,6 +1,5 @@
 package com.cheney.controller;
 
-import com.cheney.dao.mybatis.UserMapper;
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.system.response.JsonMessage;
@@ -14,9 +13,6 @@ import javax.annotation.Resource;
 
 @Controller("pageCommonController")
 public class PageCommonController {
-
-    @Resource(name = "userMapper")
-    private UserMapper userMapper;
 
     @Resource(name = "redisClientWithLog")
     private RedisClient<String> redisClient;

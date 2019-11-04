@@ -1,4 +1,4 @@
-package com.cheney.entity.dto;
+package com.cheney.entity;
 
 import lombok.Data;
 
@@ -22,5 +22,10 @@ public class BaseEntity<ID> implements Serializable {
      * 创建时间
      */
     private Date createDate;
+
+    /**
+     * 更新时间
+     */
+    private Date updateDate;
 
 }

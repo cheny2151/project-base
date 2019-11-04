@@ -1,7 +1,7 @@
 package com.cheney.utils.entityCopy;
 
-import com.cheney.entity.dto.AuthUser;
-import com.cheney.entity.dto.TestCopyEntity;
+import com.cheney.entity.AuthUser;
+import com.cheney.entity.TestCopyEntity;
 import com.cheney.exception.EntityCopyException;
 import com.cheney.utils.ReflectUtils;
 import com.cheney.utils.entityCopy.annotation.CopyAsClass;

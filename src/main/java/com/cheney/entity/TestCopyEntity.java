@@ -1,4 +1,4 @@
-package com.cheney.entity.dto;
+package com.cheney.entity;
 
 import com.cheney.utils.entityCopy.annotation.CopyAsClass;
 import com.cheney.utils.entityCopy.annotation.CopyAsField;

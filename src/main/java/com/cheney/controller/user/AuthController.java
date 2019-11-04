@@ -3,7 +3,7 @@ package com.cheney.controller.user;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.javaconfig.redis.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
-import com.cheney.service.UserService;
+import com.cheney.service.AuthUserService;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.RequestParamHolder;
@@ -23,8 +23,8 @@ import javax.annotation.Resource;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Resource(name = "userServiceImpl")
-    private UserService userService;
+    @Resource(name = "authUserServiceImpl")
+    private AuthUserService authUserService;
     @Resource(name = "jsonRedisClient")
     private JsonRedisClient<JwtPrincipal> redisClient;
 
@@ -40,7 +40,7 @@ public class AuthController {
         if (!requestParams.containsKey("password")) {
             return JsonMessage.error("password must not null");
         }
-        JwtPrincipal jwtPrincipal = userService.authenticated(requestParams.getString("username"),
+        JwtPrincipal jwtPrincipal = authUserService.authenticated(requestParams.getString("username"),
                 requestParams.getString("password"));
         if (jwtPrincipal != null) {
             String token = jwtPrincipal.getToken();

@@ -1,16 +1,14 @@
-package com.cheney.entity.dto;
+package com.cheney.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
 
 /**
  * 角色
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity<Long> {
+public class Role extends BaseEntity<Integer> {
 
     private static final long serialVersionUID = -960190065903091695L;
 
@@ -20,8 +18,8 @@ public class Role extends BaseEntity<Long> {
     private String name;
 
     /**
-     * 角色认证权限
+     * 角色编码
      */
-    private List<String> authCode;
+    private String code;
 
 }

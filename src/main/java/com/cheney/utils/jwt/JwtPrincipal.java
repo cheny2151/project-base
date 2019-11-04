@@ -1,11 +1,10 @@
 package com.cheney.utils.jwt;
 
-import com.cheney.entity.dto.AuthUser;
-import com.cheney.entity.dto.Role;
+import com.cheney.entity.AuthUser;
+import com.cheney.entity.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -22,8 +21,8 @@ public class JwtPrincipal extends AuthUser {
     public JwtPrincipal() {
     }
 
-    public JwtPrincipal(String username, String password, boolean enabled, Set<Role> roles, Long originId, Date lastPasswordReset) {
-        super(username, password, enabled, roles, originId, lastPasswordReset);
+    public JwtPrincipal(String username, String password, boolean enabled, Set<Role> roles, Long originId) {
+        super(username, password, enabled, roles, originId);
         this.token = JwtUtils.generateToken(this);
     }
 

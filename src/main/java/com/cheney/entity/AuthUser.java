@@ -1,11 +1,9 @@
-package com.cheney.entity.dto;
+package com.cheney.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -34,30 +32,24 @@ public class AuthUser extends BaseEntity<Long> {
     private boolean enabled;
 
     /**
-     * 角色
-     */
-    private Set<Role> roles = new HashSet<>();
-
-    /**
-     * 原类型id
+     * 源用户id
      */
     private Long originId;
 
     /**
-     * 最后一次修改密码的时间
+     * 角色
      */
-    private Date lastPasswordReset;
+    private Set<Role> roles;
 
     public AuthUser() {
     }
 
-    public AuthUser(String username, String password, boolean enabled, Set<Role> roles, Long originId, Date lastPasswordReset) {
+    public AuthUser(String username, String password, boolean enabled, Set<Role> roles, Long originId) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
         this.originId = originId;
-        this.lastPasswordReset = lastPasswordReset;
     }
 
 }
