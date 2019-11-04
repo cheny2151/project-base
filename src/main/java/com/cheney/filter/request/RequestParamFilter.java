@@ -2,6 +2,7 @@ package com.cheney.filter.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cheney.exception.JsonParseException;
 import com.cheney.system.page.PageInfo;
 import com.cheney.system.protocol.BaseRequest;
 import com.cheney.utils.HttpSupport;
@@ -126,6 +127,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
             RequestParamHolder.setRequestParam(requestParam);
         } catch (Exception e) {
             log.error("请求体解析失败", e);
+            throw new JsonParseException("请求体解析异常");
         }
     }
 

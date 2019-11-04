@@ -11,7 +11,6 @@
         <result property="enabled" column="enabled"/>
         <result property="originId" column="originId"/>
         <result property="password" column="password"/>
-        <result property="roles" column="roles"/>
         <result property="updateDate" column="updateDate"/>
         <result property="username" column="username"/>
     </resultMap>
@@ -84,7 +83,6 @@
         <result property="enabled" column="enabled"/>
         <result property="originId" column="originId"/>
         <result property="password" column="password"/>
-        <result property="roles" column="roles"/>
         <result property="updateDate" column="updateDate"/>
         <result property="username" column="username"/>
         </collection>
@@ -122,9 +120,6 @@
 		<if test="password != null">
 			password,
 		</if>
-		<if test="roles != null">
-			roles,
-		</if>
 		<if test="updateDate != null">
 			updateDate,
 		</if>
@@ -145,9 +140,6 @@
 		</if>
 		<if test="password != null">
 			#{password},
-		</if>
-		<if test="roles != null">
-			#{roles},
 		</if>
 		<if test="updateDate != null">
 			#{updateDate},
@@ -173,9 +165,6 @@
 		</if>
 		<if test="password != null">
 			password = #{password},
-		</if>
-		<if test="roles != null">
-			roles = #{roles},
 		</if>
 		<if test="updateDate != null">
 			updateDate = #{updateDate},
