@@ -1,4 +1,4 @@
-package com.cheney.entity;
+package com.cheney.entity.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
