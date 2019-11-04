@@ -1,4 +1,4 @@
-package com.cheney.controller.user.common;
+package com.cheney.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.javaconfig.redis.RedisKey;
