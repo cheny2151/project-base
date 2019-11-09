@@ -19,7 +19,7 @@ import java.util.Date;
 @Aspect
 public class EntityUpdateAop {
 
-    @Pointcut("execution(void com.cheney.service.BaseService.save(*))")
+    @Pointcut("execution(* com.cheney.service.BaseService.save(*))")
     public void savePoint() {
     }
 

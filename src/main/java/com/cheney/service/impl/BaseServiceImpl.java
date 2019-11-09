@@ -39,8 +39,8 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
     }
 
     @Override
-    public void save(T entity) {
-        baseMapper.persist(entity);
+    public ID save(T entity) {
+        return baseMapper.persist(entity);
     }
 
     @Override
