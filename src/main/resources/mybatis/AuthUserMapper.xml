@@ -105,7 +105,7 @@
         from sys_auth_user
     </select>
 
-    <insert id="persist" useGeneratedKeys="true" keyProperty="id" parameterType="com.cheney.entity.AuthUser">
+    <insert id="persist" parameterType="com.cheney.entity.AuthUser" useGeneratedKeys="true" keyProperty="id">
         insert into sys_auth_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
 		<if test="createDate != null">
