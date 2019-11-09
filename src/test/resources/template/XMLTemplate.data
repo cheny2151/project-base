@@ -93,7 +93,7 @@
         from @{tableName}
     </select>
 
-    <insert id="persist" parameterType="@{package}">
+    <insert id="persist" parameterType="@{package}" useGeneratedKeys="true" keyProperty="id">
         insert into @{tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
 @{cloumns}
