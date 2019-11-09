@@ -18,19 +18,21 @@
     <sql id="filters">
         <where>
             <foreach collection="filters" item="filter" separator="and">
-                <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
-                    ${filter.property} ${filter.symbol} #{filter.value}
-                </if>
-                <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                    ${filter.property} ${filter.symbol}
-                </if>
-                <if test="filter.symbol == 'in'">
-                    ${filter.property}
-                    in
-                    <foreach collection="filter.value" item="item" separator="," open="(" close=")">
-                        #{item}
-                    </foreach>
-                </if>
+                <choose>
+                    <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                        ${filter.property} ${filter.symbol}
+                    </when>
+                    <when test="filter.symbol == 'in'">
+                        ${filter.property}
+                        in
+                        <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${filter.property} ${filter.symbol} #{filter.value}
+                    </otherwise>
+                </choose>
             </foreach>
         </where>
     </sql>
@@ -38,19 +40,21 @@
     <sql id="pageFilters">
         <where>
             <foreach collection="pageable.filters" item="filter" separator="and">
-                <if test="filter.symbol != 'is null' and filter.symbol != 'is not null' and filter.symbol != 'in'">
-                    ${filter.property} ${filter.symbol} #{filter.value}
-                </if>
-                <if test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                    ${filter.property} ${filter.symbol}
-                </if>
-                <if test="filter.symbol == 'in'">
-                    ${filter.property}
-                    in
-                    <foreach collection="filter.value" item="item" separator="," open="(" close=")">
-                        #{item}
-                    </foreach>
-                </if>
+                <choose>
+                    <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                        ${filter.property} ${filter.symbol}
+                    </when>
+                    <when test="filter.symbol == 'in'">
+                        ${filter.property}
+                        in
+                        <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${filter.property} ${filter.symbol} #{filter.value}
+                    </otherwise>
+                </choose>
             </foreach>
         </where>
     </sql>
