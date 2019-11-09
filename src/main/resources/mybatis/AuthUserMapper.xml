@@ -207,7 +207,7 @@
         <include refid="orders"/>
     </select>
 
-    <select id="count" resultType="Long">
+    <select id="count" resultType="long">
         select count(1)
         from sys_auth_user
         <include refid="filters"/>
@@ -218,6 +218,5 @@
         from sys_auth_user
         where username = #{username}
     </select>
-
 
 </mapper>
