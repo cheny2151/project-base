@@ -31,7 +31,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 保存
      */
-    ID persist(T entity);
+    void persist(T entity);
 
     /**
      * 更新

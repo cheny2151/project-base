@@ -36,7 +36,7 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
     /**
      * 保存
      */
-    ID save(T entity);
+    void save(T entity);
 
     /**
      * 更新
