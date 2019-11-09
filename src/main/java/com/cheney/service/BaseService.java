@@ -2,7 +2,6 @@ package com.cheney.service;
 
 import com.cheney.entity.BaseEntity;
 import com.cheney.system.filter.Filter;
-import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -77,7 +76,7 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
     /**
      * 过滤count
      */
-    long count(Filters filters);
+    long count(Collection<Filter> filters);
 
     /**
      * 分页

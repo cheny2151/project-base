@@ -57,7 +57,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤count
      */
-    long count(@Param("filters") Filters filters);
+    long count(@Param("filters") Collection<Filter> filters);
 
     /**
      * 分页
