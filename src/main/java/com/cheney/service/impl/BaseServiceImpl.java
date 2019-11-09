@@ -4,6 +4,7 @@ import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.BaseEntity;
 import com.cheney.service.BaseService;
 import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -83,8 +84,8 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
     }
 
     @Override
-    public long count(Filter filter) {
-        return 0;
+    public long count(Filters filters) {
+        return baseMapper.count(filters);
     }
 
     @Override

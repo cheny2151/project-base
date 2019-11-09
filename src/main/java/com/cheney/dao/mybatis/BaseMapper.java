@@ -2,6 +2,7 @@ package com.cheney.dao.mybatis;
 
 import com.cheney.entity.BaseEntity;
 import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
@@ -56,7 +57,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤count
      */
-//    long count(Filter filter);
+    long count(@Param("filters") Filters filters);
 
     /**
      * 分页

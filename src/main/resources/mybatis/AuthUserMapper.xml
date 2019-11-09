@@ -207,10 +207,17 @@
         <include refid="orders"/>
     </select>
 
+    <select id="count" resultType="Long">
+        select count(1)
+        from sys_auth_user
+        <include refid="filters"/>
+    </select>
+
     <select id="findByUsername" resultType="com.cheney.entity.AuthUser">
         select *
         from sys_auth_user
         where username = #{username}
     </select>
+
 
 </mapper>

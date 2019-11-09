@@ -144,4 +144,11 @@
         <include refid="orders"/>
     </select>
 
+    <select id="count" resultType="@{idType}">
+        select count(1)
+        from @{tableName}
+        <include refid="filters"/>
+    </select>
+
+
 </mapper>
