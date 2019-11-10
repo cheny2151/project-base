@@ -18,14 +18,14 @@ public interface CommonCache<T extends BaseEntity<ID>, ID extends Serializable> 
      * @param key 唯一code
      * @return 实体缓存
      */
-    BaseEntity getByCode(Object key);
+    T getByCache(Object key);
 
     /**
      * 缓存实体
      *
-     * @param baseEntity 实体
+     * @param entity 实体
      */
-    void cache(BaseEntity baseEntity);
+    void cache(T entity);
 
     /**
      * 刷新所有缓存

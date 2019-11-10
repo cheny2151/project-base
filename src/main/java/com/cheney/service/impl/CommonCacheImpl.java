@@ -7,8 +7,12 @@ import com.cheney.service.BaseService;
 import com.cheney.service.CommonCache;
 import com.cheney.utils.ReflectUtils;
 import com.cheney.utils.annotation.CacheKey;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 通用缓存实现类
@@ -21,26 +25,41 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
 
     private JsonRedisClient<T> jsonRedisClient;
 
-    protected CommonCacheImpl(BaseMapper<T, ID> baseMapper, JsonRedisClient<T> jsonRedisClient) {
+    private String baseKey;
+
+    protected CommonCacheImpl(BaseMapper<T, ID> baseMapper, JsonRedisClient<T> jsonRedisClient, String baseKey) {
         super(baseMapper);
         this.jsonRedisClient = jsonRedisClient;
+        this.baseKey = baseKey;
     }
 
     @Override
-    public BaseEntity getByCode(Object key) {
-        return null;
+    public T getByCache(Object key) {
+        return jsonRedisClient.HGetForMap(baseKey, String.valueOf(key));
     }
 
     @Override
-    public void cache(BaseEntity baseEntity) {
-        CacheKey cacheKey = baseEntity.getClass().getDeclaredAnnotation(CacheKey.class);
+    public void cache(T entity) {
+        CacheKey cacheKey = entity.getClass().getDeclaredAnnotation(CacheKey.class);
         String property = cacheKey.key();
-        Object key = ReflectUtils.readValue(baseEntity, property);
-        System.out.println(key);
+        Object key = ReflectUtils.readValue(entity, property);
+        jsonRedisClient.HSetForMap(baseKey, String.valueOf(key), entity);
     }
 
     @Override
     public void refreshAll() {
-
+        List<T> all = super.findAll();
+        if (CollectionUtils.isEmpty(all)) {
+            return;
+        }
+        CacheKey cacheKey = all.get(0).getClass().getDeclaredAnnotation(CacheKey.class);
+        String property = cacheKey.key();
+        Map<String, T> allMap = new HashMap<>();
+        all.forEach(e -> {
+            Object key = ReflectUtils.readValue(e, property);
+            allMap.put(String.valueOf(key), e);
+        });
+        jsonRedisClient.HMSetForMap(baseKey, allMap);
     }
+
 }

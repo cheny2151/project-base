@@ -1,7 +1,10 @@
 package com.cheney.controller;
 
+import com.cheney.entity.BaseEntity;
+import com.cheney.entity.Role;
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
+import com.cheney.service.RoleService;
 import com.cheney.system.response.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -23,6 +26,9 @@ public class PageCommonController {
     @Resource(name = "defaultClusterTaskPublisher")
     private ClusterTaskPublisher clusterTaskPublisher;
 
+    @Resource(name = "roleServiceImpl")
+    private RoleService roleService;
+
     @Autowired
     private Environment environment;
 
@@ -36,6 +42,7 @@ public class PageCommonController {
     @RequestMapping("/test2")
     @ResponseBody
     public void test2() {
-//        kafkaTemplate.send("test", "template send msg");
+        Role test = roleService.getByCache("test3");
+        System.out.println(test);
     }
 }
