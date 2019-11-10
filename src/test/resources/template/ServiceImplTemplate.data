@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 /**
  * @{simpleClassName} - serviceImpl
  */
@@ -12,13 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class @{simpleClassName}ServiceImpl extends BaseServiceImpl<@{simpleClassName}, @{idSimpleClassName}> implements @{simpleClassName}Service {
 
-    @Autowired
+    @Resource
     private @{simpleClassName}Mapper @{lowSimpleClassName}Mapper;
 
     @Autowired
-    @Override
-    protected void setBaseMapper(BaseMapper<@{simpleClassName}, @{idSimpleClassName}> baseMapper) {
-        super.setBaseMapper(baseMapper);
+    public @{simpleClassName}ServiceImpl(@{simpleClassName}Mapper @{lowSimpleClassName}Mapper) {
+        super(@{lowSimpleClassName}Mapper);
     }
 
 }

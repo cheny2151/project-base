@@ -1,7 +1,6 @@
 package com.cheney.service.impl;
 
 import com.cheney.dao.mybatis.AuthUserMapper;
-import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.AuthUser;
 import com.cheney.exception.BusinessRunTimeException;
 import com.cheney.service.AuthUserService;
@@ -12,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 /**
  * AuthUser - serviceImpl
  */
@@ -19,13 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> implements AuthUserService {
 
-    @Autowired
+    @Resource
     private AuthUserMapper authUserMapper;
 
     @Autowired
-    @Override
-    protected void setBaseMapper(BaseMapper<AuthUser, Long> baseMapper) {
-        super.setBaseMapper(baseMapper);
+    public AuthUserServiceImpl(AuthUserMapper authUserMapper) {
+        super(authUserMapper);
     }
 
     @Override

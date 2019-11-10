@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间对应要映射的dao接口的全限定名 -->
+<mapper namespace="com.cheney.dao.mybatis.RoleMapper">
+
+    <resultMap id="base" type="com.cheney.entity.Role">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="createDate" column="createDate"/>
+        <result property="name" column="name"/>
+        <result property="updateDate" column="updateDate"/>
+    </resultMap>
+
+    <sql id="filters">
+        <where>
+            <foreach collection="filters" item="filter" separator="and">
+                <choose>
+                    <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                        ${filter.property} ${filter.symbol}
+                    </when>
+                    <when test="filter.symbol == 'in'">
+                        ${filter.property}
+                        in
+                        <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${filter.property} ${filter.symbol} #{filter.value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="pageFilters">
+        <where>
+            <foreach collection="pageable.filters" item="filter" separator="and">
+                <choose>
+                    <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                        ${filter.property} ${filter.symbol}
+                    </when>
+                    <when test="filter.symbol == 'in'">
+                        ${filter.property}
+                        in
+                        <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${filter.property} ${filter.symbol} #{filter.value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="orders">
+      <if test="orders != null and orders.valid == true">
+          order by
+          <foreach collection="orders.orders" separator="," item="_order">
+              ${_order.property} #{_order.type}
+          </foreach>
+      </if>
+    </sql>
+
+    <sql id="pageOrders">
+        <if test="pageable.orders != null and pageable.orders.valid == true">
+            order by
+            <foreach collection="pageable.orders.orders" separator="," item="_order">
+                ${_order.property} #{_order.type}
+            </foreach>
+        </if>
+    </sql>
+
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="total" column="count"/>
+        <result property="pageSize" column="pageSize"/>
+        <result property="pageNumber" column="pageNumber"/>
+        <collection property="content" ofType="com.cheney.entity.Role" >
+            <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="createDate" column="createDate"/>
+        <result property="name" column="name"/>
+        <result property="updateDate" column="updateDate"/>
+        </collection>
+    </resultMap>
+
+    <select id="find" parameterType="Long" resultMap="base">
+        select *
+        from sys_role
+        where id = #{id}
+    </select>
+
+    <select id="filter" resultMap="base">
+        select *
+        from sys_role
+        <include refid="filters"/>
+    </select>
+
+    <select id="findAll" resultMap="base">
+        select *
+        from sys_role
+    </select>
+
+    <insert id="persist" parameterType="com.cheney.entity.Role" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+		<if test="code != null">
+			code,
+		</if>
+		<if test="createDate != null">
+			createDate,
+		</if>
+		<if test="name != null">
+			name,
+		</if>
+		<if test="updateDate != null">
+			updateDate
+		</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+		<if test="code != null">
+			#{code},
+		</if>
+		<if test="createDate != null">
+			#{createDate},
+		</if>
+		<if test="name != null">
+			#{name},
+		</if>
+		<if test="updateDate != null">
+			#{updateDate}
+		</if>
+        </trim>
+    </insert>
+
+    <update id="merge" parameterType="com.cheney.entity.Role">
+        update sys_role
+        set
+        <trim suffixOverrides=",">
+		<if test="code != null">
+			code = #{code},
+		</if>
+		<if test="createDate != null">
+			createDate = #{createDate},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="updateDate != null">
+			updateDate = #{updateDate}
+		</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="remove" parameterType="Long">
+        delete from sys_role where id = #{id}
+    </delete>
+
+    <delete id="multiRemove" parameterType="Long">
+        delete from sys_role
+        where id in
+        <foreach item="id" collection="ids" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select
+        #{pageable.pageSize} as pageSize
+        ,#{pageable.pageNumber} as pageNumber
+        ,(select count(*) from sys_role<include refid="pageFilters"/>) as count
+        ,t1.*
+        from sys_role t1
+        <include refid="pageFilters"/>
+        <include refid="pageOrders"/>
+        limit #{pageable.startSize},#{pageable.pageSize}
+    </select>
+
+    <select id="findList" resultType="com.cheney.entity.Role">
+        select *
+        from sys_role
+        <include refid="filters"/>
+        <include refid="orders"/>
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1)
+        from sys_role
+        <include refid="filters"/>
+    </select>
+
+</mapper>

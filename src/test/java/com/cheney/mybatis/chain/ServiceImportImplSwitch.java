@@ -15,8 +15,7 @@ public class ServiceImportImplSwitch extends AbstractSwitch {
         String separator = System.getProperty("line.separator");
         String daoPackage = toJavaPackage(XMLGenerator.getGeneratorFilePackage().get("Dao"));
         String servicePackage = toJavaPackage(XMLGenerator.getGeneratorFilePackage().get("Service"));
-        return "import " + daoPackage + ".BaseMapper;" + separator
-                + "import " + daoPackage + "." + clazz.getSimpleName() + "Mapper;" + separator
+        return "import " + daoPackage + "." + clazz.getSimpleName() + "Mapper;" + separator
                 + "import " + clazz.getCanonicalName() + ";" + separator
                 + "import " + servicePackage + "." + clazz.getSimpleName() + "Service";
     }

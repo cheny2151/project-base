@@ -1,5 +1,6 @@
 package com.cheney.entity;
 
+import com.cheney.utils.annotation.CacheKey;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -7,8 +8,9 @@ import lombok.EqualsAndHashCode;
  * 角色
  */
 @Data
+@CacheKey(key = "code")
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity<Integer> {
+public class Role extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -960190065903091695L;
 

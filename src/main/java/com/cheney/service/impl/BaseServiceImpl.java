@@ -19,7 +19,7 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
 
     private BaseMapper<T, ID> baseMapper;
 
-    protected void setBaseMapper(BaseMapper<T, ID> baseMapper) {
+    protected BaseServiceImpl(BaseMapper<T, ID> baseMapper) {
         this.baseMapper = baseMapper;
     }
 

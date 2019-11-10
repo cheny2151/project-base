@@ -32,6 +32,8 @@ spring:
   datasource:
     hikari:
       connection-test-query: select 1
+      validation-timeout: 3000
+      max-lifetime: 30000
   # jackson
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
