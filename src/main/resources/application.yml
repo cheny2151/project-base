@@ -27,8 +27,16 @@ mail:
   socketFactory:
     class: javax.net.ssl.SSLSocketFactory
 
-#mq消息手动确认
 spring:
+  # jdbc
+  datasource:
+    hikari:
+      connection-test-query: select 1
+  # jackson
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
+    time-zone: GMT+08:00
+  # mq消息手动确认
   rabbitmq:
     listener:
       simple:
