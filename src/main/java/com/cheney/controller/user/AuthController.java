@@ -1,7 +1,7 @@
 package com.cheney.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cheney.javaconfig.redis.RedisKey;
+import com.cheney.constants.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.AuthUserService;
 import com.cheney.system.response.JsonMessage;

@@ -1,6 +1,6 @@
 package com.cheney.redis.clustertask.pub;
 
-import com.cheney.javaconfig.redis.RedisKey;
+import com.cheney.constants.RedisKey;
 
 /**
  * 集群任务发布

@@ -1,7 +1,7 @@
 package com.cheney.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.cheney.javaconfig.redis.RedisKey;
+import com.cheney.constants.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.system.response.ResponseCode;

@@ -1,4 +1,4 @@
-package com.cheney.javaconfig.redis;
+package com.cheney.constants;
 
 public enum RedisKey {
 
