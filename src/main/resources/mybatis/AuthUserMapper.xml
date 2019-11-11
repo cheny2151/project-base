@@ -20,17 +20,17 @@
             <foreach collection="filters" item="filter" separator="and">
                 <choose>
                     <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                        ${filter.property} ${filter.symbol}
+                        t0.${filter.property} ${filter.symbol}
                     </when>
                     <when test="filter.symbol == 'in'">
-                        ${filter.property}
+                        t0.${filter.property}
                         in
                         <foreach collection="filter.value" item="item" separator="," open="(" close=")">
                             #{item}
                         </foreach>
                     </when>
                     <otherwise>
-                        ${filter.property} ${filter.symbol} #{filter.value}
+                        t0.${filter.property} ${filter.symbol} #{filter.value}
                     </otherwise>
                 </choose>
             </foreach>
@@ -42,17 +42,17 @@
             <foreach collection="pageable.filters" item="filter" separator="and">
                 <choose>
                     <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                        ${filter.property} ${filter.symbol}
+                        t0.${filter.property} ${filter.symbol}
                     </when>
                     <when test="filter.symbol == 'in'">
-                        ${filter.property}
+                        t0.${filter.property}
                         in
                         <foreach collection="filter.value" item="item" separator="," open="(" close=")">
                             #{item}
                         </foreach>
                     </when>
                     <otherwise>
-                        ${filter.property} ${filter.symbol} #{filter.value}
+                        t0.${filter.property} ${filter.symbol} #{filter.value}
                     </otherwise>
                 </choose>
             </foreach>
@@ -63,7 +63,7 @@
       <if test="orders != null and orders.valid == true">
           order by
           <foreach collection="orders.orders" separator="," item="_order">
-              ${_order.property} #{_order.type}
+              t0.${_order.property} #{_order.type}
           </foreach>
       </if>
     </sql>
@@ -72,7 +72,7 @@
         <if test="pageable.orders != null and pageable.orders.valid == true">
             order by
             <foreach collection="pageable.orders.orders" separator="," item="_order">
-                ${_order.property} #{_order.type}
+                t0.${_order.property} #{_order.type}
             </foreach>
         </if>
     </sql>
@@ -100,13 +100,13 @@
 
     <select id="filter" resultMap="base">
         select *
-        from sys_auth_user
+        from sys_auth_user t0
         <include refid="filters"/>
     </select>
 
     <select id="findAll" resultMap="base">
         select *
-        from sys_auth_user
+        from sys_auth_user t0
     </select>
 
     <insert id="persist" parameterType="com.cheney.entity.AuthUser" useGeneratedKeys="true" keyProperty="id">
@@ -197,8 +197,8 @@
         #{pageable.pageSize} as pageSize
         ,#{pageable.pageNumber} as pageNumber
         ,(select count(*) from sys_auth_user<include refid="pageFilters"/>) as count
-        ,t1.*
-        from sys_auth_user t1
+        ,t0.*
+        from sys_auth_user t0
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>
         limit #{pageable.startSize},#{pageable.pageSize}
@@ -206,14 +206,14 @@
 
     <select id="findList" resultType="com.cheney.entity.AuthUser">
         select *
-        from sys_auth_user
+        from sys_auth_user t0
         <include refid="filters"/>
         <include refid="orders"/>
     </select>
 
     <select id="count" resultType="long">
         select count(1)
-        from sys_auth_user
+        from sys_auth_user t0
         <include refid="filters"/>
     </select>
 
