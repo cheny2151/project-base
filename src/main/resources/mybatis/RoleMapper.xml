@@ -61,7 +61,7 @@
       <if test="orders != null and orders.valid == true">
           order by
           <foreach collection="orders.orders" separator="," item="_order">
-              t0.${_order.property} #{_order.type}
+              t0.${_order.property} ${_order.type}
           </foreach>
       </if>
     </sql>
@@ -70,7 +70,7 @@
         <if test="pageable.orders != null and pageable.orders.valid == true">
             order by
             <foreach collection="pageable.orders.orders" separator="," item="_order">
-                t0.${_order.property} #{_order.type}
+                t0.${_order.property} ${_order.type}
             </foreach>
         </if>
     </sql>
