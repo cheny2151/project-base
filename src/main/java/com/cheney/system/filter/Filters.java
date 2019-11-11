@@ -1,8 +1,13 @@
 package com.cheney.system.filter;
 
+import org.springframework.util.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * 属性过滤实体
+ */
 public class Filters extends ArrayList<Filter> {
 
     public enum Operator {
@@ -40,6 +45,11 @@ public class Filters extends ArrayList<Filter> {
         }
     }
 
+    /**
+     * 存储主表之外的字段过滤实体
+     */
+    private ArrayList<Filter> others;
+
     public Filters() {
     }
 
@@ -50,6 +60,14 @@ public class Filters extends ArrayList<Filter> {
 
     public Filters addFilter(Filter filter) {
         this.add(filter);
+        return this;
+    }
+
+    public Filters addOther(Filter filter) {
+        if (this.others == null) {
+            this.others = new ArrayList<>();
+        }
+        this.others.add(filter);
         return this;
     }
 
@@ -107,6 +125,14 @@ public class Filters extends ArrayList<Filter> {
 
     public static Filters create(Filter filters) {
         return new Filters(filters);
+    }
+
+    public ArrayList<Filter> getOthers() {
+        return others;
+    }
+
+    public boolean hasOthers() {
+        return !CollectionUtils.isEmpty(this.others);
     }
 
 }
