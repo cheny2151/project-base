@@ -42,6 +42,7 @@
                 </choose>
             </foreach>
             <if test="filters.hasOtherParams == true">
+                <bind name="_others" value="filters.otherParams"/>
             </if>
         </where>
     </sql>
