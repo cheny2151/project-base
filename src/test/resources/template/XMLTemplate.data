@@ -10,6 +10,15 @@
     </resultMap>
 
     <sql id="filters">
+        <include refid="commonFilters"/>
+    </sql>
+
+    <sql id="pageFilters">
+        <bind name="filters" value="pageable.filters"/>
+        <include refid="commonFilters"/>
+    </sql>
+
+    <sql id="commonFilters">
         <where>
             <foreach collection="filters" item="filter" separator="and">
                 <choose>
@@ -28,28 +37,8 @@
                     </otherwise>
                 </choose>
             </foreach>
-        </where>
-    </sql>
-
-    <sql id="pageFilters">
-        <where>
-            <foreach collection="pageable.filters" item="filter" separator="and">
-                <choose>
-                    <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                        t0.${filter.property} ${filter.symbol}
-                    </when>
-                    <when test="filter.symbol == 'in'">
-                        t0.${filter.property}
-                        in
-                        <foreach collection="filter.value" item="item" separator="," open="(" close=")">
-                            #{item}
-                        </foreach>
-                    </when>
-                    <otherwise>
-                        t0.${filter.property} ${filter.symbol} #{filter.value}
-                    </otherwise>
-                </choose>
-            </foreach>
+            <if test="filters.hasOtherParams == true">
+            </if>
         </where>
     </sql>
 

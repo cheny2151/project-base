@@ -4,6 +4,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 属性过滤实体
@@ -46,9 +48,9 @@ public class Filters extends ArrayList<Filter> {
     }
 
     /**
-     * 存储主表之外的字段过滤实体
+     * 存储以map为载体的其他过滤参数
      */
-    private ArrayList<Filter> others;
+    private Map<String, Object> otherParams;
 
     public Filters() {
     }
@@ -63,12 +65,28 @@ public class Filters extends ArrayList<Filter> {
         return this;
     }
 
-    public Filters addOther(Filter filter) {
-        if (this.others == null) {
-            this.others = new ArrayList<>();
+    public Filters addOtherParams(String key, Object value) {
+        if (this.otherParams == null) {
+            this.otherParams = new HashMap<>();
         }
-        this.others.add(filter);
+        this.otherParams.put(key, value);
         return this;
+    }
+
+    public Filters addOtherParams(Map<String, Object> params) {
+        if (this.otherParams == null) {
+            this.otherParams = params;
+        }
+        this.otherParams.putAll(params);
+        return this;
+    }
+
+    public Map<String, Object> getOtherParams() {
+        return otherParams;
+    }
+
+    public boolean isHasOtherParams() {
+        return !CollectionUtils.isEmpty(this.otherParams);
     }
 
     public static Filter eq(String property, Object value) {
@@ -125,14 +143,6 @@ public class Filters extends ArrayList<Filter> {
 
     public static Filters create(Filter filters) {
         return new Filters(filters);
-    }
-
-    public ArrayList<Filter> getOthers() {
-        return others;
-    }
-
-    public boolean hasOthers() {
-        return !CollectionUtils.isEmpty(this.others);
     }
 
 }
