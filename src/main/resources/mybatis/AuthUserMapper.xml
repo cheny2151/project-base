@@ -15,6 +15,21 @@
         <result property="username" column="username"/>
     </resultMap>
 
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="total" column="count"/>
+        <result property="pageSize" column="pageSize"/>
+        <result property="pageNumber" column="pageNumber"/>
+        <collection property="content" ofType="com.cheney.entity.AuthUser" >
+            <id property="id" column="id"/>
+        <result property="createDate" column="createDate"/>
+        <result property="enabled" column="enabled"/>
+        <result property="originId" column="originId"/>
+        <result property="password" column="password"/>
+        <result property="updateDate" column="updateDate"/>
+        <result property="username" column="username"/>
+        </collection>
+    </resultMap>
+
     <sql id="filters">
         <include refid="commonFilters"/>
     </sql>
@@ -66,38 +81,6 @@
             </foreach>
         </if>
     </sql>
-
-    <resultMap id="page" type="com.cheney.system.page.Page">
-        <result property="total" column="count"/>
-        <result property="pageSize" column="pageSize"/>
-        <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="com.cheney.entity.AuthUser" >
-            <id property="id" column="id"/>
-        <result property="createDate" column="createDate"/>
-        <result property="enabled" column="enabled"/>
-        <result property="originId" column="originId"/>
-        <result property="password" column="password"/>
-        <result property="updateDate" column="updateDate"/>
-        <result property="username" column="username"/>
-        </collection>
-    </resultMap>
-
-    <select id="find" parameterType="Long" resultMap="base">
-        select *
-        from sys_auth_user
-        where id = #{id}
-    </select>
-
-    <select id="filter" resultMap="base">
-        select *
-        from sys_auth_user t0
-        <include refid="filters"/>
-    </select>
-
-    <select id="findAll" resultMap="base">
-        select *
-        from sys_auth_user t0
-    </select>
 
     <insert id="persist" parameterType="com.cheney.entity.AuthUser" useGeneratedKeys="true" keyProperty="id">
         insert into sys_auth_user
@@ -182,16 +165,21 @@
         </foreach>
     </delete>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from sys_auth_user<include refid="pageFilters"/>) as count
-        ,t0.*
+     <select id="find" parameterType="Long" resultMap="base">
+        select *
+        from sys_auth_user
+        where id = #{id}
+    </select>
+
+    <select id="filter" resultMap="base">
+        select *
         from sys_auth_user t0
-        <include refid="pageFilters"/>
-        <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        <include refid="filters"/>
+    </select>
+
+    <select id="findAll" resultMap="base">
+        select *
+        from sys_auth_user t0
     </select>
 
     <select id="findList" resultType="com.cheney.entity.AuthUser">
@@ -205,6 +193,18 @@
         select count(1)
         from sys_auth_user t0
         <include refid="filters"/>
+    </select>
+
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select
+        #{pageable.pageSize} as pageSize
+        ,#{pageable.pageNumber} as pageNumber
+        ,(select count(*) from sys_auth_user<include refid="pageFilters"/>) as count
+        ,t0.*
+        from sys_auth_user t0
+        <include refid="pageFilters"/>
+        <include refid="pageOrders"/>
+        limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
     <select id="findByUsername" resultType="com.cheney.entity.AuthUser">
