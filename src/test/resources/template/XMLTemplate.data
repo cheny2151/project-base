@@ -9,6 +9,15 @@
         @{resultMap}
     </resultMap>
 
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="total" column="count"/>
+        <result property="pageSize" column="pageSize"/>
+        <result property="pageNumber" column="pageNumber"/>
+        <collection property="content" ofType="@{package}" >
+            @{resultMap}
+        </collection>
+    </resultMap>
+
     <sql id="filters">
         <include refid="commonFilters"/>
     </sql>
@@ -60,15 +69,6 @@
             </foreach>
         </if>
     </sql>
-
-    <resultMap id="page" type="com.cheney.system.page.Page">
-        <result property="total" column="count"/>
-        <result property="pageSize" column="pageSize"/>
-        <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="@{package}" >
-            @{resultMap}
-        </collection>
-    </resultMap>
 
     <select id="find" parameterType="@{idType}" resultMap="base">
         select *
