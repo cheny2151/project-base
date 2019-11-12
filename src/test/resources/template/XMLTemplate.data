@@ -70,23 +70,6 @@
         </if>
     </sql>
 
-    <select id="find" parameterType="@{idType}" resultMap="base">
-        select *
-        from @{tableName}
-        where @{idColumn} = #{id}
-    </select>
-
-    <select id="filter" resultMap="base">
-        select *
-        from @{tableName} t0
-        <include refid="filters"/>
-    </select>
-
-    <select id="findAll" resultMap="base">
-        select *
-        from @{tableName} t0
-    </select>
-
     <insert id="persist" parameterType="@{package}" useGeneratedKeys="true" keyProperty="id">
         insert into @{tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -119,16 +102,21 @@
         </foreach>
     </delete>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
-        ,t0.*
+     <select id="find" parameterType="@{idType}" resultMap="base">
+        select *
+        from @{tableName}
+        where @{idColumn} = #{id}
+    </select>
+
+    <select id="filter" resultMap="base">
+        select *
         from @{tableName} t0
-        <include refid="pageFilters"/>
-        <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        <include refid="filters"/>
+    </select>
+
+    <select id="findAll" resultMap="base">
+        select *
+        from @{tableName} t0
     </select>
 
     <select id="findList" resultType="@{package}">
@@ -142,6 +130,18 @@
         select count(1)
         from @{tableName} t0
         <include refid="filters"/>
+    </select>
+
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select
+        #{pageable.pageSize} as pageSize
+        ,#{pageable.pageNumber} as pageNumber
+        ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
+        ,t0.*
+        from @{tableName} t0
+        <include refid="pageFilters"/>
+        <include refid="pageOrders"/>
+        limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
 </mapper>

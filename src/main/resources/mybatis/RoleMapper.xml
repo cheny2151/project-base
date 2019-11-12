@@ -13,6 +13,19 @@
         <result property="updateDate" column="updateDate"/>
     </resultMap>
 
+    <resultMap id="page" type="com.cheney.system.page.Page">
+        <result property="total" column="count"/>
+        <result property="pageSize" column="pageSize"/>
+        <result property="pageNumber" column="pageNumber"/>
+        <collection property="content" ofType="com.cheney.entity.Role" >
+            <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="createDate" column="createDate"/>
+        <result property="name" column="name"/>
+        <result property="updateDate" column="updateDate"/>
+        </collection>
+    </resultMap>
+
     <sql id="filters">
         <include refid="commonFilters"/>
     </sql>
@@ -64,36 +77,6 @@
             </foreach>
         </if>
     </sql>
-
-    <resultMap id="page" type="com.cheney.system.page.Page">
-        <result property="total" column="count"/>
-        <result property="pageSize" column="pageSize"/>
-        <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="com.cheney.entity.Role" >
-            <id property="id" column="id"/>
-        <result property="code" column="code"/>
-        <result property="createDate" column="createDate"/>
-        <result property="name" column="name"/>
-        <result property="updateDate" column="updateDate"/>
-        </collection>
-    </resultMap>
-
-    <select id="find" parameterType="Long" resultMap="base">
-        select *
-        from sys_role
-        where id = #{id}
-    </select>
-
-    <select id="filter" resultMap="base">
-        select *
-        from sys_role t0
-        <include refid="filters"/>
-    </select>
-
-    <select id="findAll" resultMap="base">
-        select *
-        from sys_role t0
-    </select>
 
     <insert id="persist" parameterType="com.cheney.entity.Role" useGeneratedKeys="true" keyProperty="id">
         insert into sys_role
@@ -160,16 +143,21 @@
         </foreach>
     </delete>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from sys_role<include refid="pageFilters"/>) as count
-        ,t0.*
+     <select id="find" parameterType="Long" resultMap="base">
+        select *
+        from sys_role
+        where id = #{id}
+    </select>
+
+    <select id="filter" resultMap="base">
+        select *
         from sys_role t0
-        <include refid="pageFilters"/>
-        <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        <include refid="filters"/>
+    </select>
+
+    <select id="findAll" resultMap="base">
+        select *
+        from sys_role t0
     </select>
 
     <select id="findList" resultType="com.cheney.entity.Role">
@@ -183,6 +171,18 @@
         select count(1)
         from sys_role t0
         <include refid="filters"/>
+    </select>
+
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
+        select
+        #{pageable.pageSize} as pageSize
+        ,#{pageable.pageNumber} as pageNumber
+        ,(select count(*) from sys_role<include refid="pageFilters"/>) as count
+        ,t0.*
+        from sys_role t0
+        <include refid="pageFilters"/>
+        <include refid="pageOrders"/>
+        limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
 </mapper>

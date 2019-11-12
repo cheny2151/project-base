@@ -1,5 +1,6 @@
 package com.cheney.mybatis;
 
+import com.cheney.entity.AuthUser;
 import com.cheney.entity.Role;
 import com.cheney.mybatis.chain.AbstractSwitch;
 import com.cheney.mybatis.chain.SwitchChain;
@@ -10,9 +11,9 @@ import java.util.Map;
 
 public class XMLGenerator {
 
-    private final static Class TARGET_ENTITY_CLASS = Role.class;
+    private final static Class TARGET_ENTITY_CLASS = AuthUser.class;
 
-    public final static String TABLE_NAME = "sys_role";
+    public final static String TABLE_NAME = "sys_auth_user";
 
     public final static String ID_COLUMN = "id";
 
