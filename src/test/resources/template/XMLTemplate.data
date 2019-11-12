@@ -119,7 +119,7 @@
         from @{tableName} t0
     </select>
 
-    <select id="findList" resultType="@{package}">
+    <select id="findList" resultMap="base">
         select *
         from @{tableName} t0
         <include refid="filters"/>

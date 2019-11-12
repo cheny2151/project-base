@@ -172,7 +172,7 @@
         left join sys_auth sa on mid.auth_code = sa.code
     </select>
 
-    <select id="findList" resultType="com.cheney.entity.Role">
+    <select id="findList" resultMap="base">
         select t0.*,sa.url_pattern
         from sys_role t0
         left join mid_role_auth mid on t0.code = mid.role_code

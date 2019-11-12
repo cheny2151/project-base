@@ -191,7 +191,7 @@
         on t0.username = ur.username
     </select>
 
-    <select id="findList" resultType="com.cheney.entity.AuthUser">
+    <select id="findList" resultMap="base">
         select t0.*, ur.role_code
         from sys_auth_user t0
         left join mid_user_role ur
