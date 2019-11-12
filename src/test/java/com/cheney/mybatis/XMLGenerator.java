@@ -41,9 +41,9 @@ public class XMLGenerator {
     static {
         dataFile = new HashMap<>();
         dataFile.put("Mapper", "src|test|resources|template|XMLTemplate.data");
-//        dataFile.put("Dao", "src|test|resources|template|DaoTemplate.data");
-//        dataFile.put("Service", "src|test|resources|template|ServiceTemplate.data");
-//        dataFile.put("ServiceImpl", "src|test|resources|template|ServiceImplTemplate.data");
+        dataFile.put("Dao", "src|test|resources|template|DaoTemplate.data");
+        dataFile.put("Service", "src|test|resources|template|ServiceTemplate.data");
+        dataFile.put("ServiceImpl", "src|test|resources|template|ServiceImplTemplate.data");
 
         generatorFilePackage = new HashMap<>();
         generatorFilePackage.put("Mapper", "src|main|resources|mybatis");
