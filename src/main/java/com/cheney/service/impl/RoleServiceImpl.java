@@ -1,8 +1,8 @@
 package com.cheney.service.impl;
 
+import com.cheney.constants.CacheBaseKey;
 import com.cheney.dao.mybatis.RoleMapper;
 import com.cheney.entity.Role;
-import com.cheney.constants.CacheBaseKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;

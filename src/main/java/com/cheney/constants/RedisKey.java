@@ -2,7 +2,7 @@ package com.cheney.constants;
 
 public enum RedisKey {
 
-    AUTH_TOKEN_KEY("auth.token:%s"),
+    AUTH_TOKEN_KEY("AUTH.TOKEN:%s"),
 
     CLUSTER_TASK_PRE_KEY("CLUSTER_TASK:"),
 
