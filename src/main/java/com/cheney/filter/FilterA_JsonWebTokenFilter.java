@@ -6,6 +6,7 @@ import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.system.response.ResponseCode;
 import com.cheney.utils.CurrentUserHolder;
+import com.cheney.utils.URLUtils;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +31,12 @@ import java.util.Optional;
  */
 @Slf4j
 @WebFilter
-public class JsonWebTokenFilter extends OncePerRequestFilter {
+public class FilterA_JsonWebTokenFilter extends OncePerRequestFilter {
 
     @Resource(name = "jsonRedisClient")
     private JsonRedisClient<JwtPrincipal> redisClient;
     @Value("${user.auth.urlPatterns}")
-    private String urlPatterns;
+    private String[] urlPatterns;
 
     private static final String AUTH_REQUEST_HEAD = "AUTH_TOKEN";
 
@@ -59,7 +60,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         }
 
         String requestURI = httpServletRequest.getRequestURI();
-        if (requiredLogin(requestURI) && !loginUser.isPresent()) {
+        if (URLUtils.matchesUrl(requestURI, urlPatterns) && !loginUser.isPresent()) {
             log.info("请求url:{},用户未登录", requestURI);
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
@@ -85,33 +86,6 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
     private JwtPrincipal loadUserByJwt(JwtUtils jwtUtils) {
         String token = jwtUtils.getToken();
         return redisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
-    }
-
-    /**
-     * 判断是否需要登录状态才可以访问
-     *
-     * @param url 请求url
-     * @return required login
-     */
-    private boolean requiredLogin(String url) {
-        if (StringUtils.isEmpty(this.urlPatterns)) {
-            return false;
-        }
-        String[] urlPatterns = this.urlPatterns.split(",");
-        for (String urlPattern : urlPatterns) {
-            urlPattern = urlPattern.endsWith("*") ?
-                    fixPattern(urlPattern)
-                    : urlPattern;
-            if (url.matches(urlPattern)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String fixPattern(String pattern) {
-        int length = pattern.length();
-        return ".*".equals(pattern.substring(length - 2)) ? pattern : pattern.substring(0, length - 1) + ".*";
     }
 
 }

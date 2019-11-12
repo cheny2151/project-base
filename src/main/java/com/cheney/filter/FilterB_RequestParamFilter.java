@@ -1,8 +1,9 @@
-package com.cheney.filter.request;
+package com.cheney.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.JsonParseException;
+import com.cheney.filter.request.InputStreamHttpServletRequestWrapper;
 import com.cheney.system.page.PageInfo;
 import com.cheney.system.protocol.BaseRequest;
 import com.cheney.utils.HttpSupport;
@@ -28,7 +29,7 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
  */
 @WebFilter
 @Slf4j
-public class RequestParamFilter extends OncePerRequestFilter {
+public class FilterB_RequestParamFilter extends OncePerRequestFilter {
 
     // 忽略的url正则表达式
     private final static String[] IGNORE_PATTERN = new String[]{".*.ico", ".*.html"};

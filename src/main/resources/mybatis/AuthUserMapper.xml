@@ -7,12 +7,16 @@
 
     <resultMap id="base" type="com.cheney.entity.AuthUser">
         <id property="id" column="id"/>
-        <result property="createDate" column="createDate"/>
+        <result property="createDate" column="create_date"/>
         <result property="enabled" column="enabled"/>
-        <result property="originId" column="originId"/>
+        <result property="originId" column="origin_id"/>
         <result property="password" column="password"/>
-        <result property="updateDate" column="updateDate"/>
+        <result property="roles" column="roles"/>
+        <result property="updateDate" column="update_date"/>
         <result property="username" column="username"/>
+        <collection property="roles" ofType="string">
+            <result column="role_code"/>
+        </collection>
     </resultMap>
 
     <resultMap id="page" type="com.cheney.system.page.Page">
@@ -21,11 +25,12 @@
         <result property="pageNumber" column="pageNumber"/>
         <collection property="content" ofType="com.cheney.entity.AuthUser" >
             <id property="id" column="id"/>
-        <result property="createDate" column="createDate"/>
+        <result property="createDate" column="create_date"/>
         <result property="enabled" column="enabled"/>
-        <result property="originId" column="originId"/>
+        <result property="originId" column="origin_id"/>
         <result property="password" column="password"/>
-        <result property="updateDate" column="updateDate"/>
+        <result property="roles" column="roles"/>
+        <result property="updateDate" column="update_date"/>
         <result property="username" column="username"/>
         </collection>
     </resultMap>
@@ -86,19 +91,22 @@
         insert into sys_auth_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
 		<if test="createDate != null">
-			createDate,
+			create_date,
 		</if>
 		<if test="enabled != null">
 			enabled,
 		</if>
 		<if test="originId != null">
-			originId,
+			origin_id,
 		</if>
 		<if test="password != null">
 			password,
 		</if>
+		<if test="roles != null">
+			roles,
+		</if>
 		<if test="updateDate != null">
-			updateDate,
+			update_date,
 		</if>
 		<if test="username != null">
 			username
@@ -118,6 +126,9 @@
 		<if test="password != null">
 			#{password},
 		</if>
+		<if test="roles != null">
+			#{roles},
+		</if>
 		<if test="updateDate != null">
 			#{updateDate},
 		</if>
@@ -132,19 +143,22 @@
         set
         <trim suffixOverrides=",">
 		<if test="createDate != null">
-			createDate = #{createDate},
+			create_date = #{createDate},
 		</if>
 		<if test="enabled != null">
 			enabled = #{enabled},
 		</if>
 		<if test="originId != null">
-			originId = #{originId},
+			origin_id = #{originId},
 		</if>
 		<if test="password != null">
 			password = #{password},
 		</if>
+		<if test="roles != null">
+			roles = #{roles},
+		</if>
 		<if test="updateDate != null">
-			updateDate = #{updateDate},
+			update_date = #{updateDate},
 		</if>
 		<if test="username != null">
 			username = #{username}
@@ -166,25 +180,33 @@
     </delete>
 
      <select id="find" parameterType="Long" resultMap="base">
-        select *
-        from sys_auth_user
+         select t0.*, ur.role_code
+         from sys_auth_user t0
+         left join mid_user_role ur
+         on t0.username = ur.username
         where id = #{id}
     </select>
 
     <select id="filter" resultMap="base">
-        select *
+        select t0.*, ur.role_code
         from sys_auth_user t0
+        left join mid_user_role ur
+        on t0.username = ur.username
         <include refid="filters"/>
     </select>
 
     <select id="findAll" resultMap="base">
-        select *
+        select t0.*, ur.role_code
         from sys_auth_user t0
+        left join mid_user_role ur
+        on t0.username = ur.username
     </select>
 
     <select id="findList" resultType="com.cheney.entity.AuthUser">
-        select *
+        select t0.*, ur.role_code
         from sys_auth_user t0
+        left join mid_user_role ur
+        on t0.username = ur.username
         <include refid="filters"/>
         <include refid="orders"/>
     </select>
@@ -207,10 +229,12 @@
         limit #{pageable.startSize},#{pageable.pageSize}
     </select>
 
-    <select id="findByUsername" resultType="com.cheney.entity.AuthUser">
-        select *
-        from sys_auth_user
-        where username = #{username}
+    <select id="findByUsername" resultMap="base">
+        select t0.*, ur.role_code
+        from sys_auth_user t0
+        left join mid_user_role ur
+        on t0.username = ur.username
+        where t0.username = #{username}
     </select>
 
 </mapper>

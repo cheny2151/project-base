@@ -20,7 +20,7 @@ public class XMLGenerator {
     public final static String ID = "id";
 
     //驼峰命名,false为下划线
-    public final static boolean HUMP = true;
+    public final static boolean HUMP = false;
 
     public final static Class ID_TYPE = Long.class;
 
@@ -41,9 +41,9 @@ public class XMLGenerator {
     static {
         dataFile = new HashMap<>();
         dataFile.put("Mapper", "src|test|resources|template|XMLTemplate.data");
-        dataFile.put("Dao", "src|test|resources|template|DaoTemplate.data");
-        dataFile.put("Service", "src|test|resources|template|ServiceTemplate.data");
-        dataFile.put("ServiceImpl", "src|test|resources|template|ServiceImplTemplate.data");
+//        dataFile.put("Dao", "src|test|resources|template|DaoTemplate.data");
+//        dataFile.put("Service", "src|test|resources|template|ServiceTemplate.data");
+//        dataFile.put("ServiceImpl", "src|test|resources|template|ServiceImplTemplate.data");
 
         generatorFilePackage = new HashMap<>();
         generatorFilePackage.put("Mapper", "src|main|resources|mybatis");

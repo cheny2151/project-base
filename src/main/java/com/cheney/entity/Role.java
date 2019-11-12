@@ -4,6 +4,8 @@ import com.cheney.utils.annotation.CacheKey;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 角色
  */
@@ -23,5 +25,10 @@ public class Role extends BaseEntity<Long> {
      * 角色编码
      */
     private String code;
+
+    /**
+     * 拥有的权限url
+     */
+    private List<String> urlPatterns;
 
 }

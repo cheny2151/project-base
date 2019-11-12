@@ -11,7 +11,6 @@ import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -20,7 +19,6 @@ import javax.annotation.Resource;
  * 用户统一登陆注册接口
  */
 @RestController("authController")
-@RequestMapping("/auth")
 public class AuthController {
 
     @Resource(name = "authUserServiceImpl")
@@ -56,7 +54,7 @@ public class AuthController {
     /**
      * 登出
      */
-    @DeleteMapping("/logout")
+    @DeleteMapping("/auth/logout")
     public JsonMessage logout() {
         String currentToken = CurrentUserHolder.getCurrentUser().getToken();
         redisClient.removeKey(RedisKey.AUTH_TOKEN_KEY.getKey(currentToken));

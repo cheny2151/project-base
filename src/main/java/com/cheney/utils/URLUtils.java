@@ -45,4 +45,31 @@ public class URLUtils {
         return lastIndex;
     }
 
+    /**
+     * 判断url是否匹配正则
+     *
+     * @param url 请求url
+     * @return matches result
+     */
+    public static boolean matchesUrl(String url, String[] urlPatterns) {
+        if (url == null || urlPatterns.length == 0) {
+            return false;
+        }
+        for (String urlPattern : urlPatterns) {
+            urlPattern = fixPattern(urlPattern);
+            if (url.matches(urlPattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String fixPattern(String pattern) {
+        if (!pattern.endsWith("*")) {
+            return pattern;
+        }
+        int length = pattern.length();
+        return ".*".equals(pattern.substring(length - 2)) ? pattern : pattern.substring(0, length - 1) + ".*";
+    }
+
 }

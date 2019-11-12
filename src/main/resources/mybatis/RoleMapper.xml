@@ -8,9 +8,12 @@
     <resultMap id="base" type="com.cheney.entity.Role">
         <id property="id" column="id"/>
         <result property="code" column="code"/>
-        <result property="createDate" column="createDate"/>
+        <result property="createDate" column="create_date"/>
         <result property="name" column="name"/>
-        <result property="updateDate" column="updateDate"/>
+        <result property="updateDate" column="update_date"/>
+        <collection property="urlPatterns" ofType="string">
+            <result column="url_pattern"/>
+        </collection>
     </resultMap>
 
     <resultMap id="page" type="com.cheney.system.page.Page">
@@ -19,10 +22,13 @@
         <result property="pageNumber" column="pageNumber"/>
         <collection property="content" ofType="com.cheney.entity.Role" >
             <id property="id" column="id"/>
-        <result property="code" column="code"/>
-        <result property="createDate" column="createDate"/>
-        <result property="name" column="name"/>
-        <result property="updateDate" column="updateDate"/>
+            <result property="code" column="code"/>
+            <result property="createDate" column="create_date"/>
+            <result property="name" column="name"/>
+            <result property="updateDate" column="update_date"/>
+            <collection property="urlPatterns" ofType="string">
+                <result column="url_pattern"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -81,33 +87,33 @@
     <insert id="persist" parameterType="com.cheney.entity.Role" useGeneratedKeys="true" keyProperty="id">
         insert into sys_role
         <trim prefix="(" suffix=")" suffixOverrides=",">
-		<if test="code != null">
-			code,
-		</if>
-		<if test="createDate != null">
-			createDate,
-		</if>
-		<if test="name != null">
-			name,
-		</if>
-		<if test="updateDate != null">
-			updateDate
-		</if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="updateDate != null">
+                update_date
+            </if>
         </trim>
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
-		<if test="code != null">
-			#{code},
-		</if>
-		<if test="createDate != null">
-			#{createDate},
-		</if>
-		<if test="name != null">
-			#{name},
-		</if>
-		<if test="updateDate != null">
-			#{updateDate}
-		</if>
+            <if test="code != null">
+                #{code},
+            </if>
+            <if test="createDate != null">
+                #{createDate},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate}
+            </if>
         </trim>
     </insert>
 
@@ -115,27 +121,27 @@
         update sys_role
         set
         <trim suffixOverrides=",">
-		<if test="code != null">
-			code = #{code},
-		</if>
-		<if test="createDate != null">
-			createDate = #{createDate},
-		</if>
-		<if test="name != null">
-			name = #{name},
-		</if>
-		<if test="updateDate != null">
-			updateDate = #{updateDate}
-		</if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate}
+            </if>
         </trim>
         where id = #{id}
     </update>
 
-    <delete id="remove" parameterType="Long">
+    <delete id="remove" parameterType="Integer">
         delete from sys_role where id = #{id}
     </delete>
 
-    <delete id="multiRemove" parameterType="Long">
+    <delete id="multiRemove" parameterType="Integer">
         delete from sys_role
         where id in
         <foreach item="id" collection="ids" open="(" close=")" separator=",">
@@ -143,26 +149,34 @@
         </foreach>
     </delete>
 
-     <select id="find" parameterType="Long" resultMap="base">
-        select *
-        from sys_role
-        where id = #{id}
+    <select id="find" parameterType="Integer" resultMap="base">
+        select t0.*,sa.url_pattern
+        from sys_role t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
+        where t0.id = #{id}
     </select>
 
     <select id="filter" resultMap="base">
-        select *
+        select t0.*,sa.url_pattern
         from sys_role t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
         <include refid="filters"/>
     </select>
 
     <select id="findAll" resultMap="base">
-        select *
+        select t0.*,sa.url_pattern
         from sys_role t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
     </select>
 
     <select id="findList" resultType="com.cheney.entity.Role">
-        select *
+        select t0.*,sa.url_pattern
         from sys_role t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
         <include refid="filters"/>
         <include refid="orders"/>
     </select>
@@ -175,14 +189,19 @@
 
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
         select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from sys_role<include refid="pageFilters"/>) as count
-        ,t0.*
+        #{pageable.pageSize} as pageSize,
+        #{pageable.pageNumber} as pageNumber,
+        (select count(*) from sys_role<include refid="pageFilters"/>) as count,
+        t0.*,sa.url_pattern
+        from (select distinct t0.*
         from sys_role t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        limit #{pageable.startSize},#{pageable.pageSize}) t0
+        left join mid_role_auth mid on t0.code = mid.role_code
+        left join sys_auth sa on mid.auth_code = sa.code
     </select>
 
 </mapper>

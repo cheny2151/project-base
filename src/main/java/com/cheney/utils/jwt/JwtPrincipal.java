@@ -1,11 +1,9 @@
 package com.cheney.utils.jwt;
 
 import com.cheney.entity.AuthUser;
-import com.cheney.entity.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Set;
+import org.springframework.beans.BeanUtils;
 
 /**
  * JsonWebToken 安全认证用户信息
@@ -18,12 +16,11 @@ public class JwtPrincipal extends AuthUser {
 
     private String token;
 
-    public JwtPrincipal() {
-    }
-
-    public JwtPrincipal(String username, String password, boolean enabled, Set<Role> roles, Long originId) {
-        super(username, password, enabled, roles, originId);
-        this.token = JwtUtils.generateToken(this);
+    public static JwtPrincipal createJwtPrincipal(AuthUser authUser) {
+        JwtPrincipal jwtPrincipal = new JwtPrincipal();
+        BeanUtils.copyProperties(authUser, jwtPrincipal);
+        jwtPrincipal.token = JwtUtils.generateToken(jwtPrincipal);
+        return jwtPrincipal;
     }
 
 }

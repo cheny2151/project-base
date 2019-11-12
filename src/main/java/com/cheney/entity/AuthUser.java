@@ -39,17 +39,6 @@ public class AuthUser extends BaseEntity<Long> {
     /**
      * 角色
      */
-    private Set<Role> roles;
-
-    public AuthUser() {
-    }
-
-    public AuthUser(String username, String password, boolean enabled, Set<Role> roles, Long originId) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.roles = roles;
-        this.originId = originId;
-    }
+    private Set<String> roles;
 
 }

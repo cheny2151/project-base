@@ -15,7 +15,9 @@ jwt:
 #filter url
 user:
   auth:
-    urlPatterns: /user/*,/auth/logout
+    urlPatterns: /auth/*
+  permission:
+    ignoreUrls: /auth/logout
 
 #java mail
 mail:

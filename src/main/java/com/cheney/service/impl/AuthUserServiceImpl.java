@@ -30,15 +30,15 @@ public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> impleme
 
     @Override
     public JwtPrincipal authenticated(String username, String password) {
-        AuthUser auth = authUserMapper.findByUsername(username);
-        if (auth == null) {
+        AuthUser authUser = authUserMapper.findByUsername(username);
+        if (authUser == null) {
             throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
-        boolean validate = Md5Utils.getSaltverifyMD5(password, auth.getPassword());
+        boolean validate = Md5Utils.getSaltverifyMD5(password, authUser.getPassword());
         if (!validate) {
             throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
-        return new JwtPrincipal(username, password, true, null, auth.getOriginId());
+        return JwtPrincipal.createJwtPrincipal(authUser);
     }
 
 }
