@@ -3,7 +3,6 @@ package com.cheney.javaconfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -57,7 +56,7 @@ public class ScheduledConfig implements SchedulingConfigurer {
      * 任务线程池bean
      */
     @Bean("taskExecutor")
-    public TaskExecutor taskExecutor() {
+    public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(20);
         executor.setMaxPoolSize(50);

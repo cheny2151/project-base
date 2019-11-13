@@ -14,4 +14,14 @@ public interface AuthUserService extends BaseService<AuthUser, Long> {
      */
     JwtPrincipal authenticated(String username, String password);
 
+    /**
+     * 重置token
+     */
+    void resetToken(JwtPrincipal jwtPrincipal);
+
+    /**
+     * 删除token
+     */
+    void removeToken(String username);
+
 }
