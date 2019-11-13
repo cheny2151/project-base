@@ -55,7 +55,7 @@ public class AuthController {
     /**
      * 登出
      */
-    @DeleteMapping("/auth/logout")
+    @DeleteMapping("/auth/safe/logout")
     public JsonMessage logout() {
         String currentToken = CurrentUserHolder.getCurrentUser().getToken();
         redisClient.removeKey(RedisKey.AUTH_TOKEN_KEY.getKey(currentToken));

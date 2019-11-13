@@ -17,7 +17,7 @@ user:
   auth:
     urlPatterns: /auth/*
   permission:
-    ignoreUrls: /auth/logout
+    ignoreUrls: /auth/safe/*
 
 #java mail
 mail:
