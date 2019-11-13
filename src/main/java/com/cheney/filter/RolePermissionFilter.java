@@ -9,13 +9,13 @@ import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.URLUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import java.util.Set;
  * @author cheney
  * @date 2019-11-10
  */
-@WebFilter(urlPatterns = {"/auth/*"})
-public class FilterC_RolePermissionFilter extends OncePerRequestFilter {
+@Component
+public class RolePermissionFilter extends OncePerRequestFilter {
 
     @Value("${user.permission.ignoreUrls}")
     private String[] ignoreUrls;

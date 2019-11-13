@@ -13,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import java.util.Optional;
  * 若拦截到含有token的请求头 则尝试进行认证
  */
 @Slf4j
-@WebFilter
-public class FilterA_JsonWebTokenFilter extends OncePerRequestFilter {
+@Component
+public class JsonWebTokenFilter extends OncePerRequestFilter {
 
     @Resource(name = "jsonRedisClient")
     private JsonRedisClient<JwtPrincipal> redisClient;

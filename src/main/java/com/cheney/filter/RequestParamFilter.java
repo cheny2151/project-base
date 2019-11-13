@@ -10,12 +10,12 @@ import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,9 +27,9 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
  * 使用webFilter必须在启动类上加@ServletComponentScan
  * filter根据类全名自然排序
  */
-@WebFilter
 @Slf4j
-public class FilterB_RequestParamFilter extends OncePerRequestFilter {
+@Component
+public class RequestParamFilter extends OncePerRequestFilter {
 
     // 忽略的url正则表达式
     private final static String[] IGNORE_PATTERN = new String[]{".*.ico", ".*.html"};
