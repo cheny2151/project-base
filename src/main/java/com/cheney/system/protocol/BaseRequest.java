@@ -62,9 +62,6 @@ public class BaseRequest<T> implements Serializable {
     }
 
     public Pageable getPageable() {
-        if (pageable == null) {
-            pageable = new Pageable();
-        }
         return pageable;
     }
 
