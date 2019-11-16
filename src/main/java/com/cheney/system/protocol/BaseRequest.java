@@ -18,7 +18,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JSONType(ignores = "requiredPageable")
+@JSONType(ignores = {"requiredPageable"})
 public class BaseRequest<T> implements Serializable {
 
     private static final long serialVersionUID = 8744687666253393218L;
@@ -71,6 +71,13 @@ public class BaseRequest<T> implements Serializable {
     @JsonIgnore
     public Pageable getRequiredPageable() {
         return pageable == null ? new Pageable() : pageable;
+    }
+
+    public Pageable initPageable() {
+        if (pageable == null) {
+            this.pageable = new Pageable();
+        }
+        return pageable;
     }
 
 }
