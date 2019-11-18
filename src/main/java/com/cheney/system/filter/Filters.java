@@ -141,6 +141,10 @@ public class Filters extends ArrayList<Filter> {
         return new NotLikeFilter(property, value);
     }
 
+    public static Filters create() {
+        return new Filters();
+    }
+
     public static Filters create(Filter filters) {
         return new Filters(filters);
     }
