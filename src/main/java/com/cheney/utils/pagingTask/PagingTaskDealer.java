@@ -43,6 +43,9 @@ public class PagingTaskDealer {
 
         Limit limit = Limit.create(0, step);
         ExecutorService executorService = null;
+        if (async) {
+            executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
+        }
         while (count > 0) {
             if (async) {
                 // 多线程并发，limit不可作为公共资源复用
@@ -57,7 +60,6 @@ public class PagingTaskDealer {
             }
             if (async) {
                 // 异步
-                executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
                 final Limit finalLimit = limit;
                 executorService.execute(() -> task.execute(finalLimit));
             } else {
@@ -142,7 +144,7 @@ public class PagingTaskDealer {
         }
         List<TaskResult<Future<T>>> result = new ArrayList<>();
 
-        ExecutorService executorService = null;
+        ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
         while (count > 0) {
             // 多线程并发，limit不可作为公共资源复用
             Limit limit = Limit.create(0, step);
@@ -153,7 +155,6 @@ public class PagingTaskDealer {
                 count -= step;
             }
             // 异步
-            executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
             try {
                 result.add(TaskResult.success(executorService.submit(() -> task.execute(limit)), limit));
             } catch (Throwable e) {
