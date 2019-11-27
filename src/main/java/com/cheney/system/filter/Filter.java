@@ -17,6 +17,9 @@ public class Filter {
     // 过滤属性
     private String property;
 
+    public Filter() {
+    }
+
     public Filter(String symbol) {
         this.symbol = symbol;
     }
@@ -29,6 +32,10 @@ public class Filter {
 
     public String getSymbol() {
         return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public Object getValue() {

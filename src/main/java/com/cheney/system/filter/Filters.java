@@ -75,7 +75,7 @@ public class Filters extends ArrayList<Filter> {
 
     public Filters addOtherParams(Map<String, Object> params) {
         if (this.otherParams == null) {
-            this.otherParams = params;
+            this.otherParams = new HashMap<>();
         }
         this.otherParams.putAll(params);
         return this;

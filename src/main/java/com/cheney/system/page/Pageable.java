@@ -1,6 +1,7 @@
 package com.cheney.system.page;
 
 import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +19,7 @@ public class Pageable extends PageInfo {
 
     private static final long serialVersionUID = 5705303253597757865L;
 
-    private List<Filter> filters;
+    private Filters filters;
 
     private Orders orders;
 
@@ -33,11 +34,13 @@ public class Pageable extends PageInfo {
         return new Pageable(pageInfo.getPageNumber(), pageInfo.getPageSize());
     }
 
-    public void addFilters(List<Filter> filters) {
-        if (this.filters == null) {
-            this.filters = new ArrayList<>();
+    public Filters addFilter(Filter filter) {
+        Filters filters = this.filters;
+        if (filters == null) {
+            filters = this.filters = new Filters();
         }
-        this.filters.addAll(filters);
+        filters.add(filter);
+        return filters;
     }
 
 }
