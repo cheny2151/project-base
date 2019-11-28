@@ -56,6 +56,16 @@ public class RequestParamHolder {
         return request.getData();
     }
 
+    /**
+     * 将当前请求参数data放入Pageable中Filter的otherFilter字段
+     * 作为附加过滤条件
+     */
+    public static Pageable currentPageWithDataParams() {
+        Pageable pageable = currentPage();
+        pageable.addOtherParams(currentParam());
+        return pageable;
+    }
+
     public static Pageable currentPage() {
         BaseRequest<JSONObject> request = currentRequestParam();
         return request == null ? new Pageable() : currentRequestParam().getRequiredPageable();

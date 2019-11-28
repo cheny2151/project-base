@@ -6,8 +6,7 @@ import com.cheney.system.order.Orders;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * 分页信息(带过滤,排序)
@@ -34,12 +33,33 @@ public class Pageable extends PageInfo {
         return new Pageable(pageInfo.getPageNumber(), pageInfo.getPageSize());
     }
 
+    /**
+     * 为Filters添加Filter
+     *
+     * @param filter 过滤条件
+     * @return Filters
+     */
     public Filters addFilter(Filter filter) {
         Filters filters = this.filters;
         if (filters == null) {
             filters = this.filters = new Filters();
         }
         filters.add(filter);
+        return filters;
+    }
+
+    /**
+     * 添加其他过滤条件到Filters对象
+     *
+     * @param params 其他过滤条件
+     * @return Filters
+     */
+    public Filters addOtherParams(Map<String, Object> params) {
+        Filters filters = this.filters;
+        if (filters == null) {
+            filters = this.filters = new Filters();
+        }
+        filters.addOtherParams(params);
         return filters;
     }
 
