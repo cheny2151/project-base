@@ -1,5 +1,6 @@
 package com.cheney.system.page;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -41,6 +42,7 @@ public class PageInfo implements Serializable {
     /**
      * 分页起始位置
      */
+    @JsonIgnore
     public int getStartSize() {
         return (pageNumber - 1) * pageSize;
     }
