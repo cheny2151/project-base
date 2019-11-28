@@ -16,22 +16,6 @@
         </collection>
     </resultMap>
 
-    <resultMap id="page" type="com.cheney.system.page.Page">
-        <result property="total" column="count"/>
-        <result property="pageSize" column="pageSize"/>
-        <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="com.cheney.entity.Role" >
-            <id property="id" column="id"/>
-            <result property="code" column="code"/>
-            <result property="createDate" column="create_date"/>
-            <result property="name" column="name"/>
-            <result property="updateDate" column="update_date"/>
-            <collection property="urlPatterns" ofType="string">
-                <result column="url_pattern"/>
-            </collection>
-        </collection>
-    </resultMap>
-
     <sql id="filters">
         <include refid="commonFilters"/>
     </sql>
@@ -189,13 +173,11 @@
         <include refid="filters"/>
     </select>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize,
-        #{pageable.pageNumber} as pageNumber,
-        (select count(*) from sys_role<include refid="pageFilters"/>) as count,
-        t0.*,sa.url_pattern
-        from (select distinct t0.*
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="base">
+        select t0.*,
+        sa.url_pattern
+        from
+        (select distinct t0.*
         from sys_role t0
         left join mid_role_auth mid on t0.code = mid.role_code
         left join sys_auth sa on mid.auth_code = sa.code

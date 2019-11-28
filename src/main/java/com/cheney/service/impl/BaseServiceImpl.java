@@ -89,8 +89,12 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
 
     @Override
     public Page<T> findPage(Pageable pageable) {
-        Page<T> page = baseMapper.findPage(pageable);
-        return page == null ? Page.emptyPage(pageable) : page;
+        long total = baseMapper.count(pageable.getFilters());
+        if (total == 0) {
+            return Page.emptyPage(pageable);
+        }
+        List<T> content = baseMapper.findPage(pageable);
+        return new Page<>(content, total, pageable);
     }
 
 

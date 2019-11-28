@@ -46,6 +46,6 @@ public class Page<T> extends PageInfo {
      * 生成一个空列表的分页
      */
     public static <T extends BaseEntity> Page<T> emptyPage(Pageable pageable) {
-        return new Page<>(new ArrayList<>(), 0L, pageable);
+        return new Page<>(new ArrayList<>(0), 0L, pageable);
     }
 }

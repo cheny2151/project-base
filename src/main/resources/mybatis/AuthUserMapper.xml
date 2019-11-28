@@ -18,21 +18,6 @@
         </collection>
     </resultMap>
 
-    <resultMap id="page" type="com.cheney.system.page.Page">
-        <result property="total" column="count"/>
-        <result property="pageSize" column="pageSize"/>
-        <result property="pageNumber" column="pageNumber"/>
-        <collection property="content" ofType="com.cheney.entity.AuthUser" >
-            <id property="id" column="id"/>
-        <result property="createDate" column="create_date"/>
-        <result property="enabled" column="enabled"/>
-        <result property="originId" column="origin_id"/>
-        <result property="password" column="password"/>
-        <result property="updateDate" column="update_date"/>
-        <result property="username" column="username"/>
-        </collection>
-    </resultMap>
-
     <sql id="filters">
         <include refid="commonFilters"/>
     </sql>
@@ -208,12 +193,8 @@
         <include refid="filters"/>
     </select>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
-        select
-        #{pageable.pageSize} as pageSize,
-        #{pageable.pageNumber} as pageNumber,
-        (select count(*) from sys_auth_user<include refid="pageFilters"/>) as count,
-        t0.*
+    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="base">
+        select t0.*
         from sys_auth_user t0
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>
