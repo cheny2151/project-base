@@ -48,7 +48,7 @@
                     </choose>
                 </foreach>
                 <if test="filters.hasOtherParams == true">
-                    <bind name="_others" value="filters.otherParams"/>
+                    <bind name="_ps" value="filters.otherParams"/>
                 </if>
             </if>
         </where>
