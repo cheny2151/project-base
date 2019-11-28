@@ -134,10 +134,10 @@
 
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="page">
         select
-        #{pageable.pageSize} as pageSize
-        ,#{pageable.pageNumber} as pageNumber
-        ,(select count(*) from @{tableName}<include refid="pageFilters"/>) as count
-        ,t0.*
+        #{pageable.pageSize} as pageSize,
+        #{pageable.pageNumber} as pageNumber,
+        (select count(*) from @{tableName}<include refid="pageFilters"/>) as count,
+        t0.*
         from @{tableName} t0
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>

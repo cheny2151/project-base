@@ -137,11 +137,11 @@
         where id = #{id}
     </update>
 
-    <delete id="remove" parameterType="Integer">
+    <delete id="remove" parameterType="Long">
         delete from sys_role where id = #{id}
     </delete>
 
-    <delete id="multiRemove" parameterType="Integer">
+    <delete id="multiRemove" parameterType="Long">
         delete from sys_role
         where id in
         <foreach item="id" collection="ids" open="(" close=")" separator=",">
@@ -149,7 +149,7 @@
         </foreach>
     </delete>
 
-    <select id="find" parameterType="Integer" resultMap="base">
+    <select id="find" parameterType="Long" resultMap="base">
         select t0.*,sa.url_pattern
         from sys_role t0
         left join mid_role_auth mid on t0.code = mid.role_code
