@@ -14,7 +14,7 @@ JAR_PATH=$SOURCE_PATH/target
 #    -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled
 #		-XX:LargePageSizeInBytes=128M -XX:+UseFastAccessorMethods -XX:+UseCMSInitiatingOccupancyOnly
 #		-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Dspring.profiles.active=dev -Dserver.port=8090'
-JVM_OPTS='-Xms717M -Xmx717M -XX:+UseG1GC -XX:+PrintGCDetails -Dspring.profiles.active=pro -Dserver.port=8090'
+JVM_OPTS='-Xms1024M -Xmx1024M -XX:+UseG1GC -XX:+PrintGCDetails -Dspring.profiles.active=pro -Dserver.port=8090'
 
 function before(){
   # 复制脚本
@@ -41,10 +41,10 @@ before
 if [ ! -d "logs" ]; then
    mkdir logs
 fi
-PID=`ps ax | grep -i "$PROJECT_NAME" |grep java | grep -v grep | awk '{print $1}'`
+PID=$(ps ax | grep -i "$PROJECT_NAME" |grep java | grep -v grep | awk '{print $1}')
 if [ -z "$PID" ]; then
     echo "Service $PROJECT_NAME start ..."
-    nohup java $JVM_OPTS -jar $PROJECT_NAME-1.0-SNAPSHOT.jar > logs/project-base.out 2>&1 &
+    nohup java "$JVM_OPTS" -jar $PROJECT_NAME-1.0-SNAPSHOT.jar > logs/project-base.out 2>&1 &
     echo "Service $PROJECT_NAME start SUCCESS "
 else
     echo "Service $PROJECT_NAME is already start ..."

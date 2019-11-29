@@ -12,7 +12,7 @@ CID=$(docker ps | grep "$PROJECT_NAME" | awk '{print $1}')
 #jvm opts
 JVM_OPTS='-Xms1024M -Xmx1024M -XX:+UseG1GC -XX:+PrintGCDetails -Dspring.profiles.active=pro'
 
-DATE=`date +%Y%m%d%H%M`
+DATE=$(date +%Y%m%d%H%M)
  
 # 构建前
 function before(){
@@ -45,8 +45,8 @@ function run(){
 	build
 	if [ -n "$CID" ]; then
 		echo "存在容器，CID=$CID,移除原容器..."
-			docker stop $CID
-			docker rm $CID	
+			docker stop "$CID"
+			docker rm "$CID"
 		echo "完成移除容器"
 	fi
 	startdocker
