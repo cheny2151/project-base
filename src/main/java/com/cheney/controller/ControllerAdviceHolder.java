@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -120,8 +121,8 @@ public class ControllerAdviceHolder {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public JsonMessage HttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.error("不支持的请求,{}", e.getMessage());
+    public JsonMessage HttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
+        log.error("url->{}:不支持的请求,{}", request.getRequestURI(), e.getMessage());
         return JsonMessage.error(e.getMessage());
     }
 
