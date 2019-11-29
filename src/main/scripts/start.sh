@@ -44,7 +44,7 @@ fi
 PID=$(ps ax | grep -i "$PROJECT_NAME" |grep java | grep -v grep | awk '{print $1}')
 if [ -z "$PID" ]; then
     echo "Service $PROJECT_NAME start ..."
-    nohup java "$JVM_OPTS" -jar $PROJECT_NAME-1.0-SNAPSHOT.jar > logs/project-base.out 2>&1 &
+    nohup java $JVM_OPTS -jar $PROJECT_NAME-1.0-SNAPSHOT.jar > logs/project-base.out 2>&1 &
     echo "Service $PROJECT_NAME start SUCCESS "
 else
     echo "Service $PROJECT_NAME is already start ..."
