@@ -3,7 +3,6 @@ package com.cheney.utils;
 import com.cheney.exception.ReflectException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.reflection.ReflectionException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -329,7 +328,7 @@ public class ReflectUtils {
                     clazz.getConstructor().newInstance() :
                     clazz.getConstructor(parameterClass).newInstance(args);
         } catch (Exception e) {
-            throw new ReflectionException("reflect:can no new object");
+            throw new ReflectException("reflect:can no new object");
         }
     }
 
