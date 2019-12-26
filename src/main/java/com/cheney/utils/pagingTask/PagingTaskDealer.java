@@ -1,15 +1,13 @@
 package com.cheney.utils.pagingTask;
 
 import com.cheney.system.page.Limit;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -32,7 +30,8 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step, boolean async) {
+    @SneakyThrows
+    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step, boolean async, Runnable callable) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
@@ -43,8 +42,22 @@ public class PagingTaskDealer {
 
         Limit limit = Limit.create(0, step);
         ExecutorService executorService = null;
+        CountDownLatch countDownLatch = null;
         if (async) {
             executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
+            if (callable != null) {
+                int count1 = (count + step - 1) / step;
+                countDownLatch = new CountDownLatch(count1);
+                final CountDownLatch finalCountDownLatch = countDownLatch;
+                final PagingTask finalTask = task;
+                task = (limit0) -> {
+                    try {
+                        finalTask.execute(limit0);
+                    } finally {
+                        finalCountDownLatch.countDown();
+                    }
+                };
+            }
         }
         while (count > 0) {
             if (async) {
@@ -61,7 +74,8 @@ public class PagingTaskDealer {
             if (async) {
                 // 异步
                 final Limit finalLimit = limit;
-                executorService.execute(() -> task.execute(finalLimit));
+                final PagingTask _finalTask = task;
+                executorService.execute(() -> _finalTask.execute(finalLimit));
             } else {
                 task.execute(limit);
             }
@@ -69,17 +83,33 @@ public class PagingTaskDealer {
         if (executorService != null) {
             executorService.shutdown();
         }
+        if (callable != null) {
+            assert countDownLatch != null;
+            countDownLatch.await();
+            callable.run();
+        }
+    }
+
+    /**
+     * 分页执行任务
+     *
+     * @param countFunction 计数函数
+     * @param task          任务
+     * @param step          一次执行个数
+     */
+    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step, boolean async) {
+        startPagingTask(countFunction, task, step, async, null);
     }
 
     /**
      * 分割集合执行任务
      *
      * @param originList 原集合
-     * @param task   消费者
+     * @param task       消费者
      * @param step       一次消费个数
      * @param <T>        数据泛型
      */
-    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step, boolean async) {
+    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step, boolean async, Runnable callable) {
         startPagingTask(originList::size, (limit) -> {
             int num = limit.getNum();
             int size = limit.getSize();
@@ -88,7 +118,19 @@ public class PagingTaskDealer {
                 slipList.add(originList.get(num + i));
             }
             task.accept(slipList);
-        }, step, async);
+        }, step, async, callable);
+    }
+
+    /**
+     * 分割集合执行任务
+     *
+     * @param originList 原集合
+     * @param task       消费者
+     * @param step       一次消费个数
+     * @param <T>        数据泛型
+     */
+    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step, boolean async) {
+        startSlipListTask(originList, task, step, async, null);
     }
 
     /**
