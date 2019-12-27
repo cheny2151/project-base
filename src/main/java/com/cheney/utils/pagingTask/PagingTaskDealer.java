@@ -13,8 +13,10 @@ import java.util.function.Function;
 
 /**
  * 分页任务处理器
+ * 1.1 支持回调,可选主线程或者异步执行回调任务
  *
  * @author cheney
+ * @version 1.1
  * @date 2019-09-12
  */
 @Slf4j
@@ -26,12 +28,16 @@ public class PagingTaskDealer {
     /**
      * 分页执行任务
      *
-     * @param countFunction 计数函数
-     * @param task          任务
-     * @param step          一次执行个数
+     * @param countFunction       计数函数
+     * @param task                任务
+     * @param step                一次执行个数
+     * @param async               是否异步
+     * @param callable            异步执行任务时的回调任务
+     * @param callableTaskUseMain 回调任务是否使用主线程
      */
     @SneakyThrows
-    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step, boolean async, Runnable callable) {
+    public static void startPagingTask(CountFunction countFunction, PagingTask task,
+                                       int step, boolean async, Runnable callable, boolean callableTaskUseMain) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
@@ -46,6 +52,7 @@ public class PagingTaskDealer {
         if (async) {
             executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
             if (callable != null) {
+                // 计算分页数，使用countDownLatch等待线程任务
                 int count1 = (count + step - 1) / step;
                 countDownLatch = new CountDownLatch(count1);
                 final CountDownLatch finalCountDownLatch = countDownLatch;
@@ -80,14 +87,34 @@ public class PagingTaskDealer {
                 task.execute(limit);
             }
         }
+        if (async && callable != null) {
+            // 存在回调任务
+            countDownLatch.await();
+            if (callableTaskUseMain) {
+                // 使用主线程执行回调任务
+                callable.run();
+            } else {
+                // 使用线程池执行回调任务
+                executorService.submit(callable);
+            }
+        }
         if (executorService != null) {
+            // 关闭线程池
             executorService.shutdown();
         }
-        if (callable != null) {
-            assert countDownLatch != null;
-            countDownLatch.await();
-            callable.run();
-        }
+    }
+
+
+    /**
+     * 异步分页执行任务
+     *
+     * @param countFunction 计数函数
+     * @param task          任务
+     * @param step          一次执行个数
+     */
+    public static void startAsyncPagingTask(CountFunction countFunction, PagingTask task, int step,
+                                            Runnable callable, boolean callableTaskUseMain) {
+        startPagingTask(countFunction, task, step, true, callable, callableTaskUseMain);
     }
 
     /**
@@ -97,8 +124,8 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step, boolean async) {
-        startPagingTask(countFunction, task, step, async, null);
+    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step) {
+        startPagingTask(countFunction, task, step, false, null, false);
     }
 
     /**
@@ -109,7 +136,8 @@ public class PagingTaskDealer {
      * @param step       一次消费个数
      * @param <T>        数据泛型
      */
-    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step, boolean async, Runnable callable) {
+    public static <T> void startAsyncSlipListTask(List<T> originList, Consumer<List<T>> task, int step,
+                                                  Runnable callable, boolean callableTaskUseMain) {
         startPagingTask(originList::size, (limit) -> {
             int num = limit.getNum();
             int size = limit.getSize();
@@ -118,7 +146,7 @@ public class PagingTaskDealer {
                 slipList.add(originList.get(num + i));
             }
             task.accept(slipList);
-        }, step, async, callable);
+        }, step, true, callable, callableTaskUseMain);
     }
 
     /**
@@ -129,8 +157,16 @@ public class PagingTaskDealer {
      * @param step       一次消费个数
      * @param <T>        数据泛型
      */
-    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step, boolean async) {
-        startSlipListTask(originList, task, step, async, null);
+    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step) {
+        startPagingTask(originList::size, (limit) -> {
+            int num = limit.getNum();
+            int size = limit.getSize();
+            List<T> slipList = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                slipList.add(originList.get(num + i));
+            }
+            task.accept(slipList);
+        }, step, false, null, false);
     }
 
     /**
