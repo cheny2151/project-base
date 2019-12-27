@@ -247,7 +247,7 @@ public class PagingTaskDealer {
      * @param task       消费者
      * @param step       一次消费个数
      */
-    public static <T, R> List<TaskResult<Future<R>>> slipListAsyncTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
+    public static <T, R> List<TaskResult<Future<R>>> asyncSlipListTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
         return PagingTaskDealer.asyncPagingTaskWithResult(originList::size, getSlipListTaskWithResult(originList, task), step);
     }
 
@@ -315,7 +315,7 @@ public class PagingTaskDealer {
 //        for (TaskResult<Integer> taskResult : taskResults) {
 //            System.out.println(taskResult.getResult());
 //        }
-        List<TaskResult<Future<Integer>>> taskResults = slipListAsyncTaskWithResult(strings, (limit) -> {
+        asyncSlipListTask(strings, (limit) -> {
             System.out.println("start");
             try {
                 Thread.sleep(3000);
@@ -323,12 +323,15 @@ public class PagingTaskDealer {
                 e.printStackTrace();
             }
             System.out.println("end");
-            return limit.size();
-        }, 2);
-        for (TaskResult<Future<Integer>> taskResult : taskResults) {
-            Integer integer = taskResult.getResult().get();
-            System.out.println(integer);
-        }
+        }, 2, () -> {
+            System.out.println("callback");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("callback out");
+        }, false);
         System.out.println("out");
     }
 
