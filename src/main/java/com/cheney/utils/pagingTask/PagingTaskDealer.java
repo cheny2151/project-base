@@ -36,8 +36,8 @@ public class PagingTaskDealer {
      * @param callableTaskUseMain 回调任务是否使用主线程
      */
     @SneakyThrows
-    public static void startPagingTask(CountFunction countFunction, PagingTask task,
-                                       int step, boolean async, Runnable callable, boolean callableTaskUseMain) {
+    public static void executeSplitTask(CountFunction countFunction, PagingTask task,
+                                        int step, boolean async, Runnable callable, boolean callableTaskUseMain) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
@@ -112,9 +112,9 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static void startAsyncPagingTask(CountFunction countFunction, PagingTask task, int step,
-                                            Runnable callable, boolean callableTaskUseMain) {
-        startPagingTask(countFunction, task, step, true, callable, callableTaskUseMain);
+    public static void asyncPagingTask(CountFunction countFunction, PagingTask task, int step,
+                                       Runnable callable, boolean callableTaskUseMain) {
+        executeSplitTask(countFunction, task, step, true, callable, callableTaskUseMain);
     }
 
     /**
@@ -124,8 +124,8 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static void startPagingTask(CountFunction countFunction, PagingTask task, int step) {
-        startPagingTask(countFunction, task, step, false, null, false);
+    public static void pagingTask(CountFunction countFunction, PagingTask task, int step) {
+        executeSplitTask(countFunction, task, step, false, null, false);
     }
 
     /**
@@ -136,17 +136,9 @@ public class PagingTaskDealer {
      * @param step       一次消费个数
      * @param <T>        数据泛型
      */
-    public static <T> void startAsyncSlipListTask(List<T> originList, Consumer<List<T>> task, int step,
-                                                  Runnable callable, boolean callableTaskUseMain) {
-        startPagingTask(originList::size, (limit) -> {
-            int num = limit.getNum();
-            int size = limit.getSize();
-            List<T> slipList = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                slipList.add(originList.get(num + i));
-            }
-            task.accept(slipList);
-        }, step, true, callable, callableTaskUseMain);
+    public static <T> void asyncSlipListTask(List<T> originList, Consumer<List<T>> task, int step,
+                                             Runnable callable, boolean callableTaskUseMain) {
+        executeSplitTask(originList::size, getSlipListTask(originList, task), step, true, callable, callableTaskUseMain);
     }
 
     /**
@@ -157,16 +149,8 @@ public class PagingTaskDealer {
      * @param step       一次消费个数
      * @param <T>        数据泛型
      */
-    public static <T> void startSlipListTask(List<T> originList, Consumer<List<T>> task, int step) {
-        startPagingTask(originList::size, (limit) -> {
-            int num = limit.getNum();
-            int size = limit.getSize();
-            List<T> slipList = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                slipList.add(originList.get(num + i));
-            }
-            task.accept(slipList);
-        }, step, false, null, false);
+    public static <T> void slipListTask(List<T> originList, Consumer<List<T>> task, int step) {
+        executeSplitTask(originList::size, getSlipListTask(originList, task), step, false, null, false);
     }
 
     /**
@@ -176,7 +160,7 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static <T> List<TaskResult<T>> startPagingTaskWithResult(CountFunction countFunction, PagingTaskWithResult<T> task, int step) {
+    public static <T> List<TaskResult<T>> pagingTaskWithResult(CountFunction countFunction, PagingTaskWithResult<T> task, int step) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
@@ -212,7 +196,7 @@ public class PagingTaskDealer {
      * @param task          任务
      * @param step          一次执行个数
      */
-    public static <T> List<TaskResult<Future<T>>> startAsyncPagingTaskWithResult(CountFunction countFunction, PagingTaskWithResult<T> task, int step) {
+    public static <T> List<TaskResult<Future<T>>> asyncPagingTaskWithResult(CountFunction countFunction, PagingTaskWithResult<T> task, int step) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
@@ -252,8 +236,8 @@ public class PagingTaskDealer {
      * @param task       消费者
      * @param step       一次消费个数
      */
-    public static <T, R> List<TaskResult<R>> startSlipListTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
-        return PagingTaskDealer.startPagingTaskWithResult(originList::size, getSlipListTaskWithResult(originList, task), step);
+    public static <T, R> List<TaskResult<R>> slipListTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
+        return PagingTaskDealer.pagingTaskWithResult(originList::size, getSlipListTaskWithResult(originList, task), step);
     }
 
     /**
@@ -263,20 +247,40 @@ public class PagingTaskDealer {
      * @param task       消费者
      * @param step       一次消费个数
      */
-    public static <T, R> List<TaskResult<Future<R>>> startSlipListAsyncTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
-        return PagingTaskDealer.startAsyncPagingTaskWithResult(originList::size, getSlipListTaskWithResult(originList, task), step);
+    public static <T, R> List<TaskResult<Future<R>>> slipListAsyncTaskWithResult(List<T> originList, Function<List<T>, R> task, int step) {
+        return PagingTaskDealer.asyncPagingTaskWithResult(originList::size, getSlipListTaskWithResult(originList, task), step);
     }
 
     private static <T, R> PagingTaskWithResult<R> getSlipListTaskWithResult(List<T> originList, Function<List<T>, R> task) {
         return (limit) -> {
-            int num = limit.getNum();
-            int size = limit.getSize();
-            List<T> slipList = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                slipList.add(originList.get(num + i));
-            }
+            List<T> slipList = splitList(originList, limit);
             return task.apply(slipList);
         };
+    }
+
+    private static <T> PagingTask getSlipListTask(List<T> originList, Consumer<List<T>> task) {
+        return (limit) -> {
+            List<T> slipList = splitList(originList, limit);
+            task.accept(slipList);
+        };
+    }
+
+    /**
+     * 切割List
+     *
+     * @param originList 原始集合
+     * @param limit      切割区间
+     * @param <T>        类型
+     * @return 切割后的集合
+     */
+    private static <T> List<T> splitList(List<T> originList, Limit limit) {
+        int num = limit.getNum();
+        int size = limit.getSize();
+        List<T> slipList = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            slipList.add(originList.get(num + i));
+        }
+        return slipList;
     }
 
     /**
@@ -311,7 +315,7 @@ public class PagingTaskDealer {
 //        for (TaskResult<Integer> taskResult : taskResults) {
 //            System.out.println(taskResult.getResult());
 //        }
-        List<TaskResult<Future<Integer>>> taskResults = startSlipListAsyncTaskWithResult(strings, (limit) -> {
+        List<TaskResult<Future<Integer>>> taskResults = slipListAsyncTaskWithResult(strings, (limit) -> {
             System.out.println("start");
             try {
                 Thread.sleep(3000);
