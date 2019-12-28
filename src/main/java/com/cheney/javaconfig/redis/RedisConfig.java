@@ -18,7 +18,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collection;
@@ -34,6 +33,17 @@ import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK
 @Configuration
 @AutoConfigureAfter(value = RedisAutoConfiguration.class)
 public class RedisConfig {
+
+    @Bean("redisTemplate")
+    public RedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
+        return template;
+    }
 
     @Bean("jsonRedisTemplate")
     public RedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -55,18 +65,6 @@ public class RedisConfig {
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new JdkSerializationRedisSerializer());
         return template;
-    }
-
-    @Bean("strRedisTemplate")
-    public RedisTemplate<String, Object> strRedisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(factory);
-        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(redisSerializer);
-        redisTemplate.setHashKeySerializer(redisSerializer);
-        redisTemplate.setValueSerializer(redisSerializer);
-        redisTemplate.setHashValueSerializer(redisSerializer);
-        return redisTemplate;
     }
 
     @Bean

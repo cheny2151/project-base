@@ -26,7 +26,7 @@ public class DefaultClusterTaskPublisher implements ClusterTaskPublisher {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public DefaultClusterTaskPublisher(@Qualifier("strRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public DefaultClusterTaskPublisher(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

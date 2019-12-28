@@ -49,7 +49,8 @@ public class ClusterTaskDealer implements RedisEval {
 
     private ExecutorService taskExecutor;
 
-    public ClusterTaskDealer(@Qualifier("strRedisTemplate") RedisTemplate<String, Object> redisTemplate, @Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
+    public ClusterTaskDealer(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
+                             @Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
         this.redisTemplate = redisTemplate;
         this.taskExecutor = taskExecutor;
     }
