@@ -60,7 +60,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         }
 
         String requestURI = httpServletRequest.getRequestURI();
-        if (URLUtils.matchesUrl(requestURI, urlPatterns) && !loginUser.isPresent()) {
+        if (URLUtils.matchesUrl(requestURI, urlPatterns) && loginUser.isEmpty()) {
             log.info("请求url:{},用户未登录", requestURI);
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
