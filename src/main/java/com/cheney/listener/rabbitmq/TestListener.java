@@ -3,7 +3,7 @@ package com.cheney.listener.rabbitmq;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
+import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 

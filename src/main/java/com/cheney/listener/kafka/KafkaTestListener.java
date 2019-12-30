@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author cheney
  * @date 2019-07-11
  */
-@Component
+//@Component
 @Slf4j
 public class KafkaTestListener {
 
