@@ -17,14 +17,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -35,19 +33,17 @@ import java.util.Map;
  * HTTP请求工具类
  */
 @Slf4j
-@Component("httpUtils")
 public class HttpUtils {
 
     /**
      * 系统临时文件目录
      */
-    private final static String tmpdir = System.getProperty("java.io.tmpdir");
+    private final static String TMPDIR = System.getProperty("java.io.tmpdir");
 
     /**
      * 是否开启dug
      */
-    @Value("${log.http.show:false}")
-    private Boolean isDug;
+    private static boolean DUG = false;
 
     /**
      * 默认请求头
@@ -64,6 +60,16 @@ public class HttpUtils {
      */
     public static Map<String, String> ACCOUNT_HEADERS;
 
+    /**
+     * http请求template
+     */
+    private final static RestTemplate REST_TEMPLATE;
+
+    /**
+     * http+ssl请求template
+     */
+    private final static RestTemplate HTTPS_REST_TEMPLATE;
+
     static {
         defaultHeader = new HttpHeaders();
         defaultHeader.setContentType(MediaType.APPLICATION_JSON);
@@ -72,13 +78,18 @@ public class HttpUtils {
 
         ACCOUNT_HEADERS = new HashMap<>();
         ACCOUNT_HEADERS.put("EXCHANGE", "AUCTION");
+
+        // 初始化template
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(5000);
+        requestFactory.setReadTimeout(10000);
+        REST_TEMPLATE = new RestTemplate(requestFactory);
+
+        HttpsClientRequestFactory sslRequestFactory = new HttpsClientRequestFactory();
+        requestFactory.setConnectTimeout(5000);
+        requestFactory.setReadTimeout(10000);
+        HTTPS_REST_TEMPLATE = new RestTemplate(sslRequestFactory);
     }
-
-    @Resource(name = "restTemplate")
-    private RestTemplate restTemplate;
-
-    @Resource(name = "httpsRestTemplate")
-    private RestTemplate httpsRestTemplate;
 
     /**
      * get请求，返回包括响应状态的entity
@@ -89,10 +100,10 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
+    public static <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
         try {
             ResponseEntity<R> responseEntity = getTemplate(url).getForEntity(url, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
@@ -110,11 +121,13 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url, ParameterizedTypeReference<B> resultType, Object... uriVariables) {
+    public static <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url,
+                                                                                      ParameterizedTypeReference<B> resultType,
+                                                                                      Object... uriVariables) {
         HttpEntity<?> requestEntity = new HttpEntity<>(getHeader());
         try {
             ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.GET, requestEntity, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
@@ -134,7 +147,9 @@ public class HttpUtils {
      * @return 响应体
      * @throws FailRCResponseException
      */
-    public <R, B extends BaseResponse<R>> B getForBaseResponseThrowFail(String url, ParameterizedTypeReference<B> resultType, Object... uriVariables)
+    public static <R, B extends BaseResponse<R>> B getForBaseResponseThrowFail(String url,
+                                                                               ParameterizedTypeReference<B> resultType,
+                                                                               Object... uriVariables)
             throws FailRCResponseException {
         ResponseEntity<B> response = getForBaseResponse(url, resultType, uriVariables);
         B responseBody = response.getBody();
@@ -166,11 +181,13 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody, ParameterizedTypeReference<B> resultType, Object... uriVariables) {
+    public static <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody,
+                                                                                       ParameterizedTypeReference<B> resultType,
+                                                                                       Object... uriVariables) {
         HttpEntity<?> requestEntity = wrapRequest(requestBody);
         try {
             ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
@@ -192,7 +209,9 @@ public class HttpUtils {
      * @return 响应体
      * @throws FailRCResponseException
      */
-    public <R, B extends BaseResponse<R>> B postForBaseResponseThrowFail(String url, Object requestBody, ParameterizedTypeReference<B> resultType, Object... uriVariables) throws FailRCResponseException {
+    public static <R, B extends BaseResponse<R>> B postForBaseResponseThrowFail(String url, Object requestBody,
+                                                                                ParameterizedTypeReference<B> resultType,
+                                                                                Object... uriVariables) throws FailRCResponseException {
         ResponseEntity<B> response = postForBaseResponse(url, requestBody, resultType, uriVariables);
         BaseResponse<R> responseBody = response.getBody();
         int statusCodeValue = response.getStatusCodeValue();
@@ -222,10 +241,10 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
+    public static <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
         try {
             R responseBody = getTemplate(url).getForObject(url, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
             return responseBody;
         } catch (Exception e) {
@@ -245,11 +264,11 @@ public class HttpUtils {
      * @param <R>          返回类型
      * @return 响应体
      */
-    public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
+    public static <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
             ResponseEntity<R> responseEntity = getTemplate(url).postForEntity(url, requestEntity, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
@@ -270,11 +289,11 @@ public class HttpUtils {
      * @param <R>          返回类型
      * @return 响应体
      */
-    public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
+    public static <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
             R responseBody = getTemplate(url).postForObject(url, requestEntity, resultType, uriVariables);
-            if (isDug)
+            if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseBody));
             return responseBody;
@@ -298,11 +317,9 @@ public class HttpUtils {
     /**
      * CloseableHttpClient发送简单的post请求
      *
-     * @param url         请求url
-     * @param requestBody 请求数据
-     * @param contentType content-type
+     * @param url 请求url
      */
-    public String simpleGet(String url, Object requestBody, ContentType contentType) {
+    public static String simpleGet(String url) {
         HttpGet httpGet = new HttpGet(url);
         return simpleExecute(url, httpGet);
     }
@@ -314,18 +331,33 @@ public class HttpUtils {
      * @param requestBody 请求数据
      * @param contentType content-type
      */
-    public String simplePost(String url, Object requestBody, ContentType contentType) {
+    public static String simplePost(String url, Object requestBody, ContentType contentType) {
         HttpPost httpPost = new HttpPost(url);
         StringEntity stringEntity = new StringEntity(JSON.toJSONString(requestBody), contentType);
         httpPost.setEntity(stringEntity);
         return simpleExecute(url, httpPost);
     }
 
-    public static File download(String fileUrl) throws IOException {
-        return download(fileUrl, tmpdir);
+    /**
+     * 下载文件
+     *
+     * @param fileUrl 目标文件地址
+     * @return 文件
+     * @throws IOException
+     */
+    public static File downloadFile(String fileUrl) throws IOException {
+        return downloadFile(fileUrl, TMPDIR);
     }
 
-    public static File download(String fileUrl, String path) throws IOException {
+    /**
+     * 下载文件
+     *
+     * @param fileUrl 目标文件地址
+     * @param path    下载目录
+     * @return 文件
+     * @throws IOException
+     */
+    public static File downloadFile(String fileUrl, String path) throws IOException {
         URL url = new URL(fileUrl);
         URLConnection urlConnection = url.openConnection();
 
@@ -355,6 +387,13 @@ public class HttpUtils {
         return file;
     }
 
+    /**
+     * 从文件url路径或者Content-Disposition中提取文件名
+     *
+     * @param fileUrl            url
+     * @param contentDisposition 请求头Content-Disposition
+     * @return 文件名
+     */
     private static String extractFilenameInUrl(String fileUrl, String contentDisposition) {
         int index;
         if (!StringUtils.isEmpty(contentDisposition) && (index = contentDisposition.indexOf("filename=")) != -1) {
@@ -375,7 +414,7 @@ public class HttpUtils {
      * @param httpRequest 请求实体
      * @return 报文
      */
-    private String simpleExecute(String url, HttpRequestBase httpRequest) {
+    private static String simpleExecute(String url, HttpRequestBase httpRequest) {
         CloseableHttpClient client = HttpClientBuilder.create().build();
         HttpHeaders httpHeaders = currentHeader.get();
         if (!CollectionUtils.isEmpty(httpHeaders)) {
@@ -390,7 +429,7 @@ public class HttpUtils {
         }
     }
 
-    private <T> HttpEntity<T> wrapRequest(T requestBody) {
+    private static <T> HttpEntity<T> wrapRequest(T requestBody) {
         HttpEntity<T> requestEntity;
         if (requestBody instanceof HttpEntity) {
             requestEntity = (HttpEntity<T>) requestBody;
@@ -412,10 +451,10 @@ public class HttpUtils {
      * @param url 请求url
      * @return restTemplate
      */
-    private RestTemplate getTemplate(String url) {
-        RestTemplate restTemplate = this.restTemplate;
+    private static RestTemplate getTemplate(String url) {
+        RestTemplate restTemplate = REST_TEMPLATE;
         if (url.toLowerCase().startsWith("https")) {
-            restTemplate = this.httpsRestTemplate;
+            restTemplate = HTTPS_REST_TEMPLATE;
         }
         return restTemplate;
     }

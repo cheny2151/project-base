@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -17,9 +16,6 @@ import java.util.stream.Collectors;
 @Component("multiRequestHolder")
 @Slf4j
 public class MultiRequestHolder {
-
-    @Resource(name = "httpUtils")
-    private HttpUtils httpUtils;
 
     public final static MultiRequestHandler<Map<String, Object>> defaultRequestHandler = new KeyValueMultiRequestHandler();
 
@@ -50,10 +46,10 @@ public class MultiRequestHolder {
             String url = info.getUrl();
             Object requestBody = null;
             if (RequestInfo.Method.GET.equals(method)) {
-                responseEntity = httpUtils.getForEntity(url, info.getResultType());
+                responseEntity = HttpUtils.getForEntity(url, info.getResultType());
             } else {
                 requestBody = info.getRequestBody();
-                responseEntity = httpUtils.postForEntity(url, requestBody, info.getResultType());
+                responseEntity = HttpUtils.postForEntity(url, requestBody, info.getResultType());
             }
             if (responseEntity.getStatusCodeValue() != 200) {
                 //请求失败，抛出异常
@@ -89,11 +85,11 @@ public class MultiRequestHolder {
             try {
                 if (RequestInfo.Method.GET.equals(method)) {
                     responseEntityFuture = executorService.submit(
-                            () -> httpUtils.getForEntity(url, info.getResultType()));
+                            () -> HttpUtils.getForEntity(url, info.getResultType()));
                 } else {
                     Object requestBody = info.getRequestBody();
                     responseEntityFuture = executorService.submit(
-                            () -> httpUtils.postForEntity(url, requestBody, info.getResultType()));
+                            () -> HttpUtils.postForEntity(url, requestBody, info.getResultType()));
                 }
             } catch (Exception e) {
                 throw new MultiRequestException(info, e);
