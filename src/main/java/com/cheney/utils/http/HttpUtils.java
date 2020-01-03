@@ -6,6 +6,8 @@ import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.response.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -23,6 +25,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +38,14 @@ import java.util.Map;
 @Component("httpUtils")
 public class HttpUtils {
 
+    /**
+     * 系统临时文件目录
+     */
+    private final static String tmpdir = System.getProperty("java.io.tmpdir");
+
+    /**
+     * 是否开启dug
+     */
     @Value("${log.http.show:false}")
     private Boolean isDug;
 
@@ -53,7 +66,7 @@ public class HttpUtils {
 
     static {
         defaultHeader = new HttpHeaders();
-        defaultHeader.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        defaultHeader.setContentType(MediaType.APPLICATION_JSON);
 
         currentHeader = new ThreadLocal<>();
 
@@ -233,7 +246,7 @@ public class HttpUtils {
      * @return 响应体
      */
     public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity requestEntity = wrapRequest(requestBody);
+        HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
             ResponseEntity<R> responseEntity = getTemplate(url).postForEntity(url, requestEntity, resultType, uriVariables);
             if (isDug)
@@ -258,7 +271,7 @@ public class HttpUtils {
      * @return 响应体
      */
     public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity requestEntity = wrapRequest(requestBody);
+        HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
             R responseBody = getTemplate(url).postForObject(url, requestEntity, resultType, uriVariables);
             if (isDug)
@@ -276,7 +289,7 @@ public class HttpUtils {
             throw new NullPointerException();
         HttpHeaders httpHeaders = new HttpHeaders();
         if (!headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         }
         headers.forEach(httpHeaders::set);
         currentHeader.set(httpHeaders);
@@ -308,6 +321,53 @@ public class HttpUtils {
         return simpleExecute(url, httpPost);
     }
 
+    public static File download(String fileUrl) throws IOException {
+        return download(fileUrl, tmpdir);
+    }
+
+    public static File download(String fileUrl, String path) throws IOException {
+        URL url = new URL(fileUrl);
+        URLConnection urlConnection = url.openConnection();
+
+        // 提取文件名
+        String filename = extractFilenameInUrl(fileUrl, urlConnection.getHeaderField("Content-Disposition"));
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String filepath = FilenameUtils.concat(path, filename);
+        File file = new File(filepath);
+
+        // 获取响应流
+        InputStream inputStream = urlConnection.getInputStream();
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        byte[] data = new byte[1024];
+        int length = data.length;
+        int len;
+        while ((len = bufferedInputStream.read(data, 0, length)) > 0) {
+            fileOutputStream.write(data, 0, len);
+            fileOutputStream.flush();
+        }
+        fileOutputStream.close();
+        inputStream.close();
+        return file;
+    }
+
+    private static String extractFilenameInUrl(String fileUrl, String contentDisposition) {
+        int index;
+        if (!StringUtils.isEmpty(contentDisposition) && (index = contentDisposition.indexOf("filename=")) != -1) {
+            return contentDisposition.substring(index + 9);
+        }
+        int i = fileUrl.indexOf("?");
+        if (i != -1) {
+            fileUrl = fileUrl.substring(0, i);
+        }
+        String[] split = fileUrl.split("/");
+        return split[split.length - 1];
+    }
+
     /**
      * closeableHttpClient 简单的请求
      *
@@ -330,10 +390,10 @@ public class HttpUtils {
         }
     }
 
-    private HttpEntity<?> wrapRequest(Object requestBody) {
-        HttpEntity<?> requestEntity;
+    private <T> HttpEntity<T> wrapRequest(T requestBody) {
+        HttpEntity<T> requestEntity;
         if (requestBody instanceof HttpEntity) {
-            requestEntity = (HttpEntity<?>) requestBody;
+            requestEntity = (HttpEntity<T>) requestBody;
         } else {
             //默认为application/json;charset=utf-8请求
             requestEntity = new HttpEntity<>(requestBody, getHeader());
