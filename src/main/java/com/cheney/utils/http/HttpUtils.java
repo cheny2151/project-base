@@ -149,8 +149,7 @@ public class HttpUtils {
      */
     public static <R, B extends BaseResponse<R>> B getForBaseResponseThrowFail(String url,
                                                                                ParameterizedTypeReference<B> resultType,
-                                                                               Object... uriVariables)
-            throws FailRCResponseException {
+                                                                               Object... uriVariables) throws FailRCResponseException {
         ResponseEntity<B> response = getForBaseResponse(url, resultType, uriVariables);
         B responseBody = response.getBody();
         int statusCodeValue = response.getStatusCodeValue();
