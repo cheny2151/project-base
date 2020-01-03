@@ -387,6 +387,16 @@ public class HttpUtils {
     }
 
     /**
+     * 设置是否dug模式
+     * 默认为false
+     *
+     * @param dug 是否开启dug
+     */
+    public static void setDUG(boolean dug) {
+        HttpUtils.DUG = dug;
+    }
+
+    /**
      * 从文件url路径或者Content-Disposition中提取文件名
      *
      * @param fileUrl            url
