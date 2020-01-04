@@ -1,5 +1,6 @@
 package com.cheney.utils;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
@@ -16,8 +17,12 @@ public class DateUtils {
 
     private final static ThreadLocal<SimpleDateFormat> DAY_FORMAT = new ThreadLocal<>();
 
-    public static Date parseDate(String date) throws ParseException {
-        return org.apache.commons.lang.time.DateUtils.parseDate(date, FORMATSTR);
+    public static Date parseDate(String date) {
+        try {
+            return org.apache.commons.lang.time.DateUtils.parseDate(date, FORMATSTR);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("ParseException for " + date + ",pattern is " + JSON.toJSONString(FORMATSTR), e);
+        }
     }
 
     public static String formatDate(Date date) {
