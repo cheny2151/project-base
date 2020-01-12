@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class Orders extends ArrayList<Orders.Order> {
 
     /**
+     * 默认主表标识
+     */
+    private final static String MAIN_TABLE = "t0.";
+
+    /**
      * 排序类
      */
     @NoArgsConstructor
@@ -64,6 +69,9 @@ public class Orders extends ArrayList<Orders.Order> {
             String property = this.property;
             if (USE_UNDERLINE && StringUtils.isNotEmpty(property)) {
                 property = PropertyNameUtils.underline(property);
+            }
+            if (!property.contains(".")) {
+                return MAIN_TABLE + property;
             }
             return property;
         }
