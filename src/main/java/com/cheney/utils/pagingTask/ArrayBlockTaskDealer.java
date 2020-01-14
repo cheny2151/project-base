@@ -184,6 +184,11 @@ public class ArrayBlockTaskDealer {
             return futures;
         }
 
+        /**
+         * 从所有Future中获取异步结果
+         *
+         * @return 任务返回数据
+         */
         public List<R> getResults() {
             return futures == null ? Collections.emptyList() : futures.stream().map(e -> {
                 try {
