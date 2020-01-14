@@ -76,7 +76,7 @@ public class ArrayBlockTaskDealer {
                         blockTask.execute(data);
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.error("队列poll数据异常:", e);
                 }
             });
         }
@@ -111,7 +111,7 @@ public class ArrayBlockTaskDealer {
                         rs.addAll(blockTaskWithResult.execute(data));
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.error("队列poll数据异常:", e);
                 }
                 return rs;
             }));
