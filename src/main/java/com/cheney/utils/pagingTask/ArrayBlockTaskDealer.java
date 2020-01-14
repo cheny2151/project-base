@@ -24,7 +24,12 @@ public class ArrayBlockTaskDealer {
     /**
      * 默认线程个数
      */
-    private final static int DEFAULT_THREAD_NUM = 4;
+    private final static int DEFAULT_THREAD_NUM = 8;
+
+    /**
+     * 默认队列容量
+     */
+    private final static int DEFAULT_QUEUE_CAPACITY = 4;
 
     /**
      * 线程个数
@@ -66,14 +71,20 @@ public class ArrayBlockTaskDealer {
 
         // 初始化线程池，阻塞队列
         ExecutorService executorService = Executors.newFixedThreadPool(this.threadNum);
-        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(4);
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         // 异步订阅任务
         for (int i = 0; i < this.threadNum; i++) {
             executorService.submit(() -> {
                 try {
                     List<T> data;
                     while ((data = queue.poll(1, TimeUnit.SECONDS)) != null || !finish) {
-                        blockTask.execute(data);
+                        try {
+                            if (data != null) {
+                                blockTask.execute(data);
+                            }
+                        } catch (Exception e) {
+                            log.error("执行任务分片异常", e);
+                        }
                     }
                 } catch (InterruptedException e) {
                     log.error("队列poll数据异常:", e);
@@ -87,6 +98,16 @@ public class ArrayBlockTaskDealer {
         executorService.shutdown();
     }
 
+    /**
+     * 执行多线程阻塞任务，主线程生产数据，异步线程消费数据并返回数据
+     *
+     * @param countFunction       count函数
+     * @param findDataFunction    数据查询函数
+     * @param blockTaskWithResult 任务函数（返回数据）
+     * @param step                步长
+     * @param <T>                 类型
+     * @throws InterruptedException ArrayBlockingQueue导致的任务中断异常
+     */
     public <T, R> FutureResult<R> executeBlockTask(CountFunction countFunction,
                                                    FindDataFunction<T> findDataFunction,
                                                    BlockTaskWithResult<T, R> blockTaskWithResult,
@@ -99,8 +120,8 @@ public class ArrayBlockTaskDealer {
         List<Future<List<R>>> futures = new ArrayList<>();
 
         // 初始化线程池，阻塞队列
-        ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
-        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(4);
+        ExecutorService executorService = Executors.newFixedThreadPool(this.threadNum);
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         // 异步订阅任务
         for (int i = 0; i < DEFAULT_THREAD_NUM; i++) {
             futures.add(executorService.submit(() -> {
@@ -108,7 +129,13 @@ public class ArrayBlockTaskDealer {
                 List<T> data;
                 try {
                     while ((data = queue.poll(1, TimeUnit.SECONDS)) != null || !finish) {
-                        rs.addAll(blockTaskWithResult.execute(data));
+                        try {
+                            if (data != null) {
+                                rs.addAll(blockTaskWithResult.execute(data));
+                            }
+                        } catch (Exception e) {
+                            log.error("执行任务分片异常", e);
+                        }
                     }
                 } catch (InterruptedException e) {
                     log.error("队列poll数据异常:", e);
@@ -202,8 +229,10 @@ public class ArrayBlockTaskDealer {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        ArrayBlockTaskDealer taskDealer = new ArrayBlockTaskDealer();
-        FutureResult<HashMap<String, Object>> futureResult = taskDealer.executeBlockTask(() -> 5000, limit -> {
+        long l = System.currentTimeMillis();
+        ArrayBlockTaskDealer taskDealer = new ArrayBlockTaskDealer(8);
+        FutureResult<HashMap<String, Object>> futureResult = taskDealer.executeBlockTask(() -> 2000, limit -> {
+            System.out.println("put data");
             int num = limit.getNum();
             ArrayList<HashMap<String, Object>> hashMaps = new ArrayList<>();
             for (int i = 0; i < limit.getSize(); i++) {
@@ -212,15 +241,23 @@ public class ArrayBlockTaskDealer {
                 hashMaps.add(hashMap);
             }
             try {
-                System.out.println(hashMaps);
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return hashMaps;
-        }, data -> data, 100);
+        }, data -> {
+            try {
+                System.out.println(data);
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return data;
+        }, 100);
         List<HashMap<String, Object>> results = futureResult.getResults();
         System.out.println(results);
+        System.out.println(System.currentTimeMillis() - l);
     }
 
 }
