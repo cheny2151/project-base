@@ -1,6 +1,9 @@
 package com.cheney.utils.pagingTask;
 
 import com.cheney.system.page.Limit;
+import com.cheney.utils.pagingTask.function.CountFunction;
+import com.cheney.utils.pagingTask.function.PagingTask;
+import com.cheney.utils.pagingTask.function.PagingTaskWithResult;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -281,27 +284,6 @@ public class PagingTaskDealer {
             slipList.add(originList.get(num + i));
         }
         return slipList;
-    }
-
-    /**
-     * 数据库count方法函数式接口
-     */
-    @FunctionalInterface
-    public interface CountFunction {
-        int count();
-    }
-
-    /**
-     * 业务任务函数式接口
-     */
-    @FunctionalInterface
-    public interface PagingTaskWithResult<T> {
-        T execute(Limit limit);
-    }
-
-    @FunctionalInterface
-    public interface PagingTask {
-        void execute(Limit limit);
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
