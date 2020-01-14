@@ -6,11 +6,11 @@ import com.cheney.utils.pagingTask.function.BlockTask;
 import com.cheney.utils.pagingTask.function.BlockTaskWithResult;
 import com.cheney.utils.pagingTask.function.CountFunction;
 import com.cheney.utils.pagingTask.function.FindDataFunction;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * 使用{@link ArrayBlockingQueue}提供生产消费功能，主线程负责查询数据，线程池线程负责消费数据
@@ -18,6 +18,7 @@ import java.util.concurrent.*;
  * @author cheney
  * @date 2020-01-14
  */
+@Slf4j
 public class ArrayBlockTaskDealer {
 
     /**
@@ -86,16 +87,16 @@ public class ArrayBlockTaskDealer {
         executorService.shutdown();
     }
 
-    public <T, R> List<Future<List<R>>> executeBlockTask(CountFunction countFunction,
-                                                         FindDataFunction<T> findDataFunction,
-                                                         BlockTaskWithResult<T, R> blockTaskWithResult,
-                                                         int step) throws InterruptedException {
+    public <T, R> FutureResult<R> executeBlockTask(CountFunction countFunction,
+                                                   FindDataFunction<T> findDataFunction,
+                                                   BlockTaskWithResult<T, R> blockTaskWithResult,
+                                                   int step) throws InterruptedException {
         beforeTask();
-        List<Future<List<R>>> futures = new ArrayList<>();
         int count = countFunction.count();
         if (count < 1) {
-            return futures;
+            return FutureResult.empty();
         }
+        List<Future<List<R>>> futures = new ArrayList<>();
 
         // 初始化线程池，阻塞队列
         ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
@@ -121,7 +122,7 @@ public class ArrayBlockTaskDealer {
         // 关闭线程池
         executorService.shutdown();
 
-        return futures;
+        return new FutureResult<>(futures);
     }
 
     /**
@@ -162,31 +163,42 @@ public class ArrayBlockTaskDealer {
         finish = false;
     }
 
+    /**
+     * 异步任务执行结果封装
+     *
+     * @param <R> 返回类型
+     */
+    public static class FutureResult<R> {
+
+        public FutureResult(List<Future<List<R>>> futures) {
+            this.futures = futures;
+        }
+
+        private List<Future<List<R>>> futures;
+
+        public static <R> FutureResult<R> empty() {
+            return new FutureResult<>(null);
+        }
+
+        public List<Future<List<R>>> getFutures() {
+            return futures;
+        }
+
+        public List<R> getResults() {
+            return futures == null ? Collections.emptyList() : futures.stream().map(e -> {
+                try {
+                    return e.get();
+                } catch (Exception ex) {
+                    log.error("Future#get()异常", ex);
+                    return null;
+                }
+            }).filter(Objects::nonNull).flatMap(List::stream).collect(Collectors.toList());
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         ArrayBlockTaskDealer taskDealer = new ArrayBlockTaskDealer();
-        new Thread(() -> {
-            try {
-                taskDealer.executeBlockTask(() -> 5000, limit -> {
-                    int num = limit.getNum();
-                    ArrayList<HashMap<String, Object>> hashMaps = new ArrayList<>();
-                    for (int i = 0; i < limit.getSize(); i++) {
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("num", num + i);
-                        hashMaps.add(hashMap);
-                    }
-                    try {
-                        System.out.println(hashMaps);
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return hashMaps;
-                }, data -> data, 100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        taskDealer.executeBlockTask(() -> 5000, limit -> {
+        FutureResult<HashMap<String, Object>> futureResult = taskDealer.executeBlockTask(() -> 5000, limit -> {
             int num = limit.getNum();
             ArrayList<HashMap<String, Object>> hashMaps = new ArrayList<>();
             for (int i = 0; i < limit.getSize(); i++) {
@@ -202,6 +214,8 @@ public class ArrayBlockTaskDealer {
             }
             return hashMaps;
         }, data -> data, 100);
+        List<HashMap<String, Object>> results = futureResult.getResults();
+        System.out.println(results);
     }
 
 }
