@@ -21,11 +21,32 @@ import java.util.UUID;
 @Slf4j
 public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
 
+    /**
+     * 不存在该锁标识
+     */
+    protected static final Object NOT_EXISTS_LOCK = null;
+
+    /**
+     * 解锁成功标识
+     */
+    public static final int UNLOCK_SUCCESS = 1;
+
+    /**
+     * 重入锁count_down标识
+     */
+    public static final int REENTRY_COUNT_DOWN = 0;
+
+    /**
+     * 锁标识
+     */
     protected final String path;
 
+    /**
+     * 当前线程是否持有该锁
+     */
     protected ThreadLocal<Boolean> isLock = new ThreadLocal<>();
 
-    protected final RedisTemplate redisTemplate;
+    protected final RedisTemplate<?, ?> redisTemplate;
 
     private static final String SERVER_ID = UUID.randomUUID().toString();
 
@@ -50,13 +71,13 @@ public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
             return;
         }
         Object result = unLockScript();
-        if (result == null) {
+        if (NOT_EXISTS_LOCK == result) {
             this.isLock.set(false);
             log.info("unlock fail:redis未上该锁");
-        } else if (1 == (long) result) {
+        } else if (UNLOCK_SUCCESS == (long) result) {
             this.isLock.set(false);
             log.info("unlock success");
-        } else if (0 == (long) result) {
+        } else if (REENTRY_COUNT_DOWN == (long) result) {
             log.info("count down:减少重入次数，并且刷新了锁定时间");
         }
     }
