@@ -1,7 +1,6 @@
 package com.cheney.redis.lock.awaken;
 
 import com.cheney.redis.lock.RedisLockFactory;
-import com.cheney.redis.lock.awaken.listener.AwakenRedisLock;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
