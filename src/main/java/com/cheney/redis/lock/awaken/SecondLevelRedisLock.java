@@ -59,10 +59,23 @@ public class SecondLevelRedisLock extends RedisLockAdaptor {
         subLockManager = RedisLockFactory.getSpringSubLockManager();
     }
 
+    /**
+     * 获取一级锁对象
+     *
+     * @param firstPath 一级锁路径
+     * @return 一级锁对象
+     */
     public static SecondLevelRedisLock firstLevelLock(String firstPath) {
         return new SecondLevelRedisLock(firstPath, null);
     }
 
+    /**
+     * 获取二级锁对象
+     *
+     * @param firstPath  一级锁路径
+     * @param secondPath 二级锁路径
+     * @return 二级锁对象
+     */
     public static SecondLevelRedisLock secondLevelLock(String firstPath, String secondPath) {
         return new SecondLevelRedisLock(firstPath, secondPath);
     }
