@@ -1,6 +1,6 @@
 import com.cheney.ApplicationContext;
 import com.cheney.redis.lock.RedisLock;
-import com.cheney.redis.lock.awaken.AwakenRedisLock;
+import com.cheney.redis.lock.awaken.ReentrantRedisLock;
 import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ public class TestForApp {
         ArrayList<Callable<String>> threads = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             threads.add(() -> {
-                try (RedisLock lock = new AwakenRedisLock("test")) {
+                try (RedisLock lock = new ReentrantRedisLock("test")) {
                     if (lock.tryLock(5, 5, TimeUnit.SECONDS)) {
                         Thread.sleep(1000);
                         System.out.println("线程完成");
@@ -51,7 +51,7 @@ public class TestForApp {
 
     @Test
     public void test3() throws InterruptedException {
-        RedisLock redisLock = new AwakenRedisLock("test:test");
+        RedisLock redisLock = new ReentrantRedisLock("test:test");
         try {
             boolean b;
             b = redisLock.tryLock(100, 20, TimeUnit.SECONDS);
@@ -70,7 +70,7 @@ public class TestForApp {
 
     @Test
     public void test4() throws InterruptedException {
-        try (RedisLock simpleRedisLock = new AwakenRedisLock("test:test")) {
+        try (RedisLock simpleRedisLock = new ReentrantRedisLock("test:test")) {
             boolean b;
             b = simpleRedisLock.tryLock(10, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
@@ -82,12 +82,12 @@ public class TestForApp {
 
     @Test
     public void test5() {
-        try (RedisLock redisLock = SecondLevelRedisLock.secondLevelLock("test:test", "child")) {
+        try (RedisLock redisLock = SecondLevelRedisLock.firstLevelLock("test:test")) {
             if (redisLock.tryLock(100, 20, TimeUnit.SECONDS)) {
                 System.out.println("first lock:success");
                 Thread.sleep(1000);
                 try (RedisLock redisLockChild = SecondLevelRedisLock.secondLevelLock("test:test", "child2")) {
-                    boolean b = redisLockChild.tryLock(100, 20, TimeUnit.SECONDS);
+                    boolean b = redisLockChild.tryLock(5, 20, TimeUnit.SECONDS);
                     System.out.println("second lock result:" + b);
                     Thread.sleep(1000);
                 } catch (Exception e) {

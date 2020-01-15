@@ -1,15 +1,11 @@
 package com.cheney.redis.lock.awaken;
 
-import com.cheney.redis.lock.RedisLockAdaptor;
 import com.cheney.redis.lock.RedisLockFactory;
-import com.cheney.redis.lock.awaken.listener.LockListener;
-import com.cheney.redis.lock.awaken.listener.SubLockManager;
+import com.cheney.redis.lock.awaken.listener.AwakenRedisLock;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static com.cheney.redis.lock.LockConstant.*;
 
@@ -20,7 +16,7 @@ import static com.cheney.redis.lock.LockConstant.*;
  * @date 2020-01-13
  */
 @Slf4j
-public class SecondLevelRedisLock extends RedisLockAdaptor {
+public class SecondLevelRedisLock extends AwakenRedisLock {
 
     /**
      * 锁类型标志
@@ -36,11 +32,6 @@ public class SecondLevelRedisLock extends RedisLockAdaptor {
      * 二级锁类型
      */
     public final static short TYPE_SECOND_LEVEL = 1;
-
-    /**
-     * 订阅锁状态manger
-     */
-    private SubLockManager subLockManager;
 
     /**
      * master锁标识
@@ -80,42 +71,6 @@ public class SecondLevelRedisLock extends RedisLockAdaptor {
         return new SecondLevelRedisLock(firstPath, secondPath);
     }
 
-    public boolean tryLock(long waitTime, long leaseTime, TimeUnit timeUnit) {
-
-        long maxTime = System.currentTimeMillis() + timeUnit.toMillis(waitTime);
-        leaseTime = timeUnit.toMillis(leaseTime);
-
-        //try lock
-        Object result;
-        try {
-            while ((result = LockScript(leaseTime)) != null) {
-                long timeout = maxTime - System.currentTimeMillis();
-                if (timeout <= 0) {
-                    //timeout return false
-                    break;
-                }
-                CountDownLatch countDownLatch = new CountDownLatch(1);
-                //add listener
-                subLockManager.addMessageListener(
-                        new LockListener(getChannelName(), countDownLatch::countDown)
-                );
-                countDownLatch.await(timeout, timeUnit);
-            }
-        } catch (Exception e) {
-            log.error("try lock error", e);
-            return false;
-        }
-
-        boolean isLock = result == null;
-        this.isLock.set(isLock);
-
-        if (!isLock) {
-            log.info("Redis try lock fail,lock path:{}", getPath());
-        }
-
-        return isLock;
-    }
-
     /**
      * 执行上锁脚本
      *
@@ -148,11 +103,13 @@ public class SecondLevelRedisLock extends RedisLockAdaptor {
         ArrayList<String> args = new ArrayList<>();
         args.add(UNLOCK_MESSAGE);
         args.add(String.valueOf(type));
-        args.add(secondPath);
+        if (TYPE_SECOND_LEVEL == type) {
+            args.add(secondPath);
+        }
         return execute(SECONDARY_UNLOCK_LUA_SCRIPT, keys, args);
     }
 
-    private String getChannelName() {
+    protected String getChannelName() {
         String base = LOCK_CHANNEL + path;
         if (TYPE_SECOND_LEVEL == type) {
             return base + ":" + secondPath;

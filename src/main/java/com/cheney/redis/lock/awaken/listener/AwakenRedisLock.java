@@ -1,34 +1,33 @@
-package com.cheney.redis.lock.awaken;
+package com.cheney.redis.lock.awaken.listener;
 
 import com.cheney.redis.lock.RedisLockAdaptor;
 import com.cheney.redis.lock.RedisLockFactory;
-import com.cheney.redis.lock.awaken.listener.LockListener;
-import com.cheney.redis.lock.awaken.listener.SubLockManager;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.cheney.redis.lock.LockConstant.*;
-
 /**
- * redis重入锁
+ * 发布订阅redis锁基础类
  * 利用redis的发布订阅，在加锁失败时订阅其他线程的redis解锁信息，然后阻塞线程，
  * 等到其他线程解锁时唤醒线程再循环获取该锁，直至获取到锁或者超时时退出
- *
+ * <p>
  * 注意：此锁的lua脚本出现操作多个key，必须有{}
  *
  * @author cheney
  */
 @Slf4j
-public class AwakenRedisLock extends RedisLockAdaptor {
+public abstract class AwakenRedisLock extends RedisLockAdaptor {
 
-    private long leaseTimeTemp;
+    /**
+     * 锁持有时间
+     */
+    protected long leaseTimeTemp;
 
-    private SubLockManager subLockManager;
+    /**
+     * 订阅锁状态manger
+     */
+    protected SubLockManager subLockManager;
 
     public AwakenRedisLock(String path) {
         super(path);
@@ -54,7 +53,7 @@ public class AwakenRedisLock extends RedisLockAdaptor {
                 subLockManager.addMessageListener(
                         new LockListener(getChannelName(), countDownLatch::countDown)
                 );
-                countDownLatch.await(timeout, timeUnit);
+                countDownLatch.await(timeout, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e) {
             log.error("try lock error", e);
@@ -72,38 +71,9 @@ public class AwakenRedisLock extends RedisLockAdaptor {
     }
 
     /**
-     * 执行上锁脚本
+     * 锁状态改变发布订阅的redis channel
      *
-     * @param leaseTime 超时释放锁时间
-     * @return redis执行脚本返回值
+     * @return channel
      */
-    protected Object LockScript(long leaseTime) {
-        List<String> keys = Collections.singletonList(path);
-        List<String> args = new ArrayList<>();
-        args.add(String.valueOf(leaseTime));
-        args.add(getCurrentThreadID());
-        return execute(AWAKEN_LOCK_LUA_SCRIPT, keys, args);
-    }
-
-    /**
-     * 执行解锁脚本
-     *
-     * @return redis执行脚本返回值
-     */
-    protected Object unLockScript() {
-        ArrayList<String> keys = new ArrayList<>();
-        keys.add(path);
-        keys.add(getChannelName());
-        ArrayList<String> args = new ArrayList<>();
-        args.add(UNLOCK_MESSAGE);
-        args.add(String.valueOf(leaseTimeTemp));
-        args.add(getCurrentThreadID());
-        return execute(AWAKEN_UNLOCK_LUA_SCRIPT, keys, args);
-    }
-
-    private String getChannelName() {
-        return LOCK_CHANNEL + path;
-    }
-
-
+    protected abstract String getChannelName();
 }
