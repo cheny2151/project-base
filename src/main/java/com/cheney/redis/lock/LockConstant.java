@@ -73,7 +73,8 @@ public class LockConstant {
             "end;" +
             "return nil; " +
             "end; " +
-            "if (tonumber(redis.call('hget', KEYS[1], KEYS[2])) == 1) then " +
+            // 注意：必须已上锁类型和欲上锁类型都为二级锁(1)才需要执行二级锁逻辑，否则直接返回上锁失败的剩余过期时间
+            "if (tonumber(redis.call('hget', KEYS[1], KEYS[2])) == 1 and type == 1) then " +
             "if(redis.call('hexists', KEYS[1], ARGV[3]) == 0) then " +
             "redis.call('hset', KEYS[1], ARGV[3], 1);" +
             "if (tonumber(ARGV[1]) > 0) then " +

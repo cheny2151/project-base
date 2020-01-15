@@ -82,7 +82,7 @@ public class TestForApp {
 
     @Test
     public void test5() {
-        try (RedisLock redisLock = SecondLevelRedisLock.firstLevelLock("test:test")) {
+        try (RedisLock redisLock = SecondLevelRedisLock.secondLevelLock("test:test", "child")) {
             if (redisLock.tryLock(100, 20, TimeUnit.SECONDS)) {
                 System.out.println("first lock:success");
                 Thread.sleep(1000);
