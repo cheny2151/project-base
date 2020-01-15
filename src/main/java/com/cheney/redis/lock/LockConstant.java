@@ -74,7 +74,7 @@ public class LockConstant {
             "return nil; " +
             "end; " +
             "if (tonumber(redis.call('hget', KEYS[1], KEYS[2])) == 1) then " +
-            "if(redis.call('hexists', KEYS[1], ARGV[3]) == 0) then" +
+            "if(redis.call('hexists', KEYS[1], ARGV[3]) == 0) then " +
             "redis.call('hset', KEYS[1], ARGV[3], 1);" +
             "if (tonumber(ARGV[1]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[1]); " +

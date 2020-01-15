@@ -1,6 +1,7 @@
 import com.cheney.ApplicationContext;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.awaken.AwakenRedisLock;
+import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,6 +75,25 @@ public class TestForApp {
             b = simpleRedisLock.tryLock(10, 10, TimeUnit.SECONDS);
             System.out.println("first lock result:" + b);
             Thread.sleep(5 * 1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test5() {
+        try (RedisLock redisLock = SecondLevelRedisLock.secondLevelLock("test:test", "child")) {
+            if (redisLock.tryLock(100, 20, TimeUnit.SECONDS)) {
+                System.out.println("first lock:success");
+                Thread.sleep(1000);
+                try (RedisLock redisLockChild = SecondLevelRedisLock.secondLevelLock("test:test", "child2")) {
+                    boolean b = redisLockChild.tryLock(100, 20, TimeUnit.SECONDS);
+                    System.out.println("second lock result:" + b);
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
