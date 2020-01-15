@@ -21,8 +21,6 @@ import static com.cheney.redis.lock.LockConstant.*;
 @Slf4j
 public class ReentrantRedisLock extends AwakenRedisLock {
 
-    private long leaseTimeTemp;
-
     public ReentrantRedisLock(String path) {
         super(path);
     }
