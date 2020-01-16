@@ -123,7 +123,7 @@ public class ArrayBlockTaskDealer {
         ExecutorService executorService = Executors.newFixedThreadPool(this.threadNum);
         ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         // 异步订阅任务
-        for (int i = 0; i < DEFAULT_THREAD_NUM; i++) {
+        for (int i = 0; i < this.threadNum; i++) {
             futures.add(executorService.submit(() -> {
                 List<R> rs = new ArrayList<>();
                 List<T> data;
@@ -249,7 +249,7 @@ public class ArrayBlockTaskDealer {
         }, data -> {
             try {
                 System.out.println(data);
-                Thread.sleep(10000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
