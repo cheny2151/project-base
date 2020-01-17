@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
  * 利用redis的发布订阅，在加锁失败时订阅其他线程的redis解锁信息，然后阻塞线程，
  * 等到其他线程解锁时唤醒线程再循环获取该锁，直至获取到锁或者超时时退出
  * <p>
- * 注意：此锁的lua脚本出现操作多个key，必须有{}
+ * 此锁的lua脚本出现操作多个key（path,channel），必须有{}：
+ * redis集群共有2^14个slot(槽点)，当key存在{}时，计算key的hash只会用到{}内的内容，
+ * 相同的hash对2^14取模后值相同，就可以保证多个key落到同一个槽点，lua脚本执行才可以实现原子性操作
  *
  * @author cheney
  */
