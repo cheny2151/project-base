@@ -30,6 +30,6 @@ if expect_permits < ARVG[1] then
     redis.call('HSET', KEYS[1], 'permits', expect_permits);
     return -1
 else
-    redis.call('HSET', KEYS[1], 'permits', expect_permits - ARVG[1]);
+    redis.call('HSET', KEYS[1], 'permits', expect_permits - ARGV[1]);
     return 1
 end
