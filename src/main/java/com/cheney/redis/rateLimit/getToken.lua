@@ -1,5 +1,5 @@
 -- getToken
-local rate_limit = redis.call('HMGET', 'last_time','permits','rate','max_permits');
+local rate_limit = redis.call('HMGET', KEY[1], 'last_time', 'permits', 'rate', 'max_permits');
 local last_time = rate_limit[1];
 local permits = rate_limit[2];
 local rate = rate_limit[3];
@@ -10,7 +10,8 @@ local cur_time = redis.call('time')[1];
 
 local expect_permits = max_permits;
 
-if (last_time ~= nil) then
+-- Redis Nil bulk reply and Nil multi bulk reply -> Lua false boolean type
+if (last_time ~= 'false' and last_time ~= nil) then
     -- 计算间隔时间可新增的令牌数
     local add_permits = (cur_time - last_time) * rate;
     if (add_permits > 0) then
