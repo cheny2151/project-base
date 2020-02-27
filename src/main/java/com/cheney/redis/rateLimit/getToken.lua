@@ -1,8 +1,9 @@
 -- getToken
-local last_time = redis.call('HGET', 'last_time');
-local permits = redis.call('HGET', 'permits');
-local rate = redis.call('HGET', 'rate');
-local max_permits = redis.call('HGET', 'max_permits');
+local rate_limit = redis.call('HMGET', 'last_time','permits','rate','max_permits');
+local last_time = rate_limit[1];
+local permits = rate_limit[2];
+local rate = rate_limit[3];
+local max_permits = rate_limit[4];
 -- 解决随机函数
 redis.replicate_commands();
 local cur_time = redis.call('time')[1];
