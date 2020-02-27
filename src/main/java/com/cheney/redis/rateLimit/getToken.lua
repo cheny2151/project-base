@@ -26,7 +26,7 @@ else
     redis.call('HSET', KEYS[1], 'last_time', cur_time)
 end
 
-if expect_permits < ARVG[1] then
+if expect_permits < ARGV[1] then
     redis.call('HSET', KEYS[1], 'permits', expect_permits);
     return -1
 else
