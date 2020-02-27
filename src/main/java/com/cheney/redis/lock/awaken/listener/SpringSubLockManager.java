@@ -1,6 +1,5 @@
 package com.cheney.redis.lock.awaken.listener;
 
-import com.cheney.redis.lock.LockConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -23,7 +22,7 @@ public class SpringSubLockManager implements MessageListener, SubLockManager {
     public void onMessage(Message message, byte[] bytes) {
         String unlockMsg = new String(message.getBody());
         String channel = new String(message.getChannel());
-        if (LockConstant.UNLOCK_MESSAGE.equals(unlockMsg)) {
+        if (AWAKE_MESSAGE.equals(unlockMsg)) {
             synchronized (lock) {
                 LockListeners.stream()
                         .filter(lockListener -> channel.equals(lockListener.getListenerChannel()))

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cheney.redis.lock.LockConstant.*;
+import static com.cheney.redis.lock.awaken.listener.SubLockManager.AWAKE_MESSAGE;
 
 /**
  * 二级锁
@@ -100,7 +101,7 @@ public class SecondLevelRedisLock extends AwakenRedisLock {
         keys.add(LOCK_TYPE_FLAG);
         keys.add(getChannelName());
         ArrayList<String> args = new ArrayList<>();
-        args.add(UNLOCK_MESSAGE);
+        args.add(AWAKE_MESSAGE);
         args.add(String.valueOf(type));
         if (TYPE_SECOND_LEVEL == type) {
             args.add(secondPath);

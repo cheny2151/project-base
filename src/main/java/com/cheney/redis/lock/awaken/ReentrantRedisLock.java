@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.cheney.redis.lock.LockConstant.*;
+import static com.cheney.redis.lock.awaken.listener.SubLockManager.AWAKE_MESSAGE;
 
 /**
  * redis重入锁
@@ -48,7 +49,7 @@ public class ReentrantRedisLock extends AwakenRedisLock {
         keys.add(path);
         keys.add(getChannelName());
         ArrayList<String> args = new ArrayList<>();
-        args.add(UNLOCK_MESSAGE);
+        args.add(AWAKE_MESSAGE);
         args.add(String.valueOf(leaseTimeTemp));
         args.add(getCurrentThreadID());
         return execute(AWAKEN_UNLOCK_LUA_SCRIPT, keys, args);

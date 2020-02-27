@@ -10,11 +10,15 @@ public class RateLimitScript {
 
     /**
      * 初始化脚本
-     * path：限流路径,max_permits：最大令牌个数；rate：每秒新增令牌数
+     * max_permits：最大令牌个数；rate：每秒新增令牌数；permits：初始令牌个数
      */
-    public String INIT = "redis.call('HMSET', KEYS[1], 'path', ARGV[1], 'max_permits', ARGV[2], 'rate', ARGV[3], 'permits', ARGV[4]); return 1;";
+    public final static String INIT = "redis.call('HMSET', KEYS[1], 'max_permits', ARGV[1], 'rate', ARGV[2], 'permits', ARGV[3]); return 1;";
 
-    public String GET_TOKEN =
+    /**
+     * 获取令牌脚本
+     * 具体见getToken.lua
+     */
+    public final static String GET_TOKEN =
             "local rate_limit = redis.call('HMGET', KEYS[1], 'last_time', 'permits', 'rate', 'max_permits');" +
             "local last_time = rate_limit[1];" +
             "local permits = rate_limit[2];" +
@@ -34,10 +38,15 @@ public class RateLimitScript {
             "end" +
             "if (expect_permits < tonumber(ARGV[1])) then" +
             "redis.call('HSET', KEYS[1], 'permits', expect_permits);" +
-            "return -1;" +
+            "return nil;" +
             "else" +
             "redis.call('HSET', KEYS[1], 'permits', expect_permits - ARGV[1]);" +
             "return 1;" +
             "end";
+
+    /**
+     * 令牌桶redis channel前置标识
+     */
+    public final static String KEY_PRE_CHANNEL = "RATE_LIMIT_CHANNEL:";
 
 }

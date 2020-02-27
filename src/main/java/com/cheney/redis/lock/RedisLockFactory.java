@@ -1,6 +1,5 @@
 package com.cheney.redis.lock;
 
-import com.cheney.redis.lock.awaken.listener.JedisSubLockManager;
 import com.cheney.redis.lock.awaken.listener.SubLockManager;
 import com.cheney.utils.SpringUtils;
 

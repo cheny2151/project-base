@@ -27,7 +27,7 @@ public class JedisSubLockManager extends JedisPubSub implements SubLockManager {
     @Override
     public void onPMessage(String pattern, String channel, String message) {
         log.info("收到解锁信号{}", channel);
-        if (LockConstant.UNLOCK_MESSAGE.equals(message)) {
+        if (AWAKE_MESSAGE.equals(message)) {
             synchronized (lock) {
                 LockListeners.stream()
                         .filter(lockListener -> channel.equals(lockListener.getListenerChannel()))

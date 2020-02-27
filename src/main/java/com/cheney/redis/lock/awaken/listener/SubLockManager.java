@@ -6,6 +6,11 @@ package com.cheney.redis.lock.awaken.listener;
  */
 public interface SubLockManager {
 
+    /**
+     * awake标识
+     */
+    String AWAKE_MESSAGE = "AWAKE";
+
     void addMessageListener(LockListener lockListener);
 
 }
