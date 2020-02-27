@@ -2,6 +2,7 @@ import com.cheney.ApplicationContext;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.awaken.ReentrantRedisLock;
 import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
+import com.cheney.redis.rateLimit.RateLimiter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,10 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Base64Utils;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationContext.class)
@@ -99,4 +97,17 @@ public class TestForApp {
         }
     }
 
+    @Test
+    public void rateLimit() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        RateLimiter rateLimiter = new RateLimiter("test", 10, 10);
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            executorService.submit(() -> {
+                System.out.println(rateLimiter.tryAcquire(4, 1, TimeUnit.MINUTES));
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+    }
 }

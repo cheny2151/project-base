@@ -21,7 +21,7 @@ if (last_time ~= false and last_time ~= nil) then
     if (add_permits > 0) then
         redis.call('HSET', KEYS[1], 'last_time', cur_time);
     end
-    expect_permits = math.min(add_permits + permits, max_permits);
+    expect_permits = math.min(add_permits + permits, tonumber(max_permits));
 else
     redis.call('HSET', KEYS[1], 'last_time', cur_time);
 end
