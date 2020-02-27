@@ -12,7 +12,7 @@ public class RateLimitScript {
      * 初始化脚本
      * path：限流路径,max_permits：最大令牌个数；rate：每秒新增令牌数
      */
-    public String INIT = "redis.call('HMSET',KEYS[1],'path',ARGV[1],'max_permits',ARGV[2],'rate',ARGV[3]);return 1;";
+    public String INIT = "redis.call('HMSET', KEYS[1], 'path', ARGV[1], 'max_permits', ARGV[2], 'rate', ARGV[3], 'permits', ARGV[4]); return 1;";
 
     public String GET_TOKEN =
             "local rate_limit = redis.call('HMGET', 'last_time','permits','rate','max_permits');" +
