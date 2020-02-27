@@ -104,7 +104,7 @@ public class TestForApp {
         CountDownLatch countDownLatch = new CountDownLatch(10);
         for (int i = 0; i < 10; i++) {
             executorService.submit(() -> {
-                System.out.println(rateLimiter.tryAcquire(4, 1, TimeUnit.MINUTES));
+                System.out.println(rateLimiter.tryAcquire(4, 2, TimeUnit.SECONDS));
                 countDownLatch.countDown();
             });
         }
