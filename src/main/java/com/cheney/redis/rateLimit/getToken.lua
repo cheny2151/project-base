@@ -7,7 +7,7 @@ local permits = rate_limit[2];
 -- 生产令牌的速率
 local rate = rate_limit[3];
 -- 桶中最大令牌数
-local max_permits = tonumber(rate_limit[4]);
+local max_permits = rate_limit[4];
 -- 解决随机函数
 redis.replicate_commands();
 local cur_time = redis.call('time')[1];
@@ -28,8 +28,8 @@ end
 
 if (expect_permits < tonumber(ARGV[1])) then
     redis.call('HSET', KEYS[1], 'permits', expect_permits);
-    return -1
+    return -1;
 else
     redis.call('HSET', KEYS[1], 'permits', expect_permits - ARGV[1]);
-    return 1
+    return 1;
 end
