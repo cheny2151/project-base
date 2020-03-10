@@ -81,6 +81,10 @@ public class Filters extends ArrayList<Filter> {
         return this;
     }
 
+    public void clearOtherParams() {
+        this.otherParams.clear();
+    }
+
     public Map<String, Object> getOtherParams() {
         return otherParams;
     }

@@ -68,7 +68,7 @@ public class RequestParamHolder {
 
     public static Pageable currentPage() {
         BaseRequest<JSONObject> request = currentRequestParam();
-        return request == null ? new Pageable() : currentRequestParam().getRequiredPageable();
+        return request == null ? new Pageable() : currentRequestParam().requiredPageable();
     }
 
     public static void remove() {

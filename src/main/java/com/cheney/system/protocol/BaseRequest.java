@@ -1,9 +1,7 @@
 package com.cheney.system.protocol;
 
-import com.alibaba.fastjson.annotation.JSONType;
 import com.cheney.system.page.Pageable;
 import com.cheney.utils.RequestParamHolder;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JSONType(ignores = {"requiredPageable"})
 public class BaseRequest<T> implements Serializable {
 
     private static final long serialVersionUID = 8744687666253393218L;
@@ -68,8 +65,7 @@ public class BaseRequest<T> implements Serializable {
         return pageable;
     }
 
-    @JsonIgnore
-    public Pageable getRequiredPageable() {
+    public Pageable requiredPageable() {
         return pageable == null ? new Pageable() : pageable;
     }
 
