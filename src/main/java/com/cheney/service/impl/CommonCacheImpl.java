@@ -10,6 +10,7 @@ import com.cheney.utils.annotation.CacheKey;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,11 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
             allMap.put(String.valueOf(key), e);
         });
         jsonRedisClient.HMSetForMap(baseKey, allMap);
+    }
+
+    @Override
+    public List<T> getAllByCache() {
+        return new ArrayList<>(jsonRedisClient.HMGetForMap(baseKey).values());
     }
 
 }
