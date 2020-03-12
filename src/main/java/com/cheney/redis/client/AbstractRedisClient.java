@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -124,7 +125,8 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
     @Override
     public List<V> getList(String k) {
         List<V> range;
-        return (range = redis.opsForList().range(k, 0, listSize(k) - 1)) == null || range.size() == 0 ? null : range;
+        return (range = redis.opsForList().range(k, 0, listSize(k) - 1)) == null || range.size() == 0 ?
+                Collections.emptyList() : range;
     }
 
     @Override
@@ -151,8 +153,7 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
 
     @Override
     public Set<String> HKeys(String k) {
-        Set<String> keys;
-        return (keys = getHashOperationForMap().keys(k)) == null || keys.size() == 0 ? null : keys;
+        return getHashOperationForMap().keys(k);
     }
 
     @Override
