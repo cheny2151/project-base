@@ -11,7 +11,7 @@ import com.cheney.system.response.ResponseCode;
  */
 public class BusinessRunTimeException extends RuntimeException {
 
-    private BaseResponse errorResponse;
+    private BaseResponse<?> errorResponse;
 
     public BusinessRunTimeException() {
         super();
@@ -23,7 +23,7 @@ public class BusinessRunTimeException extends RuntimeException {
         this.errorResponse = BaseResponse.error(msg);
     }
 
-    public BusinessRunTimeException(BaseResponse errorResponse) {
+    public BusinessRunTimeException(BaseResponse<?> errorResponse) {
         super(errorResponse.getMsg());
         this.errorResponse = errorResponse;
     }
@@ -38,7 +38,7 @@ public class BusinessRunTimeException extends RuntimeException {
         this.errorResponse = BaseResponse.error(code, msg);
     }
 
-    public BaseResponse getErrorResponse() {
+    public BaseResponse<?> getErrorResponse() {
         return errorResponse;
     }
 

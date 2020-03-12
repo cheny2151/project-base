@@ -14,7 +14,7 @@ public class BaseResponse<T> {
     protected String msg;
     protected T data;
 
-    public final static BaseResponse SERVER_ERROR = error(ResponseCode.ERROR);
+    public final static BaseResponse<?> SERVER_ERROR = error(ResponseCode.ERROR);
 
     public static <T> BaseResponse<T> success(T data) {
         BaseResponse<T> baseResponse = new BaseResponse<>();
@@ -47,25 +47,25 @@ public class BaseResponse<T> {
         return baseResponse;
     }
 
-    public static BaseResponse error(ResponseCode code) {
-        BaseResponse baseResponse = new BaseResponse();
+    public static <T> BaseResponse<T> error(ResponseCode code) {
+        BaseResponse<T> baseResponse = new BaseResponse<>();
         baseResponse.setResponseCode(code);
         return baseResponse;
     }
 
-    public static BaseResponse error(ResponseCode code, String msg) {
-        BaseResponse baseResponse = new BaseResponse();
+    public static <T> BaseResponse<T> error(ResponseCode code, String msg) {
+        BaseResponse<T> baseResponse = new BaseResponse<>();
         baseResponse.setResponseCode(code);
         baseResponse.setMsg(msg);
         return baseResponse;
     }
 
-    public static BaseResponse error(String msg) {
+    public static <T> BaseResponse<T> error(String msg) {
         return error(ResponseCode.ERROR.getStatus(), msg);
     }
 
-    public static BaseResponse error(int code, String msg) {
-        BaseResponse baseResponse = new BaseResponse();
+    public static <T> BaseResponse<T> error(int code, String msg) {
+        BaseResponse<T> baseResponse = new BaseResponse<>();
         baseResponse.setCode(code);
         baseResponse.setMsg(msg);
         return baseResponse;
