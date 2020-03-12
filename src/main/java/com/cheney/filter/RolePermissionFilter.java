@@ -77,7 +77,7 @@ public class RolePermissionFilter extends OncePerRequestFilter {
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
         PrintWriter writer = httpServletResponse.getWriter();
-        BaseResponse responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
+        BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
         JSON.writeJSONString(writer, responseBody);
     }
 

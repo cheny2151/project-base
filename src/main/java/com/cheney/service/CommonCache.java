@@ -3,6 +3,7 @@ package com.cheney.service;
 import com.cheney.entity.BaseEntity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,7 +20,22 @@ public interface CommonCache<T extends BaseEntity<ID>, ID extends Serializable> 
      * @param key 唯一code
      * @return 实体缓存
      */
-    T getByCache(Object key);
+    T getByCache(String key);
+
+    /**
+     * 获取复数缓存
+     *
+     * @param keys 缓存key集合
+     * @return 缓存数据集合
+     */
+    List<T> getByCache(Collection<String> keys);
+
+    /**
+     * 获取缓存中所有数据
+     *
+     * @return 缓存中的数据
+     */
+    List<T> getAllByCache();
 
     /**
      * 缓存实体
@@ -33,10 +49,4 @@ public interface CommonCache<T extends BaseEntity<ID>, ID extends Serializable> 
      */
     void refreshAll();
 
-    /**
-     * 获取缓存中所有数据
-     *
-     * @return 缓存中的数据
-     */
-    List<T> getAllByCache();
 }

@@ -1,5 +1,6 @@
 package com.cheney.redis.client;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +58,10 @@ public interface RedisClient<V> {
     Set<String> HKeys(String k);
 
     long HDel(String k, String hk);
+
+    List<V> HMGet(String k,Collection<String> hks);
+
+    List<V> HVals(String k);
 
 
 }

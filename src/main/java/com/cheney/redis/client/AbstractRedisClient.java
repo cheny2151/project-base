@@ -4,8 +4,8 @@ import com.cheney.exception.RedisException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -160,4 +160,13 @@ public abstract class AbstractRedisClient<V> implements RedisClient<V> {
         return getHashOperationForMap().delete(k, hk);
     }
 
+    @Override
+    public List<V> HMGet(String k, Collection<String> hks) {
+        return getHashOperationForMap().multiGet(k, hks);
+    }
+
+    @Override
+    public List<V> HVals(String k) {
+        return getHashOperationForMap().values(k);
+    }
 }
