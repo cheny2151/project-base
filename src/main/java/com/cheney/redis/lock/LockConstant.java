@@ -124,7 +124,34 @@ public class LockConstant {
      * <p>
      * 返回：null代表上锁成功;数值为过期时间
      */
-    public static final String MULTI_LOCK_LUA_SCRIPT = "";
+    public static final String MULTI_LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then" +
+            "redis.call('hset', KEYS[1], KEYS[2]);" +
+            "for i = 2, ARGV do" +
+            "redis.call('sadd', KEYS[2], ARGV[i]);" +
+            "end" +
+            "if (tonumber(ARGV[1]) > 0) then" +
+            "redis.call('pexpire', KEYS[1], ARGV[1]);" +
+            "end" +
+            "return nil;" +
+            "end" +
+            "local ex = 0;" +
+            "for i = 2, ARGV do" +
+            "if (redis.call('sismember', KEYS[2], ARGV[i]) == 1) then" +
+            "ex = 1;" +
+            "break;" +
+            "end" +
+            "end" +
+            "if (ex == 0) then" +
+            "for i = 2, ARGV do" +
+            "redis.call('sadd', KEYS[2], ARGV[i]);" +
+            "end" +
+            "if (tonumber(ARGV[1]) > 0) then" +
+            "redis.call('pexpire', KEYS[1], ARGV[1]);" +
+            "end" +
+            "return nil;" +
+            "else" +
+            "return redis.call('pttl', KEYS[1]);" +
+            "end";
 
     public static final String LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
             "redis.call('hset', KEYS[1], ARGV[2], 1); " +
