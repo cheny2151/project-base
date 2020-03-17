@@ -117,6 +117,15 @@ public class LockConstant {
             "end;" +
             "return nil;";
 
+    /**
+     * 多路径上锁脚本
+     * keys:1,一级Path
+     * ARGV:1,过期时间;2,type值;3,二级path
+     * <p>
+     * 返回：null代表上锁成功;数值为过期时间
+     */
+    public static final String MULTI_LOCK_LUA_SCRIPT = "";
+
     public static final String LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
             "redis.call('hset', KEYS[1], ARGV[2], 1); " +
             "redis.call('pexpire', KEYS[1], ARGV[1]); " +

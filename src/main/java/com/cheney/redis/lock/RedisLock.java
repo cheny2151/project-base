@@ -3,6 +3,8 @@ package com.cheney.redis.lock;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * redis锁接口
+ *
  * @author cheney
  */
 public interface RedisLock extends AutoCloseable {
@@ -26,5 +28,14 @@ public interface RedisLock extends AutoCloseable {
      * 尝试释放锁
      */
     void unLock();
+
+    /**
+     * 锁path前标识,默认为空
+     *
+     * @return 锁path前标识
+     */
+    default String pathPreLabel() {
+        return "";
+    }
 
 }

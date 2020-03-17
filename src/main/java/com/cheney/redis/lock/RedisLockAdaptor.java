@@ -51,7 +51,7 @@ public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
     private static final String SERVER_ID = UUID.randomUUID().toString();
 
     public RedisLockAdaptor(String path) {
-        this.path = "{" + path + "}";
+        this.path = "{" + pathPreLabel() + path + "}";
         this.redisTemplate = SpringUtils.getBean("redisTemplate", RedisTemplate.class);
     }
 
@@ -64,6 +64,7 @@ public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
 
     protected abstract Object unLockScript();
 
+    @Override
     public void unLock() {
         Boolean isLock = this.isLock.get();
         if (!isLock) {

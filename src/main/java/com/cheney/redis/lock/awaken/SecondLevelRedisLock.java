@@ -117,6 +117,11 @@ public class SecondLevelRedisLock extends AwakenRedisLock {
         return base;
     }
 
+    @Override
+    public String pathPreLabel() {
+        return "SECOND_LEVEL:";
+    }
+
     /**
      * 获取二级锁标识
      *
