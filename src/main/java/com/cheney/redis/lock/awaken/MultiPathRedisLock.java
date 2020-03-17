@@ -9,11 +9,9 @@ import static com.cheney.redis.lock.LockConstant.*;
 import static com.cheney.redis.lock.awaken.listener.SubLockManager.AWAKE_MESSAGE;
 
 /**
- * redis重入锁
- * 利用redis的发布订阅，在加锁失败时订阅其他线程的redis解锁信息，然后阻塞线程，
- * 等到其他线程解锁时唤醒线程再循环获取该锁，直至获取到锁或者超时时退出
- * <p>
- * 注意：此锁的lua脚本出现操作多个key，必须有{}
+ * redis多路径锁
+ * 通过redis set实现
+ * 支持同时对多个path上锁，path与当前锁路径的set存在交集则获取锁失败
  *
  * @author cheney
  */
