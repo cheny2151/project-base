@@ -1,5 +1,6 @@
 import com.cheney.ApplicationContext;
 import com.cheney.redis.lock.RedisLock;
+import com.cheney.redis.lock.awaken.MultiPathRedisLock;
 import com.cheney.redis.lock.awaken.ReentrantRedisLock;
 import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
 import com.cheney.redis.rateLimit.RateLimiter;
@@ -109,5 +110,30 @@ public class TestForApp {
             });
         }
         countDownLatch.await();
+    }
+
+    @Test
+    public void multiPathLock() {
+        ArrayList<String> paths = new ArrayList<>();
+        paths.add("test");
+        paths.add("test1");
+        ArrayList<String> paths2 = new ArrayList<>();
+        paths2.add("test2");
+        paths2.add("test4");
+        try (RedisLock redisLock = new MultiPathRedisLock("test:test", paths)) {
+            if (redisLock.tryLock(100, 20, TimeUnit.SECONDS)) {
+                System.out.println("first lock:success");
+                Thread.sleep(1000);
+                try (RedisLock redisLockChild = new MultiPathRedisLock("test:test", paths2)) {
+                    boolean b = redisLockChild.tryLock(5, 20, TimeUnit.SECONDS);
+                    System.out.println("second lock result:" + b);
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

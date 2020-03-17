@@ -3,9 +3,7 @@ package com.cheney.redis.lock.awaken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static com.cheney.redis.lock.LockConstant.*;
 import static com.cheney.redis.lock.awaken.listener.SubLockManager.AWAKE_MESSAGE;
@@ -25,14 +23,14 @@ public class MultiPathRedisLock extends AwakenRedisLock {
     /**
      * 多路径path
      */
-    private Collection<String> multiPaths;
+    private Set<String> multiPaths;
 
     public MultiPathRedisLock(String path, Collection<String> multiPaths) {
         super(path);
         if (CollectionUtils.isEmpty(multiPaths)) {
             throw new IllegalArgumentException("multi paths can not be empty");
         }
-        this.multiPaths = multiPaths;
+        this.multiPaths = new HashSet<>(multiPaths);
     }
 
     /**
