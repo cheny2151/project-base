@@ -1,9 +1,10 @@
 package com.cheney.redis.lock.awaken;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 import static com.cheney.redis.lock.LockConstant.*;
@@ -21,8 +22,17 @@ import static com.cheney.redis.lock.awaken.listener.SubLockManager.AWAKE_MESSAGE
 @Slf4j
 public class MultiPathRedisLock extends AwakenRedisLock {
 
-    public MultiPathRedisLock(String path) {
+    /**
+     * 多路径path
+     */
+    private Collection<String> multiPaths;
+
+    public MultiPathRedisLock(String path, Collection<String> multiPaths) {
         super(path);
+        if (CollectionUtils.isEmpty(multiPaths)) {
+            throw new IllegalArgumentException("multi paths can not be empty");
+        }
+        this.multiPaths = multiPaths;
     }
 
     /**
@@ -32,11 +42,13 @@ public class MultiPathRedisLock extends AwakenRedisLock {
      * @return redis执行脚本返回值
      */
     protected Object LockScript(long leaseTime) {
-        List<String> keys = Collections.singletonList(path);
+        List<String> keys = new ArrayList<>();
+        keys.add(path);
+        keys.add(getSetKey());
         List<String> args = new ArrayList<>();
         args.add(String.valueOf(leaseTime));
-        args.add(getCurrentThreadID());
-        return execute(AWAKEN_LOCK_LUA_SCRIPT, keys, args);
+        args.addAll(multiPaths);
+        return execute(MULTI_LOCK_LUA_SCRIPT, keys, args);
     }
 
     /**
@@ -45,14 +57,14 @@ public class MultiPathRedisLock extends AwakenRedisLock {
      * @return redis执行脚本返回值
      */
     protected Object unLockScript() {
-        ArrayList<String> keys = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
         keys.add(path);
+        keys.add(getSetKey());
         keys.add(getChannelName());
-        ArrayList<String> args = new ArrayList<>();
+        List<String> args = new ArrayList<>();
         args.add(AWAKE_MESSAGE);
-        args.add(String.valueOf(leaseTimeTemp));
-        args.add(getCurrentThreadID());
-        return execute(AWAKEN_UNLOCK_LUA_SCRIPT, keys, args);
+        args.addAll(multiPaths);
+        return execute(MULTI_UNLOCK_LUA_SCRIPT, keys, args);
     }
 
     protected String getChannelName() {
@@ -62,5 +74,9 @@ public class MultiPathRedisLock extends AwakenRedisLock {
     @Override
     public String pathPreLabel() {
         return "MULTI:";
+    }
+
+    private String getSetKey() {
+        return "SET:" + path;
     }
 }

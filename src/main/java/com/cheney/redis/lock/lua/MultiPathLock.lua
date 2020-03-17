@@ -8,6 +8,7 @@
 -- 多路径锁上锁脚本
 -- keys:1,锁Path;2,路径set的key
 -- ARGV:1,过期时间;剩余的为路径值，需将路径值存放到set中
+-- 返回：null代表上锁成功;数值为过期时间
 if (redis.call('exists', KEYS[1]) == 0) then
     redis.call('hset', KEYS[1], 'SET', KEYS[2]);
     for i = 2, #ARGV do
