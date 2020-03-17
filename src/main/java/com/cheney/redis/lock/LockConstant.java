@@ -119,41 +119,39 @@ public class LockConstant {
 
     /**
      * 多路径锁上锁脚本
-     * keys:1,锁Path;2,路径set的key
+     * keys:1,路径set的key
      * ARGV:1,过期时间;剩余的为路径值，需将路径值存放到set中
      * <p>
      * 返回：null代表上锁成功;数值为过期时间
      */
     public static final String MULTI_LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
-            "redis.call('hset', KEYS[1], 'SET', KEYS[2]);" +
             "for i = 2, #ARGV do " +
-            "redis.call('sadd', KEYS[2], ARGV[i]);" +
+            "redis.call('sadd', KEYS[1], ARGV[i]);" +
             "end " +
             "if (tonumber(ARGV[1]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[1]);" +
-            "redis.call('pexpire', KEYS[2], ARGV[1]);" +
             "end " +
             "return nil;" +
             "end " +
             "local ex = 0;" +
             "for i = 2, #ARGV do " +
-            "if (redis.call('sismember', KEYS[2], ARGV[i]) == 1) then " +
+            "if (redis.call('sismember', KEYS[1], ARGV[i]) == 1) then " +
             "ex = 1;" +
             "break;" +
             "end " +
             "end " +
             "if (ex == 0) then " +
             "for i = 2, #ARGV do " +
-            "redis.call('sadd', KEYS[2], ARGV[i]);" +
+            "redis.call('sadd', KEYS[1], ARGV[i]);" +
             "end " +
             "if (tonumber(ARGV[1]) > 0) then " +
             "redis.call('pexpire', KEYS[1], ARGV[1]);" +
-            "redis.call('pexpire', KEYS[2], ARGV[1]);" +
             "end " +
             "return nil;" +
             "else " +
             "return redis.call('pttl', KEYS[1]);" +
             "end ";
+
 
     /**
      * 多路径锁解锁脚本
@@ -163,16 +161,13 @@ public class LockConstant {
      * 返回：1,代表目前路径解锁成功/已经解锁;null代表未持有该锁
      */
     public static final String MULTI_UNLOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +
-            "redis.call('publish', KEYS[3], ARGV[1]);" +
+            "redis.call('publish', KEYS[2], ARGV[1]);" +
             "return 1;" +
             "end " +
             "for i = 2, #ARGV do " +
-            "redis.call('srem', KEYS[2], ARGV[i]) " +
+            "redis.call('srem', KEYS[1], ARGV[i]);" +
             "end " +
-            "if (redis.call('exists', KEYS[2]) == 0) then " +
-            "redis.call('del', KEYS[1]);" +
-            "end " +
-            "redis.call('publish', KEYS[3], ARGV[1]);" +
+            "redis.call('publish', KEYS[2], ARGV[1]);" +
             "return 1;";
 
     public static final String LOCK_LUA_SCRIPT = "if (redis.call('exists', KEYS[1]) == 0) then " +

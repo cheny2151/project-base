@@ -42,7 +42,6 @@ public class MultiPathRedisLock extends AwakenRedisLock {
     protected Object LockScript(long leaseTime) {
         List<String> keys = new ArrayList<>();
         keys.add(path);
-        keys.add(getSetKey());
         List<String> args = new ArrayList<>();
         args.add(String.valueOf(leaseTime));
         args.addAll(multiPaths);
@@ -57,7 +56,6 @@ public class MultiPathRedisLock extends AwakenRedisLock {
     protected Object unLockScript() {
         List<String> keys = new ArrayList<>();
         keys.add(path);
-        keys.add(getSetKey());
         keys.add(getChannelName());
         List<String> args = new ArrayList<>();
         args.add(AWAKE_MESSAGE);
@@ -74,7 +72,4 @@ public class MultiPathRedisLock extends AwakenRedisLock {
         return "MULTI:";
     }
 
-    private String getSetKey() {
-        return "SET:" + path;
-    }
 }

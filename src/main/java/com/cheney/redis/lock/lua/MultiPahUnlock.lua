@@ -14,7 +14,7 @@ if (redis.call('exists', KEYS[1]) == 0) then
     return 1;
 end
 for i = 2, #ARGV do
-    redis.call('srem', KEYS[1], ARGV[i])
+    redis.call('srem', KEYS[1], ARGV[i]);
 end
 redis.call('publish', KEYS[2], ARGV[1]);
 return 1;

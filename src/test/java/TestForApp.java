@@ -127,7 +127,6 @@ public class TestForApp {
                 try (RedisLock redisLockChild = new MultiPathRedisLock("test:test", paths2)) {
                     boolean b = redisLockChild.tryLock(5, 20, TimeUnit.SECONDS);
                     System.out.println("second lock result:" + b);
-                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
