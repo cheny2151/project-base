@@ -53,7 +53,7 @@ public class ControllerAdviceHolder {
     @ExceptionHandler(BusinessRunTimeException.class)
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> BusinessRunTimeException(BusinessRunTimeException e) {
-        BaseResponse errorResponse = e.getErrorResponse();
+        BaseResponse<?> errorResponse = e.getErrorResponse();
         log.info("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
         return errorResponse;
     }
