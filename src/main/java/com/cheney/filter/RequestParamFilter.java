@@ -41,7 +41,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
         for (String ignore : IGNORE_PATTERN) {
             if (requestURI.matches(ignore)) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
-                break;
+                return;
             }
         }
         String method = httpServletRequest.getMethod();
