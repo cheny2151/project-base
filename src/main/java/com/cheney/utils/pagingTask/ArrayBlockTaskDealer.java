@@ -1,11 +1,9 @@
 package com.cheney.utils.pagingTask;
 
+import com.cheney.system.page.ExtremumLimit;
 import com.cheney.system.page.Limit;
 import com.cheney.utils.pagingTask.exception.ConcurrentTaskException;
-import com.cheney.utils.pagingTask.function.BlockTask;
-import com.cheney.utils.pagingTask.function.BlockTaskWithResult;
-import com.cheney.utils.pagingTask.function.CountFunction;
-import com.cheney.utils.pagingTask.function.FindDataFunction;
+import com.cheney.utils.pagingTask.function.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -68,10 +66,53 @@ public class ArrayBlockTaskDealer {
         if (count < 1) {
             return;
         }
+        // 新建阻塞队列
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        // 主线程同步获取数据传递至方法内
+        MainTask mainTask = () -> putDataToQueueByLimit(findDataFunction, step, count, queue);
 
+        startTask(mainTask, queue, blockTask);
+    }
+
+    /**
+     * 执行多线程阻塞任务，主线程生产数据，异步线程消费数据
+     *
+     * @param countFunction    count函数
+     * @param findDataFunction 数据查询函数
+     * @param blockTask        任务函数
+     * @param step             步长
+     * @param <T>              类型
+     * @throws InterruptedException ArrayBlockingQueue导致的任务中断异常
+     */
+    public <T extends ExtremumField<V>, V extends Comparable<V>>
+    void executeBlockTask(CountFunction countFunction, FindDataExtremumLimitFunction<T> findDataFunction,
+                          BlockTask<T> blockTask, int step) throws InterruptedException {
+        beforeTask();
+        int count = countFunction.count();
+        if (count < 1) {
+            return;
+        }
+        // 新建阻塞队列
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        // 主线程同步获取数据传递至方法内
+        MainTask mainTask = () -> putDataToQueueByExtremumLimit(findDataFunction, step, count, queue);
+
+        startTask(mainTask, queue, blockTask);
+    }
+
+    /**
+     * 开始任务，新建线程池并由主线程生产数据，线程池多线程执行消费数据
+     *
+     * @param mainTask  主线程任务
+     * @param queue     队列
+     * @param blockTask 线程池阻塞任务
+     * @param <T>       类型
+     * @throws InterruptedException
+     */
+    private <T> void startTask(MainTask mainTask, ArrayBlockingQueue<List<T>> queue,
+                               BlockTask<T> blockTask) throws InterruptedException {
         // 初始化线程池，阻塞队列
         ExecutorService executorService = Executors.newFixedThreadPool(this.threadNum);
-        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         // 异步订阅任务
         for (int i = 0; i < this.threadNum; i++) {
             executorService.submit(() -> {
@@ -93,10 +134,11 @@ public class ArrayBlockTaskDealer {
         }
 
         // 主线程同步获取数据
-        putDataToQueue(findDataFunction, step, count, queue);
+        mainTask.run();
         // 关闭线程池
         executorService.shutdown();
     }
+
 
     /**
      * 执行多线程阻塞任务，主线程生产数据，异步线程消费数据并返回数据
@@ -117,11 +159,60 @@ public class ArrayBlockTaskDealer {
         if (count < 1) {
             return FutureResult.empty();
         }
-        List<Future<List<R>>> futures = new ArrayList<>();
+        // 新建阻塞队列
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        // 主线程同步获取数据传递至方法内
+        MainTask mainTask = () -> putDataToQueueByLimit(findDataFunction, step, count, queue);
 
+        List<Future<List<R>>> futures = startTaskWithResult(mainTask, queue, blockTaskWithResult);
+
+        return new FutureResult<>(futures);
+    }
+
+    /**
+     * 执行多线程阻塞任务，主线程生产数据，异步线程消费数据并返回数据
+     *
+     * @param countFunction       count函数
+     * @param findDataFunction    数据查询函数
+     * @param blockTaskWithResult 任务函数（返回数据）
+     * @param step                步长
+     * @param <T>                 类型
+     * @throws InterruptedException ArrayBlockingQueue导致的任务中断异常
+     */
+    public <T extends ExtremumField<V>, V extends Comparable<V>, R>
+    FutureResult<R> executeBlockTaskByByExtremumLimit(CountFunction countFunction,
+                                                      FindDataExtremumLimitFunction<T> findDataFunction,
+                                                      BlockTaskWithResult<T, R> blockTaskWithResult,
+                                                      int step) throws InterruptedException {
+        beforeTask();
+        int count = countFunction.count();
+        if (count < 1) {
+            return FutureResult.empty();
+        }
+        // 新建阻塞队列
+        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        // 主线程同步获取数据传递至方法内
+        MainTask mainTask = () -> putDataToQueueByExtremumLimit(findDataFunction, step, count, queue);
+
+        List<Future<List<R>>> futures = startTaskWithResult(mainTask, queue, blockTaskWithResult);
+
+        return new FutureResult<>(futures);
+    }
+
+    /**
+     * 开始任务，新建线程池并由主线程生产数据，线程池多线程执行消费数据
+     *
+     * @param mainTask            主线程任务
+     * @param queue               队列
+     * @param blockTaskWithResult 线程池阻塞任务
+     * @param <T>                 类型
+     * @throws InterruptedException
+     */
+    private <T, R> List<Future<List<R>>> startTaskWithResult(MainTask mainTask, ArrayBlockingQueue<List<T>> queue,
+                                                             BlockTaskWithResult<T, R> blockTaskWithResult) throws InterruptedException {
+        List<Future<List<R>>> futures = new ArrayList<>();
         // 初始化线程池，阻塞队列
         ExecutorService executorService = Executors.newFixedThreadPool(this.threadNum);
-        ArrayBlockingQueue<List<T>> queue = new ArrayBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         // 异步订阅任务
         for (int i = 0; i < this.threadNum; i++) {
             futures.add(executorService.submit(() -> {
@@ -145,11 +236,10 @@ public class ArrayBlockTaskDealer {
         }
 
         // 主线程同步获取数据
-        putDataToQueue(findDataFunction, step, count, queue);
+        mainTask.run();
         // 关闭线程池
         executorService.shutdown();
-
-        return new FutureResult<>(futures);
+        return futures;
     }
 
     /**
@@ -162,9 +252,9 @@ public class ArrayBlockTaskDealer {
      * @param <T>              类型
      * @throws InterruptedException
      */
-    private <T> void putDataToQueue(FindDataFunction<T> findDataFunction,
-                                    int step, int count,
-                                    ArrayBlockingQueue<List<T>> queue) throws InterruptedException {
+    private <T> void putDataToQueueByLimit(FindDataFunction<T> findDataFunction,
+                                           int step, int count,
+                                           ArrayBlockingQueue<List<T>> queue) throws InterruptedException {
         Limit limit = Limit.create(0, step);
         while (count > 0) {
             if (count >= step) {
@@ -175,6 +265,35 @@ public class ArrayBlockTaskDealer {
                 count -= step;
             }
             queue.put(findDataFunction.findData(limit));
+        }
+        finish = true;
+    }
+
+    /**
+     * 将查询结果数据入队
+     *
+     * @param findDataFunction 查询函数
+     * @param step             步长
+     * @param count            总数
+     * @param queue            队列
+     * @param <T>              类型
+     * @throws InterruptedException
+     */
+    private <T extends ExtremumField<V>, V extends Comparable<V>> void
+    putDataToQueueByExtremumLimit(FindDataExtremumLimitFunction<T> findDataFunction,
+                                  int step, int count,
+                                  ArrayBlockingQueue<List<T>> queue) throws InterruptedException {
+        ExtremumLimit extremumLimit = ExtremumLimit.create(null, step, ExtremumLimit.ExtremumType.MINIMUM);
+        Object extremum = null;
+        while (count > 0) {
+            extremumLimit.setExtremum(extremum);
+            if (count < step) {
+                extremumLimit.setSize(count);
+            }
+            count -= step;
+            List<T> data = findDataFunction.findData(extremumLimit);
+            extremum = data.parallelStream().max((o1, o2) -> o2.getExtremumValue().compareTo(o1.getExtremumValue()));
+            queue.put(data);
         }
         finish = true;
     }
@@ -226,6 +345,10 @@ public class ArrayBlockTaskDealer {
                 }
             }).filter(Objects::nonNull).flatMap(List::stream).collect(Collectors.toList());
         }
+    }
+
+    public interface MainTask {
+        void run() throws InterruptedException;
     }
 
     public static void main(String[] args) throws InterruptedException {
