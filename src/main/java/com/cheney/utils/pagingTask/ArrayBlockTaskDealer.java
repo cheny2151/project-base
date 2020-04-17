@@ -85,8 +85,8 @@ public class ArrayBlockTaskDealer {
      * @throws InterruptedException ArrayBlockingQueue导致的任务中断异常
      */
     public <T extends ExtremumField<V>, V extends Comparable<V>>
-    void executeBlockTask(CountFunction countFunction, FindDataExtremumLimitFunction<T> findDataFunction,
-                          BlockTask<T> blockTask, int step) throws InterruptedException {
+    void executeBlockTaskByExtremumLimit(CountFunction countFunction, FindDataExtremumLimitFunction<T> findDataFunction,
+                                         BlockTask<T> blockTask, int step) throws InterruptedException {
         beforeTask();
         int count = countFunction.count();
         if (count < 1) {
@@ -180,10 +180,10 @@ public class ArrayBlockTaskDealer {
      * @throws InterruptedException ArrayBlockingQueue导致的任务中断异常
      */
     public <T extends ExtremumField<V>, V extends Comparable<V>, R>
-    FutureResult<R> executeBlockTaskByByExtremumLimit(CountFunction countFunction,
-                                                      FindDataExtremumLimitFunction<T> findDataFunction,
-                                                      BlockTaskWithResult<T, R> blockTaskWithResult,
-                                                      int step) throws InterruptedException {
+    FutureResult<R> executeBlockTaskByExtremumLimit(CountFunction countFunction,
+                                                    FindDataExtremumLimitFunction<T> findDataFunction,
+                                                    BlockTaskWithResult<T, R> blockTaskWithResult,
+                                                    int step) throws InterruptedException {
         beforeTask();
         int count = countFunction.count();
         if (count < 1) {
@@ -292,7 +292,7 @@ public class ArrayBlockTaskDealer {
             }
             count -= step;
             List<T> data = findDataFunction.findData(extremumLimit);
-            extremum = data.parallelStream().max((o1, o2) -> o2.getExtremumValue().compareTo(o1.getExtremumValue()));
+            extremum = data.parallelStream().max(Comparator.comparing(ExtremumField::getExtremumValue));
             queue.put(data);
         }
         finish = true;
@@ -352,6 +352,10 @@ public class ArrayBlockTaskDealer {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        demo2();
+    }
+
+    public static void demo1() throws InterruptedException {
         long l = System.currentTimeMillis();
         ArrayBlockTaskDealer taskDealer = new ArrayBlockTaskDealer(8);
         FutureResult<HashMap<String, Object>> futureResult = taskDealer.executeBlockTask(() -> 2000, limit -> {
@@ -381,6 +385,53 @@ public class ArrayBlockTaskDealer {
         List<HashMap<String, Object>> results = futureResult.getResults();
         System.out.println(results);
         System.out.println(System.currentTimeMillis() - l);
+    }
+
+    public static void demo2() throws InterruptedException {
+        ArrayBlockTaskDealer arrayBlockTaskDealer = new ArrayBlockTaskDealer();
+        FutureResult<TestEntity> find_end = arrayBlockTaskDealer.executeBlockTaskByExtremumLimit(
+                () -> 2000,
+                limit -> {
+                    System.out.println("max:" + limit.getExtremum());
+                    ArrayList<TestEntity> integers = new ArrayList<>();
+                    for (int i = 0; i < limit.getSize(); i++) {
+                        TestEntity testEntity = new TestEntity();
+                        testEntity.setId(i);
+                        integers.add(testEntity);
+                    }
+                    System.out.println("find end");
+                    return integers;
+                },
+                data -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("size:" + data.size());
+                    return data.stream().filter(e -> e.getId() > 10).collect(Collectors.toList());
+                },
+                100);
+        find_end.getResults();
+        System.out.println("~~~");
+    }
+
+    private static class TestEntity implements ExtremumField<Integer> {
+
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public Integer getExtremumValue() {
+            return id;
+        }
     }
 
 }
