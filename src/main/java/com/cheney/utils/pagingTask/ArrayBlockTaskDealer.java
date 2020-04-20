@@ -320,7 +320,7 @@ public class ArrayBlockTaskDealer {
             this.futures = futures;
         }
 
-        private List<Future<List<R>>> futures;
+        private final List<Future<List<R>>> futures;
 
         public static <R> FutureResult<R> empty() {
             return new FutureResult<>(null);
