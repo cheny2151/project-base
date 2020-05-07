@@ -292,7 +292,8 @@ public class ArrayBlockTaskDealer {
             }
             count -= step;
             List<T> data = findDataFunction.findData(extremumLimit);
-            extremum = data.parallelStream().max(Comparator.comparing(ExtremumField::getExtremumValue));
+            Optional<T> max = data.parallelStream().max(Comparator.comparing(ExtremumField::getExtremumValue));
+            extremum = max.orElseThrow(() -> new ConcurrentTaskException("data extremum not exists")).getExtremumValue();
             queue.put(data);
         }
         finish = true;
