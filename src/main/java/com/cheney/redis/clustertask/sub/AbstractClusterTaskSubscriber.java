@@ -16,7 +16,7 @@ public abstract class AbstractClusterTaskSubscriber implements ClusterTaskSubscr
     /**
      * 任务激活状态
      */
-    private boolean active = true;
+    private volatile boolean active = true;
 
     @Override
     public void execute(TaskInfo taskInfo, Limit limit) {
