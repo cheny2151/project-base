@@ -32,7 +32,11 @@ public class DefaultClusterTaskPublisher implements ClusterTaskPublisher {
 
     @Override
     public void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc) {
+        publish(taskId, dataNums, stepSize, concurrentNums, desc, null);
+    }
 
+    @Override
+    public void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc, Map<String, Object> header) {
         String taskRedisKey = CLUSTER_TASK_PRE_KEY + taskId;
         Boolean exists = redisTemplate.hasKey(taskRedisKey);
         if (exists != null && exists) {
@@ -40,11 +44,12 @@ public class DefaultClusterTaskPublisher implements ClusterTaskPublisher {
             return;
         }
         // set taskInfo
-        Map<String, String> taskInfo = new TaskInfo(taskId, dataNums, 0, stepSize, desc);
+        Map<String, String> taskInfo = new TaskInfo(taskId, dataNums, 0, stepSize, desc, header);
+        System.out.println(taskInfo);
+        System.out.println(taskRedisKey);
         redisTemplate.opsForHash().putAll(taskRedisKey, taskInfo);
         // 设置过期时间，防止所有线程终止，无法删除任务标识
         redisTemplate.expire(taskRedisKey, TaskConfig.KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
-
         // pub task
         log.info("【集群任务】发布集群任务：taskId->{},数量->{}", taskId, dataNums);
         redisTemplate.convertAndSend(CLUSTER_TASK_CHANNEL_PRE_KEY + taskId, String.valueOf(concurrentNums));

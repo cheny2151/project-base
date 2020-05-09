@@ -1,5 +1,6 @@
 package com.cheney.redis.clustertask.sub.test;
 
+import com.alibaba.fastjson.JSON;
 import com.cheney.redis.clustertask.TaskInfo;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.redis.clustertask.sub.AbstractClusterTaskSubscriber;
@@ -26,6 +27,7 @@ public class TestSub extends AbstractClusterTaskSubscriber {
     @Override
     public void subscribe(TaskInfo taskInfo, Limit limit) {
         System.out.println("----------------------subscribe test----------------------");
+        System.out.println("taskInfo->" + JSON.toJSONString(taskInfo));
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {

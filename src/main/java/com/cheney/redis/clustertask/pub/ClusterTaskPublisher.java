@@ -2,6 +2,8 @@ package com.cheney.redis.clustertask.pub;
 
 import com.cheney.constants.RedisKey;
 
+import java.util.Map;
+
 /**
  * 集群任务发布
  *
@@ -30,5 +32,17 @@ public interface ClusterTaskPublisher {
      * @param desc           是否倒序
      */
     void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc);
+
+    /**
+     * 发布集群任务
+     *
+     * @param taskId         任务ID
+     * @param dataNums       待处理数据个数
+     * @param stepSize       步长
+     * @param concurrentNums 单个服务器并发数量
+     * @param desc           是否倒序
+     * @param header         任务头部信息
+     */
+    void publish(String taskId, int dataNums, int stepSize, int concurrentNums, boolean desc, Map<String, Object> header);
 
 }

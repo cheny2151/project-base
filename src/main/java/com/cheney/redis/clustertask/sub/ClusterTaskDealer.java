@@ -33,7 +33,7 @@ import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK
  *             每个服务器执行完毕任务时再减少注册数，直至0视为所有任务执行完毕,
  *             此时执行清除redis任务数据,回调afterAllTask()。
  *             见{@link ClusterTaskDealer#registeredTask(String taskId, int concurrentNums, ClusterTaskSubscriber subscriber)}
- *
+ * v1.1.1 更新 {@link com.cheney.redis.clustertask.TaskInfo} 新增header任务信息头，方便拓展
  * @author cheney
  * @date 2019-09-03
  * @version 1.1.0

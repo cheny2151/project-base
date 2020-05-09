@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller("pageCommonController")
 public class PageCommonController {
@@ -35,7 +37,10 @@ public class PageCommonController {
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
-        clusterTaskPublisher.publish("test", 999, 100, 4, true);
+        Map<String, Object> header = new HashMap<>();
+        header.put("test", "this is a header info");
+        header.put("size", 999);
+        clusterTaskPublisher.publish("test", 999, 100, 4, true, header);
         return JsonMessage.success("123");
     }
 
