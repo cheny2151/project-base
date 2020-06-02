@@ -255,18 +255,22 @@ public class ArrayBlockTaskDealer {
     private <T> void putDataToQueueByLimit(FindDataFunction<T> findDataFunction,
                                            int step, int count,
                                            ArrayBlockingQueue<List<T>> queue) throws InterruptedException {
-        Limit limit = Limit.create(0, step);
-        while (count > 0) {
-            if (count >= step) {
-                limit.setNum(count -= step);
-            } else {
-                limit.setNum(0);
-                limit.setSize(count);
-                count -= step;
+        try {
+            Limit limit = Limit.create(0, step);
+            while (count > 0) {
+                if (count >= step) {
+                    limit.setNum(count -= step);
+                } else {
+                    limit.setNum(0);
+                    limit.setSize(count);
+                    count -= step;
+                }
+                queue.put(findDataFunction.findData(limit));
             }
-            queue.put(findDataFunction.findData(limit));
+            finish = true;
+        } finally {
+            finish = true;
         }
-        finish = true;
     }
 
     /**
@@ -283,20 +287,23 @@ public class ArrayBlockTaskDealer {
     putDataToQueueByExtremumLimit(FindDataExtremumLimitFunction<T> findDataFunction,
                                   int step, int count,
                                   ArrayBlockingQueue<List<T>> queue) throws InterruptedException {
-        ExtremumLimit extremumLimit = ExtremumLimit.create(null, step, ExtremumLimit.ExtremumType.MINIMUM);
-        Object extremum = null;
-        while (count > 0) {
-            extremumLimit.setExtremum(extremum);
-            if (count < step) {
-                extremumLimit.setSize(count);
+        try {
+            ExtremumLimit extremumLimit = ExtremumLimit.create(null, step, ExtremumLimit.ExtremumType.MINIMUM);
+            Object extremum = null;
+            while (count > 0) {
+                extremumLimit.setExtremum(extremum);
+                if (count < step) {
+                    extremumLimit.setSize(count);
+                }
+                count -= step;
+                List<T> data = findDataFunction.findData(extremumLimit);
+                Optional<T> max = data.parallelStream().max(Comparator.comparing(ExtremumField::getExtremumValue));
+                extremum = max.orElseThrow(() -> new ConcurrentTaskException("data extremum not exists")).getExtremumValue();
+                queue.put(data);
             }
-            count -= step;
-            List<T> data = findDataFunction.findData(extremumLimit);
-            Optional<T> max = data.parallelStream().max(Comparator.comparing(ExtremumField::getExtremumValue));
-            extremum = max.orElseThrow(() -> new ConcurrentTaskException("data extremum not exists")).getExtremumValue();
-            queue.put(data);
+        } finally {
+            finish = true;
         }
-        finish = true;
     }
 
     /**
