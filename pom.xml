@@ -12,7 +12,7 @@
         <!-- Spring版本号 -->
         <spring.version>5.0.4.RELEASE</spring.version>
         <!-- Spring Security 版本号-->
-        <spring.security>5.0.3.RELEASE</spring.security>
+        <spring.security>5.3.3.RELEASE</spring.security>
 
         <!--Hibernate版本号-->
         <hibernate.version>5.2.14.Final</hibernate.version>
