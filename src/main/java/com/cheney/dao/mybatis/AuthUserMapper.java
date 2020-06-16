@@ -3,7 +3,6 @@ package com.cheney.dao.mybatis;
 import com.cheney.entity.AuthUser;
 import org.springframework.stereotype.Repository;
 
-@Repository("authUserMapper")
 public interface AuthUserMapper extends BaseMapper<AuthUser, Long> {
 
     /**
