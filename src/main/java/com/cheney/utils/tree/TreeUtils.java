@@ -68,6 +68,7 @@ public class TreeUtils {
             int length = codes.length;
             T parent = getOrInitByKey(initSequence(codes[0]), roots, clazz);
             if (length == 1) {
+                BeanUtils.copyProperties(t, parent, "children", "code", "codeSequence");
                 continue;
             }
             for (int i = 1; i < length; i++) {
