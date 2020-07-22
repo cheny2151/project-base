@@ -1,9 +1,11 @@
 import com.cheney.ApplicationContext;
+import com.cheney.javaconfig.MyBeanRegistrar;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.awaken.MultiPathRedisLock;
 import com.cheney.redis.lock.awaken.ReentrantRedisLock;
 import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
 import com.cheney.redis.rateLimit.RateLimiter;
+import com.cheney.utils.SpringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -134,5 +136,12 @@ public class TestForApp {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testForRegistrar() {
+        MyBeanRegistrar bean = SpringUtils.getBean(MyBeanRegistrar.BEAN_NAME, MyBeanRegistrar.class);
+        System.out.println(bean.getProperty());
+        System.out.println(bean.getRedisTemplate());
     }
 }
