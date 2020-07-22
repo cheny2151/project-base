@@ -1,5 +1,6 @@
 package com.cheney.javaconfig;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author cheney
  * @date 2020-07-22
  */
+@Slf4j
 public class MyBeanRegistrar implements ImportBeanDefinitionRegistrar {
 
     public final static String BEAN_NAME = "MyBeanRegistrar";
@@ -26,6 +28,7 @@ public class MyBeanRegistrar implements ImportBeanDefinitionRegistrar {
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(MyBeanRegistrar.class);
         beanDefinitionBuilder.addPropertyValue("property", "success");
         beanDefinitionBuilder.addPropertyReference("redisTemplate", "redisTemplate");
+        log.info("start register bean");
         registry.registerBeanDefinition(BEAN_NAME, beanDefinitionBuilder.getBeanDefinition());
     }
 
