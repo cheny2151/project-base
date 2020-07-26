@@ -1,5 +1,6 @@
 import com.cheney.ApplicationContext;
-import com.cheney.javaconfig.MyBeanRegistrar;
+import com.cheney.javaconfig.registrar.Bean2Register;
+import com.cheney.javaconfig.registrar.MyBeanRegistrar;
 import com.cheney.redis.lock.RedisLock;
 import com.cheney.redis.lock.awaken.MultiPathRedisLock;
 import com.cheney.redis.lock.awaken.ReentrantRedisLock;
@@ -140,8 +141,7 @@ public class TestForApp {
 
     @Test
     public void testForRegistrar() {
-        MyBeanRegistrar bean = SpringUtils.getBean(MyBeanRegistrar.BEAN_NAME, MyBeanRegistrar.class);
+        Bean2Register bean = SpringUtils.getBean(Bean2Register.BEAN_NAME, Bean2Register.class);
         System.out.println(bean.getProperty());
-        System.out.println(bean.getRedisTemplate());
     }
 }

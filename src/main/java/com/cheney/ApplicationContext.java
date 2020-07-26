@@ -1,6 +1,6 @@
 package com.cheney;
 
-import com.cheney.javaconfig.MyBeanRegistrar;
+import com.cheney.javaconfig.registrar.MyBeanRegistrar;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
