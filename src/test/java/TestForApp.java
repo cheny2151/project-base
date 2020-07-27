@@ -143,5 +143,6 @@ public class TestForApp {
     public void testForRegistrar() {
         Bean2Register bean = SpringUtils.getBean(Bean2Register.BEAN_NAME, Bean2Register.class);
         System.out.println(bean.getProperty());
+        System.out.println(bean.getSpringUtils());
     }
 }

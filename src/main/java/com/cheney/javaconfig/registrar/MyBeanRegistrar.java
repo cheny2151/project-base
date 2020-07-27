@@ -1,6 +1,7 @@
 package com.cheney.javaconfig.registrar;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -21,6 +22,8 @@ public class MyBeanRegistrar implements ImportBeanDefinitionRegistrar {
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(Bean2Register.class);
         beanDefinitionBuilder.addPropertyValue("property", "success");
         log.info("start register bean");
+        // 根据类型自动装配
+        beanDefinitionBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         registry.registerBeanDefinition(Bean2Register.BEAN_NAME, beanDefinitionBuilder.getBeanDefinition());
     }
 

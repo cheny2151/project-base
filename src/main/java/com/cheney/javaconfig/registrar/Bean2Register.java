@@ -1,6 +1,6 @@
 package com.cheney.javaconfig.registrar;
 
-import lombok.Data;
+import com.cheney.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -12,13 +12,14 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
  * @author cheney
  * @date 2020-07-26
  */
-@Data
 @Slf4j
 public class Bean2Register implements BeanDefinitionRegistryPostProcessor, InitializingBean {
 
     public final static String BEAN_NAME = "Bean2Register";
 
     private String property;
+
+    private SpringUtils springUtils;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -35,4 +36,19 @@ public class Bean2Register implements BeanDefinitionRegistryPostProcessor, Initi
         log.info("running #postProcessBeanFactory");
     }
 
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
+    }
+
+    public SpringUtils getSpringUtils() {
+        return springUtils;
+    }
+
+    public void setSpringUtils(SpringUtils springUtils) {
+        this.springUtils = springUtils;
+    }
 }
