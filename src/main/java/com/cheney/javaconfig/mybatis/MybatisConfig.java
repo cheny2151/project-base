@@ -1,6 +1,7 @@
 package com.cheney.javaconfig.mybatis;
 
 
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
@@ -15,7 +16,6 @@ import java.io.IOException;
 
 /**
  * mybatis配置
- * 参考 ：https://www.jianshu.com/p/8fcefc4d724b
  */
 @Configuration
 @MapperScan(basePackages = "com.cheney.dao.mybatis", sqlSessionTemplateRef = "sqlSessionTemplate") //注解形式扫描dao接口
@@ -29,7 +29,7 @@ public class MybatisConfig {
      * @throws IOException
      */
     @Autowired
-    @Bean(name = "sqlSessionFactory")
+    @Bean(name = "sqlSessionFactoryBean")
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) throws IOException {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
@@ -39,8 +39,8 @@ public class MybatisConfig {
 
     @Autowired
     @Bean(name = "sqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(DataSource dataSource) throws Exception {
-        return new SqlSessionTemplate(sqlSessionFactory(dataSource).getObject());
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 
     /**
