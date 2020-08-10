@@ -1,6 +1,5 @@
 package com.cheney.controller;
 
-import com.cheney.entity.BaseEntity;
 import com.cheney.entity.Role;
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
