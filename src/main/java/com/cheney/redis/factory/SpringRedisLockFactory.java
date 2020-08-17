@@ -1,5 +1,6 @@
 package com.cheney.redis.factory;
 
+import com.cheney.exception.BusinessRunTimeException;
 import com.cheney.redis.lock.awaken.listener.SubLockManager;
 import com.cheney.redis.lock.executor.RedisExecutor;
 import com.cheney.redis.lock.executor.SpringRedisExecutor;
@@ -31,9 +32,8 @@ public class SpringRedisLockFactory implements RedisLockFactory {
         }
         if (redisTemplate == null) {
             Collection<RedisTemplate> redisTemplates = SpringUtils.getBeansOfType(RedisTemplate.class);
-            if (redisTemplates != null && redisTemplates.size() > 0) {
-                redisTemplate = redisTemplates.stream().findFirst().get();
-            }
+            redisTemplate = redisTemplates.stream().findFirst()
+                    .orElseThrow(() -> new BusinessRunTimeException("can not find any bean of RedisTemplate"));
         }
         return new SpringRedisExecutor(redisTemplate);
     }
