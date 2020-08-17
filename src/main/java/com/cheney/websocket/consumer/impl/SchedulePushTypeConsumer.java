@@ -46,7 +46,7 @@ public class SchedulePushTypeConsumer implements TypeConsumer {
         String type = data.getString("type");
         List<ScheduleConsumer> consumers = scheduleConsumers.get(type);
         if (!CollectionUtils.isEmpty(consumers)) {
-            consumers.forEach(c -> c.consume(msg));
+            consumers.forEach(c -> c.consume(msg, session));
         }
     }
 

@@ -1,9 +1,8 @@
 package com.cheney.redis.lock;
 
-import com.cheney.redis.RedisEval;
-import com.cheney.utils.SpringUtils;
+import com.cheney.redis.factory.RedisLockFactory;
+import com.cheney.redis.lock.executor.RedisExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +18,7 @@ import java.util.UUID;
  * v1.1 20190624 isLock修改为ThreadLocal<Boolean> 保证一个锁对象被多线程使用时的线程安全
  */
 @Slf4j
-public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
+public abstract class RedisLockAdaptor implements RedisLock {
 
     /**
      * 不存在该锁标识
@@ -46,18 +45,18 @@ public abstract class RedisLockAdaptor implements RedisLock, RedisEval {
      */
     protected ThreadLocal<Boolean> isLock = new ThreadLocal<>();
 
-    protected final RedisTemplate<?, ?> redisTemplate;
+    protected final RedisExecutor redisExecutor;
 
     private static final String SERVER_ID = UUID.randomUUID().toString();
 
     public RedisLockAdaptor(String path) {
         this.path = "{" + pathPreLabel() + path + "}";
-        this.redisTemplate = SpringUtils.getBean("redisTemplate", RedisTemplate.class);
+        this.redisExecutor = RedisLockFactory.DEFAULT_LOCK_FACTORY.getRedisExecutor();
     }
 
 
     protected Object execute(String script, List<String> keys, List<String> args) {
-        return execute(redisTemplate, script, keys, args);
+        return redisExecutor.execute(script, keys, args);
     }
 
     protected abstract Object LockScript(long leaseTime);

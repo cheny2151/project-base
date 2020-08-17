@@ -1,6 +1,6 @@
 package com.cheney.redis.lock.awaken;
 
-import com.cheney.redis.lock.RedisLockFactory;
+import com.cheney.redis.factory.RedisLockFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ public class SecondLevelRedisLock extends AwakenRedisLock {
         super(firstPath);
         this.secondPath = secondPath;
         type = secondPath == null ? TYPE_FIRST_LEVEL : TYPE_SECOND_LEVEL;
-        subLockManager = RedisLockFactory.getSpringSubLockManager();
     }
 
     /**

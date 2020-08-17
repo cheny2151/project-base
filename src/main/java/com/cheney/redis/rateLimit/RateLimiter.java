@@ -1,10 +1,9 @@
 package com.cheney.redis.rateLimit;
 
-import com.cheney.redis.RedisEval;
-import com.cheney.utils.SpringUtils;
+import com.cheney.redis.factory.RedisLockFactory;
+import com.cheney.redis.lock.executor.RedisExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +18,7 @@ import static com.cheney.redis.rateLimit.RateLimitScript.KEY_PRE_PATH;
  * @date 2020-02-27
  */
 @Slf4j
-public class RateLimiter implements RedisEval {
+public class RateLimiter {
 
     /**
      * 限流路径
@@ -36,15 +35,23 @@ public class RateLimiter implements RedisEval {
      */
     private int rate;
 
-    private RedisTemplate<?, ?> redisTemplate;
+    /**
+     * redis命令执行器
+     */
+    private RedisExecutor redisExecutor;
 
     public RateLimiter(String path, int maxPermits, int rate) {
+        this(path, maxPermits, rate, RedisLockFactory.DEFAULT_LOCK_FACTORY.getRedisExecutor());
+    }
+
+    public RateLimiter(String path, int maxPermits, int rate, RedisExecutor redisExecutor) {
         if (StringUtils.isEmpty(path)) {
             throw new IllegalArgumentException();
         }
         this.path = path;
         this.maxPermits = maxPermits;
         this.rate = rate;
+        this.redisExecutor = redisExecutor;
         this.init();
     }
 
@@ -53,12 +60,11 @@ public class RateLimiter implements RedisEval {
      * 执行令牌桶初始化脚本
      */
     private void init() {
-        this.redisTemplate = SpringUtils.getBean("redisTemplate", RedisTemplate.class);
         List<String> args = new ArrayList<>();
         args.add(String.valueOf(maxPermits));
         args.add(String.valueOf(rate));
         args.add(String.valueOf(maxPermits));
-        execute(redisTemplate, RateLimitScript.INIT,
+        redisExecutor.execute(RateLimitScript.INIT,
                 Collections.singletonList(getRealPath()), args);
     }
 
@@ -81,7 +87,7 @@ public class RateLimiter implements RedisEval {
         if (permits <= 0) {
             return true;
         }
-        Object result = execute(redisTemplate, RateLimitScript.GET_TOKEN,
+        Object result = redisExecutor.execute(RateLimitScript.GET_TOKEN,
                 Collections.singletonList(getRealPath()),
                 Collections.singletonList(String.valueOf(permits)));
         return result != null;

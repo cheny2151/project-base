@@ -1,8 +1,9 @@
 package com.cheney.redis.clustertask.sub;
 
-import com.cheney.redis.RedisEval;
 import com.cheney.redis.clustertask.TaskConfig;
 import com.cheney.redis.clustertask.TaskInfo;
+import com.cheney.redis.factory.RedisLockFactory;
+import com.cheney.redis.lock.executor.RedisExecutor;
 import com.cheney.system.page.Limit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,19 +41,20 @@ import static com.cheney.redis.clustertask.pub.ClusterTaskPublisher.CLUSTER_TASK
  */
 @Component
 @Slf4j
-public class ClusterTaskDealer implements RedisEval {
+public class ClusterTaskDealer {
 
     // 服务器注册执行任务标识
     private final static String REGISTERED_LABEL = "REGISTERED_COUNT";
 
     private RedisTemplate<String, Object> redisTemplate;
 
+    private RedisExecutor redisExecutor;
+
     private ExecutorService taskExecutor;
 
-    public ClusterTaskDealer(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
-                             @Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
-        this.redisTemplate = redisTemplate;
+    public ClusterTaskDealer(@Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
         this.taskExecutor = taskExecutor;
+        this.redisExecutor = RedisLockFactory.DEFAULT_LOCK_FACTORY.getRedisExecutor();
     }
 
 
@@ -74,12 +76,12 @@ public class ClusterTaskDealer implements RedisEval {
         long time = System.currentTimeMillis();
         try {
             // 执行lua脚本注册任务 v1.1.0
-            execute(redisTemplate, REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("1"));
+            redisExecutor.execute(REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("1"));
             this.distributionTask(taskId, concurrentNums, subscriber);
             log.info("【集群任务】任务taskId:{},本机执行完毕,本机耗时:{}秒", taskId, (System.currentTimeMillis() - time) / 1000);
         } finally {
             // 执行lua脚本获取当前剩余注册数
-            Object RemainingNum = execute(redisTemplate, REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("-1"));
+            Object RemainingNum = redisExecutor.execute(REGISTERED_LUA_SCRIPT, keys, Collections.singletonList("-1"));
             if ((long) RemainingNum == 0) {
                 log.info("【集群任务】任务taskId:{},所有服务器执行完毕", taskId);
                 // 清除任务
@@ -184,7 +186,7 @@ public class ClusterTaskDealer implements RedisEval {
         long stepCount;
         try {
             // 执行lua脚本获取当前步长
-            Object executeResult = execute(redisTemplate, ADD_STEP_LUA_SCRIPT, keys, Collections.emptyList());
+            Object executeResult = redisExecutor.execute(ADD_STEP_LUA_SCRIPT, keys, Collections.emptyList());
             if (executeResult == null) {
                 // 已经被其他线程删除
                 return LimitResult.completed();

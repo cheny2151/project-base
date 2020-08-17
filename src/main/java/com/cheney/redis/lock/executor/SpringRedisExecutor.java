@@ -1,4 +1,4 @@
-package com.cheney.redis;
+package com.cheney.redis.lock.executor;
 
 import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.api.async.RedisScriptingAsyncCommands;
@@ -11,14 +11,25 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * redis脚本执行接口
+ * 整合spring执行lua脚本
  *
  * @author cheney
- * @date 2019-09-03
+ * @date 2020-08-17
  */
-public interface RedisEval {
+public class SpringRedisExecutor implements RedisExecutor {
 
-    default Object execute(RedisTemplate redisTemplate, String script, List<String> keys, List<String> args) {
+    private RedisTemplate redisTemplate;
+
+    public SpringRedisExecutor(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Override
+    public Object execute(String script, List<String> keys, List<String> args) {
+        return execute(redisTemplate, script, keys, args);
+    }
+
+    private Object execute(RedisTemplate redisTemplate, String script, List<String> keys, List<String> args) {
         final List<String> finalKeys = keys == null ? Collections.emptyList() : keys;
         final List<String> finalArgs = args == null ? Collections.emptyList() : args;
         return redisTemplate.execute((RedisCallback<Object>) (redisConnection) -> {
@@ -53,7 +64,7 @@ public interface RedisEval {
         });
     }
 
-    default Object[] toBytes(List<String> list) {
+    private Object[] toBytes(List<String> list) {
         return list.stream().map(String::getBytes).toArray();
     }
 }
