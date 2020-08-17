@@ -15,15 +15,15 @@ import java.util.Collection;
  * @author cheney
  * @date 2020-08-17
  */
-public class SpringRedisLockFactory implements RedisLockFactory {
+public class SpringRedisLockFactory extends CacheLockFactory {
 
     @Override
-    public SubLockManager getSubLockManager() {
+    protected SubLockManager newSubLockManager() {
         return SpringUtils.getBean("springSubLockManager", SubLockManager.class);
     }
 
     @Override
-    public RedisExecutor getRedisExecutor() {
+    protected RedisExecutor newRedisExecutor() {
         RedisTemplate redisTemplate = null;
         try {
             redisTemplate = SpringUtils.getBean("redisTemplate", RedisTemplate.class);

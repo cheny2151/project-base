@@ -13,7 +13,7 @@ import java.util.Iterator;
  * 读取系统设置
  */
 @Slf4j
-public class SystemUtils {
+public class SystemConfig {
 
     private static HashMap<String, Object> systemValue;
 

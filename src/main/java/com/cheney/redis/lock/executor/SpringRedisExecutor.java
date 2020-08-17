@@ -2,6 +2,7 @@ package com.cheney.redis.lock.executor;
 
 import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.api.async.RedisScriptingAsyncCommands;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.Jedis;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author cheney
  * @date 2020-08-17
  */
+@Slf4j
 public class SpringRedisExecutor implements RedisExecutor {
 
     private RedisTemplate redisTemplate;
@@ -54,8 +56,8 @@ public class SpringRedisExecutor implements RedisExecutor {
                                     toBytes(finalArgs))
                             .get();
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException();
+                    log.error("Error running redis lua script", e);
+                    throw new RuntimeException(e);
                 }
 
             }

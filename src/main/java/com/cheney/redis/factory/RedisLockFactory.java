@@ -11,6 +11,9 @@ import com.cheney.redis.lock.executor.RedisExecutor;
  */
 public interface RedisLockFactory {
 
+    /**
+     * 默认为spring工厂
+     */
     RedisLockFactory DEFAULT_LOCK_FACTORY = new SpringRedisLockFactory();
 
     SubLockManager getSubLockManager();

@@ -1,6 +1,8 @@
 package com.cheney.redis.lock.awaken.listener;
 
 /**
+ * 锁订阅Manager
+ *
  * @author cheney
  * @date 2019/6/6
  */

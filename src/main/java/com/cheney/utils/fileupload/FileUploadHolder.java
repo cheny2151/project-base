@@ -1,6 +1,6 @@
 package com.cheney.utils.fileupload;
 
-import com.cheney.utils.SystemUtils;
+import com.cheney.utils.SystemConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -60,7 +60,7 @@ public class FileUploadHolder {
      */
     private static String createFileName(String originName, FileTypeHolder.Image image) {
         if (System.getProperty("os.name").toLowerCase().contains("win"))
-            return SystemUtils.getValue("windowImagePath") + "/" + FilenameUtils.getBaseName(originName)
+            return SystemConfig.getValue("windowImagePath") + "/" + FilenameUtils.getBaseName(originName)
                     + "-uuid-" + UUID.randomUUID() + "." + FilenameUtils.getExtension(originName);
         else
             return FileTypeHolder.getUploadPath(image) + FilenameUtils.getBaseName(originName)
@@ -91,8 +91,8 @@ public class FileUploadHolder {
      * @return 访问路径
      */
     private static String mapWebPath(String fileFullName) {
-        return SystemUtils.getSite() + "/" + SystemUtils.getValue("staticAlias") +
-                fileFullName.substring(SystemUtils.getStatic().length());
+        return SystemConfig.getSite() + "/" + SystemConfig.getValue("staticAlias") +
+                fileFullName.substring(SystemConfig.getStatic().length());
     }
 
     /**
