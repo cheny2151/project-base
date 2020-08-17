@@ -52,7 +52,9 @@ public class ClusterTaskDealer {
 
     private ExecutorService taskExecutor;
 
-    public ClusterTaskDealer(@Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
+    public ClusterTaskDealer(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
+                             @Qualifier("clusterTaskExecutor") ExecutorService taskExecutor) {
+        this.redisTemplate = redisTemplate;
         this.taskExecutor = taskExecutor;
         this.redisExecutor = RedisLockFactory.DEFAULT_LOCK_FACTORY.getRedisExecutor();
     }
