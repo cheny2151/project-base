@@ -27,7 +27,11 @@ spring:
  redis:
   host: 127.0.0.1
   port: 6379
-  #password: cheney@redis
+#  cluster:
+#   nodes:
+#   - 127.0.0.1:6379
+#   - xxx.x.x.x:xxxx
+#  password: cheney@redis
   timeout: 100000ms
   jedis:
    pool:
