@@ -32,6 +32,7 @@ public class SpringSubLockManager implements MessageListener, SubLockManager {
         }
     }
 
+    @Override
     public void addMessageListener(LockListener lockListener) {
         synchronized (lock) {
             LockListeners.add(lockListener);

@@ -4,7 +4,7 @@ import com.cheney.redis.lock.awaken.listener.SubLockManager;
 import com.cheney.redis.lock.executor.RedisExecutor;
 
 /**
- * redis lock类工厂
+ * redis lock依赖类工厂接口
  *
  * @author cheney
  * @date 2019/6/6

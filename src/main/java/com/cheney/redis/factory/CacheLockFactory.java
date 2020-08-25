@@ -11,8 +11,14 @@ import com.cheney.redis.lock.executor.RedisExecutor;
  */
 public abstract class CacheLockFactory implements RedisLockFactory {
 
+    /**
+     * 锁订阅Manager
+     */
     private SubLockManager subLockManagerCache;
 
+    /**
+     * redis脚本执行器
+     */
     private RedisExecutor redisExecutorCache;
 
     @Override
