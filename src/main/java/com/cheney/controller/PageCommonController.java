@@ -1,8 +1,10 @@
 package com.cheney.controller;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
+import cn.cheny.toolbox.redis.clustertask.pub.ClusterTaskPublisher;
+import com.alibaba.fastjson.JSON;
+import com.cheney.entity.AuthUser;
 import com.cheney.entity.Role;
-import com.cheney.redis.client.RedisClient;
-import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.service.RoleService;
 import com.cheney.system.response.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,17 @@ import java.util.Map;
 @Controller("pageCommonController")
 public class PageCommonController {
 
-    @Resource(name = "redisClientWithLog")
-    private RedisClient<String> redisClient;
-
 //    @Resource(name = "strKafkaTemplate")
 //    private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Resource(name = "defaultClusterTaskPublisher")
+    @Resource(name = "clusterTaskPublisher")
     private ClusterTaskPublisher clusterTaskPublisher;
 
     @Resource(name = "roleServiceImpl")
     private RoleService roleService;
+
+    @Resource
+    private JsonRedisClient<AuthUser> jsonRedisClient;
 
     @Autowired
     private Environment environment;
@@ -36,10 +38,12 @@ public class PageCommonController {
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
+        AuthUser authUser = jsonRedisClient.getValue("authUser");
+        System.out.println(JSON.toJSONString(authUser));
         Map<String, Object> header = new HashMap<>();
         header.put("test", "this is a header info");
         header.put("size", 999);
-        clusterTaskPublisher.publish("test", 999, 100, 4, true, header);
+        clusterTaskPublisher.publish("test1", 999, 100, 4, true, header);
         return JsonMessage.success("123");
     }
 

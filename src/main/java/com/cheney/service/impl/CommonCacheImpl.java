@@ -1,8 +1,8 @@
 package com.cheney.service.impl;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.BaseEntity;
-import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.BaseService;
 import com.cheney.service.CommonCache;
 import com.cheney.utils.ReflectUtils;

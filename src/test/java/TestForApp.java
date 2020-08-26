@@ -1,11 +1,10 @@
+import cn.cheny.toolbox.redis.lock.RedisLock;
+import cn.cheny.toolbox.redis.lock.awaken.MultiPathRedisLock;
+import cn.cheny.toolbox.redis.lock.awaken.ReentrantRedisLock;
+import cn.cheny.toolbox.redis.lock.awaken.SecondLevelRedisLock;
+import cn.cheny.toolbox.redis.rateLimit.RateLimiter;
 import com.cheney.ApplicationContext;
 import com.cheney.javaconfig.registrar.Bean2Register;
-import com.cheney.javaconfig.registrar.MyBeanRegistrar;
-import com.cheney.redis.lock.RedisLock;
-import com.cheney.redis.lock.awaken.MultiPathRedisLock;
-import com.cheney.redis.lock.awaken.ReentrantRedisLock;
-import com.cheney.redis.lock.awaken.SecondLevelRedisLock;
-import com.cheney.redis.rateLimit.RateLimiter;
 import com.cheney.utils.SpringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,7 +120,7 @@ public class TestForApp {
         paths.add("test");
         paths.add("test1");
         ArrayList<String> paths2 = new ArrayList<>();
-        paths2.add("test2");
+        paths2.add("test");
         paths2.add("test4");
         try (RedisLock redisLock = new MultiPathRedisLock("test:test", paths)) {
             if (redisLock.tryLock(100, 20, TimeUnit.SECONDS)) {

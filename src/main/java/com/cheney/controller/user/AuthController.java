@@ -1,8 +1,8 @@
 package com.cheney.controller.user;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.constants.RedisKey;
-import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.AuthUserService;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.utils.CurrentUserHolder;
@@ -23,8 +23,8 @@ public class AuthController {
 
     @Resource(name = "authUserServiceImpl")
     private AuthUserService authUserService;
-    @Resource(name = "jsonRedisClient")
-    private JsonRedisClient<JwtPrincipal> redisClient;
+    @Resource
+    private JsonRedisClient<JwtPrincipal> jsonRedisClient;
 
     /**
      * 登陆
@@ -42,7 +42,7 @@ public class AuthController {
                 requestParams.getString("password"));
         if (jwtPrincipal != null) {
             String token = jwtPrincipal.getToken();
-            redisClient.setValue(RedisKey.AUTH_TOKEN_KEY.getKey(token), jwtPrincipal, JwtUtils.IN_DATE);
+            jsonRedisClient.setValue(RedisKey.AUTH_TOKEN_KEY.getKey(token), jwtPrincipal, JwtUtils.IN_DATE);
             authUserService.resetToken(jwtPrincipal);
             return JsonMessage.success(
                     "user", JsonMessage.extract(jwtPrincipal, "username", "roles"),
@@ -58,7 +58,7 @@ public class AuthController {
     @DeleteMapping("/auth/safe/logout")
     public JsonMessage logout() {
         String currentToken = CurrentUserHolder.getCurrentUser().getToken();
-        redisClient.removeKey(RedisKey.AUTH_TOKEN_KEY.getKey(currentToken));
+        jsonRedisClient.removeKey(RedisKey.AUTH_TOKEN_KEY.getKey(currentToken));
         return JsonMessage.success();
     }
 

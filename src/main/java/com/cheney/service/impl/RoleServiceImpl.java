@@ -1,9 +1,9 @@
 package com.cheney.service.impl;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.constants.CacheBaseKey;
 import com.cheney.dao.mybatis.RoleMapper;
 import com.cheney.entity.Role;
-import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,8 @@ public class RoleServiceImpl extends CommonCacheImpl<Role, Long> implements Role
     private RoleMapper roleMapper;
 
     @Autowired
-    public RoleServiceImpl(RoleMapper roleMapper, JsonRedisClient<Role> redisClient) {
-        super(roleMapper, redisClient, CacheBaseKey.ROLE_KEY.getKey());
+    public RoleServiceImpl(RoleMapper roleMapper, JsonRedisClient<Role> jsonRedisClient) {
+        super(roleMapper, jsonRedisClient, CacheBaseKey.ROLE_KEY.getKey());
     }
 
 }

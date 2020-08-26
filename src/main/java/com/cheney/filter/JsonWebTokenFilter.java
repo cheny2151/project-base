@@ -1,8 +1,8 @@
 package com.cheney.filter;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.alibaba.fastjson.JSON;
 import com.cheney.constants.RedisKey;
-import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.system.response.JsonMessage;
 import com.cheney.system.response.ResponseCode;
 import com.cheney.utils.CurrentUserHolder;
@@ -33,8 +33,8 @@ import java.util.Optional;
 @Component
 public class JsonWebTokenFilter extends OncePerRequestFilter {
 
-    @Resource(name = "jsonRedisClient")
-    private JsonRedisClient<JwtPrincipal> redisClient;
+    @Resource
+    private JsonRedisClient<JwtPrincipal> jsonRedisClient;
     @Value("${user.auth.urlPatterns}")
     private String[] urlPatterns;
 
@@ -85,7 +85,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
      */
     private JwtPrincipal loadUserByJwt(JwtUtils jwtUtils) {
         String token = jwtUtils.getToken();
-        return redisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
+        return jsonRedisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
     }
 
 }

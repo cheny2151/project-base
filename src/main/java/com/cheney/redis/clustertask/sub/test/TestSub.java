@@ -1,11 +1,10 @@
 package com.cheney.redis.clustertask.sub.test;
 
+import cn.cheny.toolbox.other.page.Limit;
+import cn.cheny.toolbox.redis.clustertask.TaskInfo;
+import cn.cheny.toolbox.redis.clustertask.sub.AbstractClusterTaskSubscriber;
+import cn.cheny.toolbox.redis.clustertask.sub.SubTask;
 import com.alibaba.fastjson.JSON;
-import com.cheney.redis.clustertask.TaskInfo;
-import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
-import com.cheney.redis.clustertask.sub.AbstractClusterTaskSubscriber;
-import com.cheney.redis.clustertask.sub.SubTask;
-import com.cheney.system.page.Limit;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -21,7 +20,7 @@ import java.util.Calendar;
  * @date 2019-09-03
  */
 @Component
-@SubTask(taskId = "test")
+@SubTask(taskId = "test1")
 public class TestSub extends AbstractClusterTaskSubscriber {
 
     @Override

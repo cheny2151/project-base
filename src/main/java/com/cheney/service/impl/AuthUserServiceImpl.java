@@ -1,10 +1,10 @@
 package com.cheney.service.impl;
 
+import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.constants.RedisKey;
 import com.cheney.dao.mybatis.AuthUserMapper;
 import com.cheney.entity.AuthUser;
 import com.cheney.exception.BusinessRunTimeException;
-import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.AuthUserService;
 import com.cheney.system.response.ResponseCode;
 import com.cheney.utils.Md5Utils;
@@ -28,8 +28,8 @@ public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> impleme
     private AuthUserMapper authUserMapper;
     @Resource(name = "taskExecutor")
     private ThreadPoolTaskExecutor taskExecutor;
-    @Resource(name = "jsonRedisClient")
-    private JsonRedisClient<String> redisClient;
+    @Resource
+    private JsonRedisClient<String> jsonRedisClient;
 
     @Autowired
     public AuthUserServiceImpl(AuthUserMapper authUserMapper) {
@@ -53,16 +53,16 @@ public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> impleme
     public void resetToken(JwtPrincipal jwtPrincipal) {
         taskExecutor.execute(() -> {
             removeToken(jwtPrincipal.getUsername());
-            redisClient.HSetForMap(RedisKey.USER_TOKEN.getKey(), jwtPrincipal.getUsername(), jwtPrincipal.getToken());
+            jsonRedisClient.HSetForMap(RedisKey.USER_TOKEN.getKey(), jwtPrincipal.getUsername(), jwtPrincipal.getToken());
         });
     }
 
     @Override
     public void removeToken(String username) {
-        String oldToken = redisClient.HGetForMap(RedisKey.USER_TOKEN.getKey(), username);
+        String oldToken = jsonRedisClient.HGetForMap(RedisKey.USER_TOKEN.getKey(), username);
         if (!StringUtils.isEmpty(oldToken)) {
-            redisClient.delete(RedisKey.AUTH_TOKEN_KEY.getKey(oldToken));
-            redisClient.HDel(RedisKey.USER_TOKEN.getKey(), username);
+            jsonRedisClient.delete(RedisKey.AUTH_TOKEN_KEY.getKey(oldToken));
+            jsonRedisClient.HDel(RedisKey.USER_TOKEN.getKey(), username);
         }
     }
 
