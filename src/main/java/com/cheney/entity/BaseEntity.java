@@ -1,5 +1,6 @@
 package com.cheney.entity;
 
+import cn.cheny.toolbox.entityCache.annotation.CacheId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class BaseEntity<ID> implements Serializable {
     /**
      * id
      */
+    @CacheId
     private ID id;
 
     /**

@@ -1,5 +1,6 @@
 package com.cheney.controller;
 
+import cn.cheny.toolbox.entityCache.holder.EntityBufferHolder;
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import cn.cheny.toolbox.redis.clustertask.pub.ClusterTaskPublisher;
 import com.alibaba.fastjson.JSON;
@@ -35,6 +36,9 @@ public class PageCommonController {
     @Autowired
     private Environment environment;
 
+    @Resource
+    private EntityBufferHolder entityBufferHolder;
+
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
@@ -52,5 +56,11 @@ public class PageCommonController {
     public void test2() {
         Role test = roleService.getByCache("test3");
         System.out.println(test);
+    }
+
+    @RequestMapping("/test3")
+    @ResponseBody
+    public void test3() {
+        entityBufferHolder.refreshCache(Role.class);
     }
 }
