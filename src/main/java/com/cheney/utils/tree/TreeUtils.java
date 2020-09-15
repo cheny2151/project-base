@@ -124,33 +124,11 @@ public class TreeUtils {
 
 
     private static String[] splitSequence(String sequence) {
-        return sequence.substring(1).split(CODE_SEPARATOR);
-    }
-
-    // TODO: 2019/4/23 等待测试完删除
-    public static void main(String[] args) {
-        ArrayList<TreeTest> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            TreeTest treeTest = new TreeTest();
-            list.add(treeTest);
-            treeTest.setCode("X" + i);
-            ArrayList<TreeTest> treeTests = new ArrayList<>();
-            treeTest.setChildren(treeTests);
-            for (int y = 0; y < 2; y++) {
-                TreeTest treeTestY = new TreeTest();
-                treeTestY.setCode("Y" + y);
-                treeTests.add(treeTestY);
-                ArrayList<TreeTest> treeTestsZ = new ArrayList<>();
-                treeTestY.setChildren(treeTestsZ);
-                if (y == 1)
-                    for (int z = 0; z < 2; z++) {
-                        TreeTest treeTestZ = new TreeTest();
-                        treeTestZ.setCode("Z" + z);
-                        treeTestsZ.add(treeTestZ);
-                    }
-            }
+        int startIndex = 0;
+        if (sequence.startsWith(CODE_SEPARATOR)){
+            startIndex = 1;
         }
-        System.out.println(JSON.toJSONString(toTree(TreeUtils.toList(list), TreeTest.class).get(0)));
+        return sequence.substring(startIndex).split(CODE_SEPARATOR);
     }
 
 }

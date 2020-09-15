@@ -65,5 +65,7 @@ toolbox:
   enable: true
   type: REDIS
   underline: true
-  entityPath: com.cheney.entity
+  entityPaths: com.cheney.entity
+  autoRefresh: true
+  period: 1
 
