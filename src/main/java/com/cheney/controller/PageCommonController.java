@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,12 +43,16 @@ public class PageCommonController {
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
-        AuthUser authUser = jsonRedisClient.getValue("authUser");
-        System.out.println(JSON.toJSONString(authUser));
         Map<String, Object> header = new HashMap<>();
-        header.put("test", "this is a header info");
-        header.put("size", 999);
-        clusterTaskPublisher.publish("test1", 999, 100, 4, true, header);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        list.add("6");
+        header.put("list", list);
+        clusterTaskPublisher.publish("test1", list.size(), 1, 1, true, header);
         return JsonMessage.success("123");
     }
 

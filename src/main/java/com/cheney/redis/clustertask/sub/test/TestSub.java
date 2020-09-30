@@ -8,13 +8,14 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 集群任务调度测试类
  * 继承AbstractClusterTaskSubscriber并存放于spring容器中
  * 再通过@SubTask指定执行的任务ID
  * <p>
- * (任务推送，调用{@link ClusterTaskPublisher#publish(String, int, int, int, boolean)})
+ * (任务推送，调用{@link cn.cheny.toolbox.redis.clustertask.pub.ClusterTaskPublisher#publish(String, int, int, int, boolean)})
  *
  * @author cheney
  * @date 2019-09-03
@@ -29,6 +30,9 @@ public class TestSub extends AbstractClusterTaskSubscriber {
         System.out.println("taskInfo->" + JSON.toJSONString(taskInfo));
         try {
             Thread.sleep(300);
+            List<String> list = (List<String>) taskInfo.getHeader().get("list");
+            String s = list.get(limit.getNum());
+            System.out.println(s);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
