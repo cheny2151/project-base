@@ -36,12 +36,12 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
 
     @Override
     public T getByCache(String key) {
-        return jsonRedisClient.HGetForMap(baseKey, key);
+        return jsonRedisClient.hGet(baseKey, key);
     }
 
     @Override
     public List<T> getByCache(Collection<String> keys) {
-        return jsonRedisClient.HMGet(baseKey, keys);
+        return jsonRedisClient.hValues(baseKey, keys);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
         CacheKey cacheKey = entity.getClass().getDeclaredAnnotation(CacheKey.class);
         String property = cacheKey.key();
         Object key = ReflectUtils.readValue(entity, property);
-        jsonRedisClient.HSetForMap(baseKey, String.valueOf(key), entity);
+        jsonRedisClient.hSet(baseKey, String.valueOf(key), entity);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
             Object key = ReflectUtils.readValue(e, property);
             allMap.put(String.valueOf(key), e);
         });
-        jsonRedisClient.HMSetForMap(baseKey, allMap);
+        jsonRedisClient.hSetMap(baseKey, allMap);
     }
 
 }

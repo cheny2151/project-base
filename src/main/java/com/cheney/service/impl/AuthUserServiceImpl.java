@@ -53,16 +53,16 @@ public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> impleme
     public void resetToken(JwtPrincipal jwtPrincipal) {
         taskExecutor.execute(() -> {
             removeToken(jwtPrincipal.getUsername());
-            jsonRedisClient.HSetForMap(RedisKey.USER_TOKEN.getKey(), jwtPrincipal.getUsername(), jwtPrincipal.getToken());
+            jsonRedisClient.hSet(RedisKey.USER_TOKEN.getKey(), jwtPrincipal.getUsername(), jwtPrincipal.getToken());
         });
     }
 
     @Override
     public void removeToken(String username) {
-        String oldToken = jsonRedisClient.HGetForMap(RedisKey.USER_TOKEN.getKey(), username);
+        String oldToken = jsonRedisClient.hGet(RedisKey.USER_TOKEN.getKey(), username);
         if (!StringUtils.isEmpty(oldToken)) {
             jsonRedisClient.delete(RedisKey.AUTH_TOKEN_KEY.getKey(oldToken));
-            jsonRedisClient.HDel(RedisKey.USER_TOKEN.getKey(), username);
+            jsonRedisClient.hDel(RedisKey.USER_TOKEN.getKey(), username);
         }
     }
 
