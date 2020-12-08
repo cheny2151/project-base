@@ -62,7 +62,7 @@ mongodb:
 
 toolbox:
  entity-cache:
-  enable: true
+  enable: false
   type: REDIS
   underline: true
   entityPaths: com.cheney.entity

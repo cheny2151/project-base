@@ -10,7 +10,7 @@ import java.util.Date;
 @Slf4j
 public class DateUtils {
 
-    private final static String[] FORMATSTR = new String[]{"yyyy", "yyyy-MM", "yyyyMM", "yyyy/MM", "yyyy-MM-dd", "yyyyMMdd"
+    public final static String[] FORMATSTR = new String[]{"yyyy", "yyyy-MM", "yyyyMM", "yyyy/MM", "yyyy-MM-dd", "yyyyMMdd"
             , "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss", "yyyy/MM/dd HH:mm:ss"};
 
     private final static ThreadLocal<SimpleDateFormat> DEFAULT_FORMAT = new ThreadLocal<>();

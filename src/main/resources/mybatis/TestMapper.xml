@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间对应要映射的dao接口的全限定名 -->
+<mapper namespace="com.cheney.dao.mybatis.TestMapper">
+
+    <select id="test" resultType="map">
+        select * from test t join test_detail d
+        on t.code = d.code
+        where code <![CDATA[<]]> #{param2.date}
+    </select>
+
+</mapper>
