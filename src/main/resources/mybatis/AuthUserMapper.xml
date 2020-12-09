@@ -209,4 +209,10 @@
         where t0.username = #{username}
     </select>
 
+    <select id="test">
+        select *
+        from sys_auth_user
+        where create_date > sysdate()
+    </select>
+
 </mapper>

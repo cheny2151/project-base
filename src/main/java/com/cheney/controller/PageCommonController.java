@@ -4,6 +4,7 @@ import cn.cheny.toolbox.entityCache.holder.EntityBufferHolder;
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import cn.cheny.toolbox.redis.clustertask.pub.ClusterTaskPublisher;
 import com.alibaba.fastjson.JSON;
+import com.cheney.dao.mybatis.AuthUserMapper;
 import com.cheney.entity.AuthUser;
 import com.cheney.entity.Role;
 import com.cheney.service.RoleService;
@@ -40,6 +41,9 @@ public class PageCommonController {
     @Resource
     private EntityBufferHolder entityBufferHolder;
 
+    @Resource
+    private AuthUserMapper authUserMapper;
+
     @RequestMapping("/test")
     @ResponseBody
     public JsonMessage test() {
@@ -67,5 +71,11 @@ public class PageCommonController {
     @ResponseBody
     public void test3() {
         entityBufferHolder.refreshCache(Role.class);
+    }
+
+    @RequestMapping("/test4")
+    @ResponseBody
+    public void test4(){
+        authUserMapper.test();
     }
 }

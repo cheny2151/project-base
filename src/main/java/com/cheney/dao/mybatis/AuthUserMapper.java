@@ -12,4 +12,7 @@ public interface AuthUserMapper extends BaseMapper<AuthUser, Long> {
      * @return 用户
      */
     AuthUser findByUsername(String username);
+
+    void test();
+
 }

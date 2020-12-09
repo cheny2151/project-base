@@ -13,6 +13,7 @@
         <mysql-driver.version>8.0.11</mysql-driver.version>
         <!--spring cloud-->
         <spring.cloud.version>2.2.1.RELEASE</spring.cloud.version>
+        <shardingsphere.version>5.0.0-alpha</shardingsphere.version>
     </properties>
 
     <parent>
@@ -261,9 +262,15 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+            <version>${shardingsphere.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.cheny2151</groupId>
             <artifactId>toolbox</artifactId>
-            <version>2.0.0-jdk8</version>
+            <version>2.1.2-jdk8</version>
         </dependency>
     </dependencies>
 
