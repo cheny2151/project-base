@@ -1,7 +1,11 @@
 package com.cheney.dao.mybatis;
 
 import com.cheney.entity.AuthUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 public interface AuthUserMapper extends BaseMapper<AuthUser, Long> {
 
@@ -13,6 +17,6 @@ public interface AuthUserMapper extends BaseMapper<AuthUser, Long> {
      */
     AuthUser findByUsername(String username);
 
-    void test();
+    List<AuthUser> test(@Param("date1") Object date1, @Param("date2") Object date2);
 
 }

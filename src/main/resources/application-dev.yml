@@ -10,25 +10,40 @@ spring:
    ds0:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-    uesrname: root
+    username: root
     password: cheney@mysql
-  sharding:
-   tables:
-    sys_auth_user:
-     actual-data-nodes: ds.sys_auth_user
-     table-strategy:
-      standard:
-       sharding-column: create_date
-       precise-algorithm-class-name: com.cheney.utils.YearMonthShardingAlgorithm
-#     databaseStrategy:
-#      standard:
-#       shardingColumn: create_date
-#       shardingAlgorithmName: year-month
-#   sharding-algorithms:
-#    year-month:
-#     strategy: STANDARD
-#     precise-algorithm-class-name: com.cheney.utils.YearMonthShardingAlgorithm
-
+  rules:
+   sharding:
+    tables:
+     sys_auth_user:
+      actual-data-nodes: ds0.sys_auth_user_$->{2020..2100}${(1..12).collect{t ->t.toString().padLeft(2,'0')}}
+      table-strategy:
+       standard:
+        sharding-column: create_date
+        sharding-algorithm-name: year-month
+    sharding-algorithms:
+     year-month:
+      algorithm-class-name: com.cheney.utils.YearMonthShardingAlgorithm
+      type: year-month
+      props:
+       test: 1
+    key-generators:
+     uuid:
+      type: UUID
+      props:
+       test: 1
+#     t_order:
+#      actualDataNodes: ds$->{0..1}.t_order$->{0..2} #ds$->{0..1}.t_order$->{0..2}
+#      databaseStrategy:
+#       standard:
+#        shardingColumn: user_id
+#        preciseAlgorithmClassName: cn.com.bluemoon.config.MyDBPreciseShardingAlgorithm
+#        rangeAlgorithmClassName: cn.com.bluemoon.config.MyDBRangeShardingAlgorithm
+#      tableStrategy:
+#       standard:
+#        shardingColumn: order_id
+#        # 分片算法表达式
+#        preciseAlgorithmClassName: cn.com.bluemoon.config.MyTablePreciseShardingAlgorithm
 
 
 
@@ -87,7 +102,7 @@ mongodb:
 
 toolbox:
  entity-cache:
-  enable: true
+  enable: false
   type: REDIS
   underline: true
   entityPaths: com.cheney.entity

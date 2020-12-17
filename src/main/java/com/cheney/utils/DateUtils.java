@@ -25,6 +25,20 @@ public class DateUtils {
         }
     }
 
+    public static Date toDate(Object date) {
+        if (date == null) {
+            return null;
+        } else if (date instanceof Date) {
+            return (Date) date;
+        } else if (date instanceof Long) {
+            return new Date((long) date);
+        } else if (date instanceof String) {
+            return parseDate(date.toString());
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public static String formatDate(Date date) {
         return getDateFormat(DEFAULT_FORMAT, "yyyy-MM-dd HH:mm:ss").format(date);
     }
@@ -32,24 +46,6 @@ public class DateUtils {
     public static String formatDay(Date date) {
         return getDateFormat(DAY_FORMAT, "yyyy-MM-dd").format(date);
     }
-
-    public static Date toDate(Object time) {
-        if (time instanceof String) {
-            try {
-                return org.apache.commons.lang3.time.DateUtils.parseDate((String) time, FORMATSTR);
-            } catch (ParseException e) {
-                log.error("时间解析错误", e);
-            }
-        }
-        if (time instanceof Date) {
-            return (Date) time;
-        }
-        if (time instanceof Long) {
-            return new Date((Long) time);
-        }
-        throw new IllegalArgumentException();
-    }
-
 
     private static SimpleDateFormat getDateFormat(ThreadLocal<SimpleDateFormat> formatThreadLocal, String pattern) {
         SimpleDateFormat simpleDateFormat = formatThreadLocal.get();
