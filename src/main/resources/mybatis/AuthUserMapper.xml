@@ -213,7 +213,7 @@
         select *
         from sys_auth_user
         where create_date <![CDATA[>]]> #{date1}
-#         and create_date <![CDATA[<]]> #{date2}
+        and create_date <![CDATA[<]]> #{date2}
     </select>
 
 </mapper>

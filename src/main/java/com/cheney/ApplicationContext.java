@@ -4,6 +4,7 @@ import com.cheney.javaconfig.registrar.MyBeanRegistrar;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(value = "com.cheney.dao.mybatis")
 @ServletComponentScan(basePackages = "com.cheney.filter")
 @Import({MyBeanRegistrar.class})
+@ConfigurationPropertiesScan
 //@EnableApolloConfig
 //@RefreshScope
 public class ApplicationContext {

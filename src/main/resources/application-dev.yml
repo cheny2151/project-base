@@ -109,4 +109,8 @@ toolbox:
   autoRefresh: true
   period: 1
 
-
+my:
+ sharding:
+  startDate: 2020-01
+  tableName: sys_auth_user
+  dbname: ds0
