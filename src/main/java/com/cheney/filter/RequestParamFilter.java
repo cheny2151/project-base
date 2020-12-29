@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.JsonParseException;
 import com.cheney.filter.request.InputStreamHttpServletRequestWrapper;
-import com.cheney.system.page.PageInfo;
+import cn.cheny.toolbox.other.page.PageInfo;
 import com.cheney.system.protocol.BaseRequest;
 import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;

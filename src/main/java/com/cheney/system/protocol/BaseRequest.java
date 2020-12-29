@@ -1,6 +1,6 @@
 package com.cheney.system.protocol;
 
-import com.cheney.system.page.Pageable;
+import cn.cheny.toolbox.other.page.Pageable;
 import com.cheney.utils.RequestParamHolder;
 import lombok.AllArgsConstructor;
 import lombok.Data;

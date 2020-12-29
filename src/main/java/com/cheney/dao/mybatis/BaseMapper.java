@@ -1,18 +1,16 @@
 package com.cheney.dao.mybatis;
 
+import cn.cheny.toolbox.other.filter.Filter;
+import cn.cheny.toolbox.other.order.Orders;
+import cn.cheny.toolbox.other.page.Pageable;
 import com.cheney.entity.BaseEntity;
-import com.cheney.system.filter.Filter;
-import com.cheney.system.filter.Filters;
-import com.cheney.system.order.Orders;
-import com.cheney.system.page.Page;
-import com.cheney.system.page.Pageable;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
+public interface BaseMapper<T extends BaseEntity<ID>, ID extends Serializable> {
 
     /**
      * 根据id查找对象

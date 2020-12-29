@@ -1,9 +1,9 @@
 package com.cheney.websocket.consumer.impl;
 
+import cn.cheny.toolbox.scan.PathScanner;
+import cn.cheny.toolbox.scan.ScanException;
+import cn.cheny.toolbox.scan.filter.ScanFilter;
 import com.alibaba.fastjson.JSONObject;
-import com.cheney.utils.scan.PathScan;
-import com.cheney.utils.scan.ScanException;
-import com.cheney.utils.scan.filter.ScanFilter;
 import com.cheney.websocket.consumer.TypeConsumer;
 import com.cheney.websocket.consumer.impl.schedule.ScheduleConsumer;
 import com.cheney.websocket.dto.Message;
@@ -55,7 +55,7 @@ public class SchedulePushTypeConsumer implements TypeConsumer {
         ScanFilter scanFilter = new ScanFilter();
         scanFilter.setSuperClass(ScheduleConsumer.class);
         try {
-            for (Class<?> clazz : new PathScan(scanFilter).scanClass(packageName)) {
+            for (Class<?> clazz : new PathScanner(scanFilter).scanClass(packageName)) {
                 try {
                     ScheduleConsumer scheduleConsumer = (ScheduleConsumer) clazz.getDeclaredConstructor().newInstance();
                     this.scheduleConsumers.computeIfAbsent(scheduleConsumer.type(), k -> new ArrayList<>()).add(scheduleConsumer);

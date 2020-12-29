@@ -3,7 +3,7 @@ package com.cheney.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.RequestEmptyException;
-import com.cheney.system.page.Pageable;
+import cn.cheny.toolbox.other.page.Pageable;
 import com.cheney.system.protocol.BaseRequest;
 
 import java.util.Optional;

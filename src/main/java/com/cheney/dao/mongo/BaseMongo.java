@@ -1,8 +1,8 @@
 package com.cheney.dao.mongo;
 
 import com.cheney.entity.mongo.MongoBaseEntity;
-import com.cheney.system.page.Page;
-import com.cheney.system.page.PageInfo;
+import cn.cheny.toolbox.other.page.Page;
+import cn.cheny.toolbox.other.page.PageInfo;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 

@@ -1,6 +1,6 @@
 package com.cheney.javaconfig.registrar;
 
-import com.cheney.utils.SpringUtils;
+import cn.cheny.toolbox.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;

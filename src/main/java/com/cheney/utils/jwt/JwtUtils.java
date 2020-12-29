@@ -1,6 +1,6 @@
 package com.cheney.utils.jwt;
 
-import com.cheney.utils.SpringUtils;
+import cn.cheny.toolbox.spring.SpringUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
