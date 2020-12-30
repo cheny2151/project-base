@@ -66,8 +66,12 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 log.warn("unSupport Http Request Method");
             }
         }
-        log.info("请求url->{},请求RequestParam->{}", requestURI
-                , JSON.toJSONString(RequestParamHolder.currentRequestParam()));
+        if (RequestParamHolder.currentRequestParam() != null) {
+            log.info("请求url->{},请求RequestParam->{}", requestURI,
+                    JSON.toJSONString(RequestParamHolder.currentRequestParam()));
+        } else {
+            log.info("请求url->{}", requestURI);
+        }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
         RequestParamHolder.remove();
     }
