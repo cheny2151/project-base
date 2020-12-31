@@ -296,6 +296,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 设置打包时去掉BOOT-INF -->
+                    <mainClass>com.cheney.ApplicationContext</mainClass>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -303,10 +308,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <!-- 设置打包时去掉BOOT-INF -->
-                    <skip>true</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
