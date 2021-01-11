@@ -16,8 +16,6 @@ public abstract class AbstractSwitch implements Switch {
 
     public final static String LINE_BREAK = System.getProperty("line.separator");
 
-    public final static String FILE_SEPARATOR = "\\" + File.separator;
-
     private Switch next;
 
     private String target;

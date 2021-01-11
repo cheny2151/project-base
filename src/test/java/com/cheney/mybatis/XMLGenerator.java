@@ -58,7 +58,7 @@ public class XMLGenerator {
     private static void buildSystemPath(Map<String, String> pathMap) {
         for (Map.Entry<String, String> entry : pathMap.entrySet()) {
             String path = entry.getValue();
-            pathMap.put(entry.getKey(), path.replaceAll("\\|", AbstractSwitch.FILE_SEPARATOR));
+            pathMap.put(entry.getKey(), path.replaceAll("\\|", File.separator));
         }
     }
 
@@ -95,11 +95,11 @@ public class XMLGenerator {
             File file;
             //区分文件类型
             if ("Mapper".equalsIgnoreCase(key)) {
-                file = new File(generatorFilePath + "\\" + target.getSimpleName() + key + ".xml");
+                file = new File(generatorFilePath + File.separator + target.getSimpleName() + key + ".xml");
             } else if ("dao".equalsIgnoreCase(key)) {
-                file = new File(generatorFilePath + "\\" + target.getSimpleName() + "Mapper" + ".java");
+                file = new File(generatorFilePath + File.separator + target.getSimpleName() + "Mapper" + ".java");
             } else {
-                file = new File(generatorFilePath + "\\" + target.getSimpleName() + key + ".java");
+                file = new File(generatorFilePath + File.separator + target.getSimpleName() + key + ".java");
             }
             file.createNewFile();
             fileWriter = new FileWriter(file);
