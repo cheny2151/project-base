@@ -58,6 +58,11 @@ public interface BaseMapper<T extends BaseEntity<ID>, ID extends Serializable> {
     long count(@Param("filters") Collection<Filter> filters);
 
     /**
+     * 判断是否存在
+     */
+    boolean exists(@Param("filters") Collection<Filter> filters);
+
+    /**
      * 分页
      * @return maybe null
      */
