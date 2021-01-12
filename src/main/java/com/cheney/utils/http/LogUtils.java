@@ -1,6 +1,7 @@
 package com.cheney.utils.http;
 
 import com.alibaba.fastjson.JSON;
+import com.cheney.utils.JsonUtils;
 
 /**
  * @author cheney
@@ -9,8 +10,13 @@ import com.alibaba.fastjson.JSON;
 public class LogUtils {
 
     public static String cutLog(Object obj) {
-        String s = JSON.toJSONString(obj);
-        return cut(s, 300);
+        String baseData;
+        try {
+            baseData = JsonUtils.toJson(obj);
+        } catch (Exception e) {
+            baseData = JSON.toJSONString(obj);
+        }
+        return cut(baseData, 300);
     }
 
     public static String cut(String str, int length) {

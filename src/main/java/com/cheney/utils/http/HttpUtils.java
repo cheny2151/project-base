@@ -5,6 +5,7 @@ import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.response.ResponseCode;
+import com.cheney.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -156,7 +157,7 @@ public class HttpUtils {
         //http请求异常
         if (statusCodeValue < 200 || statusCodeValue > 299) {
             log.error("请求url->{},uriVariables->{},返回HttpStatus->{}不为成功码,response->{}"
-                    , url, JSON.toJSONString(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
+                    , url, JsonUtils.toJson(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
             throw new FailHttpStatusResponseException(
                     "http请求失败,HttpCode为" + statusCodeValue, ResponseCode.ERROR);
         }
@@ -188,7 +189,7 @@ public class HttpUtils {
             ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
             if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
+                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
             log.error("url->{}请求异常，msg->{}", url, e.getMessage());
@@ -217,7 +218,7 @@ public class HttpUtils {
         //http请求异常
         if (statusCodeValue < 200 || statusCodeValue > 299) {
             log.error("请求url->{},requestBody->{},uriVariables->{},返回HttpStatus->{}不为成功码,response->{}"
-                    , url, JSON.toJSONString(requestBody), JSON.toJSONString(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
+                    , url, JsonUtils.toJson(requestBody), JsonUtils.toJson(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
             throw new FailHttpStatusResponseException(
                     "http请求失败,HttpCode为" + statusCodeValue, ResponseCode.ERROR);
         }
@@ -269,7 +270,7 @@ public class HttpUtils {
             ResponseEntity<R> responseEntity = getTemplate(url).postForEntity(url, requestEntity, resultType, uriVariables);
             if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseEntity.getBody()));
+                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
             log.error("url->{}请求异常，msg->{}", url, e.getMessage());
@@ -294,7 +295,7 @@ public class HttpUtils {
             R responseBody = getTemplate(url).postForObject(url, requestEntity, resultType, uriVariables);
             if (DUG)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JSON.toJSONString(requestBody), LogUtils.cutLog(responseBody));
+                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseBody));
             return responseBody;
         } catch (Exception e) {
             log.error("url->{}请求异常，msg->{}", url, e.getMessage());
@@ -332,7 +333,7 @@ public class HttpUtils {
      */
     public static String simplePost(String url, Object requestBody, ContentType contentType) {
         HttpPost httpPost = new HttpPost(url);
-        StringEntity stringEntity = new StringEntity(JSON.toJSONString(requestBody), contentType);
+        StringEntity stringEntity = new StringEntity(JsonUtils.toJson(requestBody), contentType);
         httpPost.setEntity(stringEntity);
         return simpleExecute(url, httpPost);
     }
