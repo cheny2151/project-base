@@ -13,13 +13,13 @@
         <!-- mysql驱动版本号 -->
         <mysql-driver.version>8.0.11</mysql-driver.version>
         <!--spring cloud-->
-        <spring.cloud.version>2.2.1.RELEASE</spring.cloud.version>
+        <spring.cloud.version>3.0.0</spring.cloud.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
+        <version>2.4.1</version>
         <relativePath/>
     </parent>
 
