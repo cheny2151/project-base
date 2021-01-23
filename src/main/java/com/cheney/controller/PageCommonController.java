@@ -4,7 +4,7 @@ import com.cheney.entity.Role;
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.service.RoleService;
-import com.cheney.system.response.JsonMessage;
+import com.cheney.system.protocol.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
