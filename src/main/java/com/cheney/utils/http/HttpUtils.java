@@ -1,10 +1,9 @@
 package com.cheney.utils.http;
 
-import com.alibaba.fastjson.JSON;
 import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;

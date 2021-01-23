@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.cheney.entity.Role;
 import com.cheney.service.RoleService;
 import com.cheney.system.protocol.BaseResponse;
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.URLUtils;
 import org.springframework.beans.factory.annotation.Value;
