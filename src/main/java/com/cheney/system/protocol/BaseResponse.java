@@ -7,7 +7,9 @@ import java.util.HashMap;
 
 @Data
 public class BaseResponse<T> {
-    /** 请求标识 */
+    /**
+     * 请求标识
+     */
     protected String requestId;
     protected Integer code;
     protected String msg;
@@ -21,6 +23,7 @@ public class BaseResponse<T> {
         baseResponse.setData(data);
         return baseResponse;
     }
+
     /**
      * 成功请求，包装数据
      *
@@ -28,10 +31,10 @@ public class BaseResponse<T> {
      * @return BaseResponse
      */
     public static BaseResponse<?> success(Object... data) {
-        BaseResponse<Object> baseResponse = new BaseResponse<>();
+        Object data0 = null;
         int len = data.length;
         if (len == 1) {
-            baseResponse.setData(data[0]);
+            data0 = data[0];
         } else if (len > 1) {
             if ((len & 1) == 1) {
                 throw new IllegalArgumentException("args must be even");
@@ -40,23 +43,17 @@ public class BaseResponse<T> {
             for (int i = 0; i < len; i++) {
                 dataMap.put(data[i++], data[i]);
             }
-            baseResponse.setData(dataMap);
+            data0 = dataMap;
         }
-        baseResponse.setResponseCode(ResponseCode.SUCCESS);
-        return baseResponse;
+        return success(data0);
     }
 
     public static <T> BaseResponse<T> error(ResponseCode code) {
-        BaseResponse<T> baseResponse = new BaseResponse<>();
-        baseResponse.setResponseCode(code);
-        return baseResponse;
+        return error(code.getStatus(), code.getMsg());
     }
 
     public static <T> BaseResponse<T> error(ResponseCode code, String msg) {
-        BaseResponse<T> baseResponse = new BaseResponse<>();
-        baseResponse.setResponseCode(code);
-        baseResponse.setMsg(msg);
-        return baseResponse;
+        return error(code.getStatus(), msg);
     }
 
     public static <T> BaseResponse<T> error(String msg) {

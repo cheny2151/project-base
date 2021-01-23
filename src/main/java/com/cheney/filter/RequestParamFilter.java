@@ -2,14 +2,15 @@ package com.cheney.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cheney.exception.JsonParseException;
+import com.alibaba.fastjson.TypeReference;
 import com.cheney.filter.request.InputStreamHttpServletRequestWrapper;
 import com.cheney.system.page.PageInfo;
 import com.cheney.system.protocol.BaseRequest;
 import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,7 +19,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
@@ -45,9 +48,10 @@ public class RequestParamFilter extends OncePerRequestFilter {
             }
         }
         String method = httpServletRequest.getMethod();
+        String reqStr = null;
         switch (method.toUpperCase()) {
             case HttpSupport.Method.HTTP_METHOD_GET: {
-                setRequestParamForUrl(httpServletRequest);
+                reqStr = setRequestParamForUrl(httpServletRequest);
                 break;
             }
             case HttpSupport.Method.HTTP_METHOD_POST:
@@ -57,26 +61,25 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 if (StringUtils.isEmpty(contentType) || !contentType.toLowerCase().startsWith("application/json")) {
                     break;
                 }
-                setRequestParamForBody(httpServletRequest);
+                reqStr = setRequestParamForBody(httpServletRequest);
                 //包装请求将消费的流设置回去
                 httpServletRequest = new InputStreamHttpServletRequestWrapper(httpServletRequest);
                 break;
             }
             default: {
-                log.warn("unSupport Http Request Method");
+                log.warn("un support Http Request Method");
             }
         }
-        if (RequestParamHolder.currentRequestParam() != null) {
-            log.info("请求url->{},请求RequestParam->{}", requestURI,
-                    JSON.toJSONString(RequestParamHolder.currentRequestParam()));
+        if (reqStr != null) {
+            log.info("[{}]url->{},request param->{}", method, requestURI, reqStr);
         } else {
-            log.info("请求url->{}", requestURI);
+            log.info("[{}]url->{}", method, requestURI);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
         RequestParamHolder.remove();
     }
 
-    private void setRequestParamForUrl(HttpServletRequest request) {
+    private String setRequestParamForUrl(HttpServletRequest request) {
         BaseRequest<JSONObject> param = new BaseRequest<>();
         Map<String, String[]> parameterMap = request.getParameterMap();
         final JSONObject data = new JSONObject();
@@ -93,10 +96,11 @@ public class RequestParamFilter extends OncePerRequestFilter {
                     break;
                 }
                 //设置分页
-                case "currentPage": {
-                    int currentPage = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
+                case "pageNumber":
+                case "currentPage":{
+                    int pageNumber = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
                             ? Integer.parseInt(v[0]) : PageInfo.DEFAULT_PAGE_NUMBER;
-                    param.initPageable().setPageNumber(currentPage);
+                    param.initPageable().setPageNumber(pageNumber);
                     break;
                 }
                 case "pageSize": {
@@ -116,13 +120,21 @@ public class RequestParamFilter extends OncePerRequestFilter {
         });
 
         RequestParamHolder.setRequestParam(param);
-
+        return JSON.toJSONString(parameterMap);
     }
 
-    private void setRequestParamForBody(HttpServletRequest request) {
+    private String setRequestParamForBody(HttpServletRequest request) {
         try {
             ServletInputStream inputStream = request.getInputStream();
-            BaseRequest<JSONObject> requestParam = JSON.parseObject(inputStream, BaseRequest.class);
+            ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+            byte[] temp = new byte[1024];
+            int len;
+            while ((len = inputStream.read(temp)) != -1) {
+                byteArray.write(temp, 0, len);
+            }
+            String json = byteArray.toString(StandardCharsets.UTF_8);
+            BaseRequest<JSONObject> requestParam = JSON.parseObject(json, new TypeReference<>() {
+            });
             if (requestParam == null) {
                 requestParam = new BaseRequest<>();
             } else if (requestParam.getData() == null) {
@@ -130,9 +142,10 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 requestParam.setData(new JSONObject());
             }
             RequestParamHolder.setRequestParam(requestParam);
+            return json;
         } catch (Exception e) {
             log.error("请求体解析失败", e);
-            throw new JsonParseException("请求体解析异常");
+            throw new JsonParseException(e);
         }
     }
 
