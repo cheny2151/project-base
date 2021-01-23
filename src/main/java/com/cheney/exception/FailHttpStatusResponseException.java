@@ -1,6 +1,6 @@
 package com.cheney.exception;
 
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 
 /**
  * Http请求异常，抛出后由controller通知器统一处理

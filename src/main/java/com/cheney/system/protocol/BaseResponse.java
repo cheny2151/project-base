@@ -1,6 +1,5 @@
 package com.cheney.system.protocol;
 
-import com.cheney.system.response.ResponseCode;
 import com.cheney.utils.RequestParamHolder;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package com.cheney.controller;
 
 import com.cheney.service.RoleService;
-import com.cheney.system.response.JsonMessage;
+import com.cheney.system.protocol.JsonMessage;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

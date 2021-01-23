@@ -1,4 +1,4 @@
-package com.cheney.system.response;
+package com.cheney.system.protocol;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

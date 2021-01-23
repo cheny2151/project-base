@@ -1,7 +1,7 @@
 package com.cheney.exception;
 
 import com.cheney.system.protocol.BaseResponse;
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 
 /**
  * 业务异常
@@ -23,7 +23,7 @@ public class BusinessException extends Exception {
         this.errorResponse = BaseResponse.error(msg);
     }
 
-    public BusinessException(BaseResponse errorResponse) {
+    public BusinessException(BaseResponse<?> errorResponse) {
         super(errorResponse.getMsg());
         this.errorResponse = errorResponse;
     }
@@ -38,7 +38,7 @@ public class BusinessException extends Exception {
         this.errorResponse = BaseResponse.error(code, msg);
     }
 
-    public BaseResponse getErrorResponse() {
+    public BaseResponse<?> getErrorResponse() {
         return errorResponse;
     }
 

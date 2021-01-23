@@ -6,7 +6,7 @@ import com.cheney.entity.AuthUser;
 import com.cheney.exception.BusinessRunTimeException;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.AuthUserService;
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.Md5Utils;
 import com.cheney.utils.jwt.JwtPrincipal;
 import org.apache.commons.lang.StringUtils;

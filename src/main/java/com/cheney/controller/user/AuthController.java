@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cheney.constants.RedisKey;
 import com.cheney.redis.client.impl.JsonRedisClient;
 import com.cheney.service.AuthUserService;
-import com.cheney.system.response.JsonMessage;
+import com.cheney.system.protocol.JsonMessage;
 import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.RequestParamHolder;
 import com.cheney.utils.jwt.JwtPrincipal;

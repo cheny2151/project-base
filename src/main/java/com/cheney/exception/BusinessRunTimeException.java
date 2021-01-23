@@ -1,7 +1,7 @@
 package com.cheney.exception;
 
 import com.cheney.system.protocol.BaseResponse;
-import com.cheney.system.response.ResponseCode;
+import com.cheney.system.protocol.ResponseCode;
 
 /**
  * 业务运行时异常
