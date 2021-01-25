@@ -39,23 +39,23 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
     }
 
     @Override
-    public void save(T entity) {
-        baseMapper.persist(entity);
+    public int save(T entity) {
+        return baseMapper.persist(entity);
     }
 
     @Override
-    public void update(T entity) {
-        baseMapper.merge(entity);
+    public int update(T entity) {
+        return baseMapper.merge(entity);
     }
 
     @Override
-    public void delete(ID id) {
-        baseMapper.remove(id);
+    public int delete(ID id) {
+        return baseMapper.remove(id);
     }
 
     @Override
-    public void delete(ID[] ids) {
-        baseMapper.multiRemove(ids);
+    public int delete(ID[] ids) {
+        return baseMapper.multiRemove(ids);
     }
 
     @Override

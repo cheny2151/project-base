@@ -18,6 +18,8 @@ public class HttpSupport {
 
         public final static String HTTP_METHOD_DELETE = "DELETE";
 
+        public final static String HTTP_METHOD_OPTIONS = "OPTIONS";
+
     }
 
 }

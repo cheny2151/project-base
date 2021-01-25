@@ -107,7 +107,7 @@ public class HttpUtils {
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
             throw e;
         }
     }
@@ -131,7 +131,7 @@ public class HttpUtils {
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
             throw e;
         }
     }
@@ -191,7 +191,8 @@ public class HttpUtils {
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
+                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
             throw e;
         }
     }
@@ -247,7 +248,7 @@ public class HttpUtils {
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
             return responseBody;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
             throw e;
         }
     }
@@ -272,7 +273,8 @@ public class HttpUtils {
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
+                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
             throw e;
         }
     }
@@ -297,7 +299,7 @@ public class HttpUtils {
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseBody));
             return responseBody;
         } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
+            log.error("url->{}请求异常,request body->{}，msg->{}", url, JsonUtils.toJson(requestBody), e.getMessage());
             throw e;
         }
     }

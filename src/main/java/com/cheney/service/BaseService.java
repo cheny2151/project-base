@@ -36,22 +36,22 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
     /**
      * 保存
      */
-    void save(T entity);
+    int save(T entity);
 
     /**
      * 更新
      */
-    void update(T entity);
+    int update(T entity);
 
     /**
      * 删除
      */
-    void delete(ID id);
+    int delete(ID id);
 
     /**
      * 批量删除
      */
-    void delete(ID[] ids);
+    int delete(ID[] ids);
 
     /**
      * 过滤

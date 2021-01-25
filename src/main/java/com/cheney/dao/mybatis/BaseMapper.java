@@ -30,22 +30,22 @@ public interface BaseMapper<T extends BaseEntity<ID>, ID extends Serializable> {
     /**
      * 保存
      */
-    void persist(T entity);
+    int persist(T entity);
 
     /**
      * 更新
      */
-    void merge(T entity);
+    int merge(T entity);
 
     /**
      * 删除
      */
-    void remove(ID id);
+    int remove(ID id);
 
     /**
      * 批量删除
      */
-    void multiRemove(@Param("ids") ID[] ids);
+    int multiRemove(@Param("ids") ID[] ids);
 
     /**
      * 过滤排序查找
