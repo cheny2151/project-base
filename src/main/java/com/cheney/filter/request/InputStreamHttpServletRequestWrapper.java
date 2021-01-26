@@ -24,7 +24,7 @@ public class InputStreamHttpServletRequestWrapper extends HttpServletRequestWrap
 
     public InputStreamHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
-        this.body = JSON.toJSONString(RequestParamHolder.currentRequestParam()).getBytes(StandardCharsets.UTF_8);
+        this.body = JSON.toJSONString(RequestParamHolder.request()).getBytes(StandardCharsets.UTF_8);
         this.inputStream = new BodyServletInputStream();
     }
 

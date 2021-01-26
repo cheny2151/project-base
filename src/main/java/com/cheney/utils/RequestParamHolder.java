@@ -13,23 +13,23 @@ import java.util.Optional;
  */
 public class RequestParamHolder {
 
-    private static InheritableThreadLocal<BaseRequest<JSONObject>> requestParam = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<BaseRequest<?>> requestParam = new InheritableThreadLocal<>();
 
-    public static void setRequestParam(BaseRequest<JSONObject> requestParam) {
+    public static void setRequestParam(BaseRequest<?> requestParam) {
         RequestParamHolder.requestParam.set(requestParam);
     }
 
-    public static BaseRequest<JSONObject> currentRequestParam() {
+    public static BaseRequest<?> request() {
         return requestParam.get();
     }
 
-    public static Optional<String> currentRequestId() {
-        BaseRequest<JSONObject> request = currentRequestParam();
+    public static Optional<String> requestId() {
+        BaseRequest<?> request = request();
         return Optional.ofNullable(request == null ? null : request.getRequestId());
     }
 
-    public static Optional<Long> currentTimestamp() {
-        BaseRequest<JSONObject> request = currentRequestParam();
+    public static Optional<Long> timestamp() {
+        BaseRequest<?> request = request();
         if (request == null) {
             return Optional.empty();
         }
@@ -38,8 +38,16 @@ public class RequestParamHolder {
                 Optional.empty() : Optional.of(Long.valueOf(timestamp));
     }
 
-    public static <T> T currentParam(Class<T> clazz) {
-        BaseRequest<JSONObject> request = currentRequestParam();
+    public static Object data() {
+        BaseRequest<?> request = request();
+        if (request == null) {
+            throw new RequestEmptyException();
+        }
+        return request.getData();
+    }
+
+    public static <T> T data(Class<T> clazz) {
+        BaseRequest<?> request = request();
         if (request == null) {
             throw new RequestEmptyException();
         }
@@ -48,27 +56,27 @@ public class RequestParamHolder {
         );
     }
 
-    public static JSONObject currentParam() {
-        BaseRequest<JSONObject> request = currentRequestParam();
-        if (request == null) {
-            throw new RequestEmptyException();
+    public static JSONObject dataAsJSONObject() {
+        Object data = data();
+        if (data instanceof JSONObject) {
+            return (JSONObject) data;
         }
-        return request.getData();
+        return data(JSONObject.class);
+    }
+
+    public static Pageable page() {
+        BaseRequest<?> request = request();
+        return request == null ? new Pageable() : request().requiredPageable();
     }
 
     /**
      * 将当前请求参数data放入Pageable中Filter的otherFilter字段
      * 作为附加过滤条件
      */
-    public static Pageable currentPageWithDataParams() {
-        Pageable pageable = currentPage();
-        pageable.addOtherParams(currentParam());
+    public static Pageable pageWithDataParams() {
+        Pageable pageable = page();
+        pageable.addOtherParams(dataAsJSONObject());
         return pageable;
-    }
-
-    public static Pageable currentPage() {
-        BaseRequest<JSONObject> request = currentRequestParam();
-        return request == null ? new Pageable() : currentRequestParam().requiredPageable();
     }
 
     public static void remove() {

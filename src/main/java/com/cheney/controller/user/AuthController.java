@@ -31,7 +31,7 @@ public class AuthController {
      */
     @PostMapping(value = "/login")
     public JsonMessage login() {
-        JSONObject requestParams = RequestParamHolder.currentParam();
+        JSONObject requestParams = RequestParamHolder.dataAsJSONObject();
         if (!requestParams.containsKey("username")) {
             return JsonMessage.error("username must not null");
         }
