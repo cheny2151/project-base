@@ -71,7 +71,7 @@ public class ControllerAdviceHolder {
         if (response == null) {
             return BaseResponse.SERVER_ERROR;
         }
-        response.setRequestId(RequestParamHolder.currentRequestId().orElse(null));
+        response.setRequestId(RequestParamHolder.requestId().orElse(null));
         log.info("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
         return response;
     }

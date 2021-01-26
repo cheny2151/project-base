@@ -78,7 +78,7 @@ public class BaseResponse<T> {
      * @return requestId
      */
     public String getRequestId() {
-        return RequestParamHolder.currentRequestId().orElse(null);
+        return RequestParamHolder.requestId().orElse(null);
     }
 
 }

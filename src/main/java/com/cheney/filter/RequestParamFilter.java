@@ -138,7 +138,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 byteArray.write(temp, 0, len);
             }
             String json = byteArray.toString(StandardCharsets.UTF_8);
-            BaseRequest<JSONObject> requestParam = JSON.parseObject(json, new TypeReference<>() {
+            BaseRequest<Object> requestParam = JSON.parseObject(json, new TypeReference<>() {
             });
             if (requestParam == null) {
                 requestParam = new BaseRequest<>();

@@ -50,7 +50,7 @@ public class BaseRequest<T> implements Serializable {
     }
 
     public static <T> BaseRequest<?> createByCurrentReq(T data, Pageable page) {
-        final BaseRequest<?> param = RequestParamHolder.currentRequestParam();
+        final BaseRequest<?> param = RequestParamHolder.request();
         if (param == null) {
             return createNew(data, page);
         }
