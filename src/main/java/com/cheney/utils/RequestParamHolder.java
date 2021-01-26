@@ -1,6 +1,7 @@
 package com.cheney.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.RequestEmptyException;
 import com.cheney.system.page.Pageable;
@@ -62,6 +63,14 @@ public class RequestParamHolder {
             return (JSONObject) data;
         }
         return data(JSONObject.class);
+    }
+
+    public static JSONArray dataAsJSONArray() {
+        Object data = data();
+        if (data instanceof JSONArray) {
+            return (JSONArray) data;
+        }
+        return data(JSONArray.class);
     }
 
     public static Pageable page() {
