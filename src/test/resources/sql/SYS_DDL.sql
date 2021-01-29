@@ -1,4 +1,4 @@
-CREATE TABLE `auth_user`
+CREATE TABLE `sys_auth_user`
 (
     `id`          int(10) unsigned NOT NULL AUTO_INCREMENT,
     `username`    VARCHAR(32)  NOT NULL COMMENT '用户名',

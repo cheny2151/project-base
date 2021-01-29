@@ -69,7 +69,9 @@ public class URLUtils {
             return pattern;
         }
         int length = pattern.length();
-        return ".*".equals(pattern.substring(length - 2)) ? pattern : pattern.substring(0, length - 1) + ".*";
+        return "**".equals(pattern.substring(length - 2)) ?
+                pattern.substring(0, length - 2) + ".*" :
+                pattern.substring(0, length - 1) + ".*";
     }
 
 }

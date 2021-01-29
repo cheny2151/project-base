@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
  * 3,tomcat启动脚本中配置激活的profiles --> catalina.bar/sh -->添加JVM环境变量：JAVA_OPTS="-Dspring.profiles.active=test"(windows 加set)
  */
 @Configuration
-public class BeanConfig {
+public class BaseConfig {
 
     @Profile("dev")
     @Bean(name = "profilesBean")

@@ -7,6 +7,8 @@ import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.CurrentUserHolder;
 import com.cheney.utils.URLUtils;
+import com.cheney.utils.jwt.JwtPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * 角色权限过滤器
@@ -31,9 +32,12 @@ import java.util.Set;
  * @date 2019-11-10
  */
 @Component
+@Slf4j
 public class RolePermissionFilter extends OncePerRequestFilter {
 
-    @Value("${user.permission.ignoreUrls}")
+    @Value("${user.auth.urlPatterns:''}")
+    private String[] authUrlPatterns;
+    @Value("${user.permission.ignoreUrls:''}")
     private String[] ignoreUrls;
     @Resource(name = "roleServiceImpl")
     private RoleService roleService;
@@ -44,24 +48,32 @@ public class RolePermissionFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String uri = httpServletRequest.getRequestURI();
-        if (URLUtils.matchesUrl(uri, ignoreUrls)) {
-            // 匹配权限忽略路径
-            doFilter(httpServletRequest, httpServletResponse, filterChain);
+
+        // 登陆验证
+        boolean pass = !URLUtils.matchesUrl(uri, authUrlPatterns);
+        JwtPrincipal currentUser = CurrentUserHolder.getCurrentUser();
+        if (!pass && currentUser == null) {
+            log.info("请求url:{},用户未登录", uri);
+            writeUnauthorized(httpServletResponse);
             return;
         }
 
-        // 是否通过权限校验
-        boolean pass = false;
-        Set<String> roles = CurrentUserHolder.getCurrentUser().getRoles();
-        if (!CollectionUtils.isEmpty(roles)) {
+        // 匹配忽略权限路径
+        if (!pass) {
+            pass = URLUtils.matchesUrl(uri, ignoreUrls);
+        }
+
+        // 权限校验
+        if (!pass && !CollectionUtils.isEmpty(currentUser.getRoles())) {
             // 从缓存中获取角色对应的权限url并判断当前登录用户是否有访问权限
-            pass = roles.stream().map(role -> roleService.getByCache(role)).filter(Objects::nonNull)
+            pass = currentUser.getRoles().stream().map(role -> roleService.getByCache(role))
+                    .filter(Objects::nonNull)
                     .map(Role::getUrlPatterns).flatMap(Collection::stream)
                     .anyMatch(urlPattern -> uri.matches(URLUtils.fixPattern(urlPattern)));
         }
 
         if (!pass) {
-            writeUnauthorized(httpServletResponse);
+            writeForbidden(httpServletResponse);
             return;
         }
 
@@ -69,16 +81,31 @@ public class RolePermissionFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 响应无权限访问
+     * 响应未登陆访问
      *
      * @param httpServletResponse 响应
      */
     private void writeUnauthorized(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
+        PrintWriter writer = httpServletResponse.getWriter();
+        BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.USER_NOT_LOGIN);
+        JSON.writeJSONString(writer, responseBody);
+        writer.flush();
+    }
+
+    /**
+     * 响应无权限访问
+     *
+     * @param httpServletResponse 响应
+     */
+    private void writeForbidden(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
         PrintWriter writer = httpServletResponse.getWriter();
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
         JSON.writeJSONString(writer, responseBody);
+        writer.flush();
     }
 
 }
