@@ -193,6 +193,13 @@
         <include refid="filters"/>
     </select>
 
+    <select id="exists" resultType="boolean">
+        select 1
+        from sys_auth_user t0
+        <include refid="filters"/>
+        limit 1
+    </select>
+
     <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="base">
         select t0.*
         from sys_auth_user t0
