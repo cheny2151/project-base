@@ -32,13 +32,19 @@ spring:
 #   - 127.0.0.1:6379
 #   - xxx.x.x.x:xxxx
 #  password: cheney@redis
-  timeout: 100000ms
-  jedis:
-   pool:
-    max-active: 1024
-    max-idle: 200
-    max-wait: 10000ms
+  timeout: 30000ms
   database: 0
+#  jedis:
+#   pool:
+#    max-active: 16
+#    max-idle: 16
+#    max-wait: 30000ms
+  lettuce:
+   pool:
+    max-active: 16
+    max-idle: 16
+    max-wait: 30000ms
+
  #rabbitmq
  rabbitmq:
   host:
