@@ -6,6 +6,7 @@ import com.cheney.service.RoleService;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.CurrentUserHolder;
+import com.cheney.utils.HttpSupport;
 import com.cheney.utils.URLUtils;
 import com.cheney.utils.jwt.JwtPrincipal;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +107,11 @@ public class RolePermissionFilter extends OncePerRequestFilter {
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
         JSON.writeJSONString(writer, responseBody);
         writer.flush();
+    }
+
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // OPTIONS方法不执行权限拦截
+        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.cheney.utils;
 
+import com.cheney.exception.BusinessRunTimeException;
+import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.jwt.JwtPrincipal;
 
 /**
@@ -10,10 +12,18 @@ import com.cheney.utils.jwt.JwtPrincipal;
  */
 public class CurrentUserHolder {
 
-    private static ThreadLocal<JwtPrincipal> authUserThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<JwtPrincipal> authUserThreadLocal = new ThreadLocal<>();
 
     public static JwtPrincipal getCurrentUser() {
         return authUserThreadLocal.get();
+    }
+
+    public static JwtPrincipal requiredCurrentUser() {
+        JwtPrincipal user = getCurrentUser();
+        if (user == null){
+            throw new BusinessRunTimeException(ResponseCode.USER_NOT_LOGIN);
+        }
+        return user;
     }
 
     public static void setCurrentUser(JwtPrincipal authUser) {
