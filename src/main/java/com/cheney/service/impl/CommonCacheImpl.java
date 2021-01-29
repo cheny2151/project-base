@@ -10,10 +10,7 @@ import com.cheney.utils.annotation.CacheKey;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 通用缓存实现类
@@ -21,7 +18,7 @@ import java.util.Map;
  * @author cheney
  * @date 2019-11-10
  */
-public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> extends BaseServiceImpl<T, ID>
+public abstract class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> extends BaseServiceImpl<T, ID>
         implements BaseService<T, ID>, CommonCache<T, ID> {
 
     private JsonRedisClient<T> jsonRedisClient;
@@ -36,13 +33,30 @@ public class CommonCacheImpl<T extends BaseEntity<ID>, ID extends Serializable> 
 
     @Override
     public T getByCache(String key) {
-        return jsonRedisClient.hGet(baseKey, key);
+        T entity = jsonRedisClient.hGet(baseKey, key);
+        if (entity == null) {
+            List<T> entities = findByCacheKeys(Collections.singletonList(key));
+            if (!CollectionUtils.isEmpty(entities)) {
+                entity = entities.get(0);
+                cache(entity);
+            }
+        }
+        return entity;
     }
 
     @Override
     public List<T> getByCache(Collection<String> keys) {
-        return jsonRedisClient.hValues(baseKey, keys);
+        List<T> entities = jsonRedisClient.hValues(baseKey, keys);
+        if (CollectionUtils.isEmpty(entities) || entities.size() != keys.size()) {
+            entities = findByCacheKeys(keys);
+            if (!CollectionUtils.isEmpty(entities)) {
+                entities.forEach(this::cache);
+            }
+        }
+        return entities;
     }
+
+    public abstract List<T> findByCacheKeys(Collection<String> keys);
 
     @Override
     public List<T> getAllByCache() {

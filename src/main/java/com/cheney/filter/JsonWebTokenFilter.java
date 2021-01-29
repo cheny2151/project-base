@@ -3,6 +3,7 @@ package com.cheney.filter;
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.constants.RedisKey;
 import com.cheney.utils.CurrentUserHolder;
+import com.cheney.utils.HttpSupport;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,11 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
     private JwtPrincipal loadUserByJwt(JwtUtils jwtUtils) {
         String token = jwtUtils.getToken();
         return jsonRedisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
+    }
+
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // OPTIONS方法不执行权限拦截
+        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
     }
 
 }
