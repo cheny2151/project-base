@@ -66,6 +66,10 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 httpServletRequest = new InputStreamHttpServletRequestWrapper(httpServletRequest);
                 break;
             }
+            case HttpSupport.Method.HTTP_METHOD_OPTIONS:{
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+                return;
+            }
             default: {
                 log.warn("un support Http Request Method");
             }
