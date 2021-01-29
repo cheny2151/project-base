@@ -1,34 +1,10 @@
-##spring common config
-#mybatis
+## spring common config
+# mybatis
 mybatis:
   type-aliases-package: com.cheney.entity.dto
   mapper-locations: classpath:mybatis/*.xml
 
-##other common config
-
-#jsonWebToken
-jwt:
-  indate: 30
-  sha256:
-    key: 182234c3-a3dd-48d5-a107-c628cc80f2df
-
-#filter url
-user:
-  auth:
-    urlPatterns: /auth/*
-  permission:
-    ignoreUrls: /auth/safe/*
-
-#java mail
-mail:
-  smtp:
-    auth: true
-    timeout: 25000
-  ssl:
-    enable: true
-  socketFactory:
-    class: javax.net.ssl.SSLSocketFactory
-
+## other common config
 spring:
   # jdbc
   datasource:
@@ -48,6 +24,20 @@ spring:
         acknowledge-mode: manual
       direct:
         acknowledge-mode: manual
+
+## system config
+# jsonWebToken
+jwt:
+  indate: 30
+  sha256:
+    key: 182234c3-a3dd-48d5-a107-c628cc80f2df
+
+# filter url
+user:
+  auth:
+    urlPatterns: ${server.servlet.context-path}/auth/**
+  permission:
+    ignoreUrls: ${server.servlet.context-path}/auth/safe/**
 
 # ConfigurationProperties示例{@link ExampleProperties}
 example:

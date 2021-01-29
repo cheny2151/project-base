@@ -1,5 +1,8 @@
 package com.cheney.utils;
 
+import com.cheney.exception.SystemRunTimeException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.security.MessageDigest;
 import java.util.Random;
 
@@ -9,6 +12,7 @@ import java.util.Random;
  * @author cheney
  * @date 2019-11-03
  */
+@Slf4j
 public class Md5Utils {
 
     /**
@@ -38,9 +42,8 @@ public class Md5Utils {
             byte[] digest = md.digest(str.getBytes());
             return hex(digest);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.toString());
-            return "";
+            log.error("加密算法异常", e);
+            throw new SystemRunTimeException("加密异常");
         }
     }
 
