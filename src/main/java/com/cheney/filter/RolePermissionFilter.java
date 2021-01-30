@@ -81,6 +81,12 @@ public class RolePermissionFilter extends OncePerRequestFilter {
         doFilter(httpServletRequest, httpServletResponse, filterChain);
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // OPTIONS方法不执行权限拦截
+        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
+    }
+
     /**
      * 响应未登陆访问
      *
@@ -107,11 +113,6 @@ public class RolePermissionFilter extends OncePerRequestFilter {
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
         JSON.writeJSONString(writer, responseBody);
         writer.flush();
-    }
-
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        // OPTIONS方法不执行权限拦截
-        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
     }
 
 }
