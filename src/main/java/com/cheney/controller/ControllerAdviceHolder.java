@@ -1,14 +1,10 @@
 package com.cheney.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.cheney.exception.BusinessRunTimeException;
-import com.cheney.exception.FailHttpStatusResponseException;
-import com.cheney.exception.FailRCResponseException;
-import com.cheney.exception.MultiRequestException;
+import com.cheney.exception.*;
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
 import com.cheney.system.protocol.BaseResponse;
-import com.cheney.system.protocol.JsonMessage;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.RequestParamHolder;
 import com.cheney.utils.http.RequestInfo;
@@ -99,9 +95,9 @@ public class ControllerAdviceHolder {
      */
     @ExceptionHandler(MultiRequestException.class)
     @ResponseStatus(HttpStatus.OK)
-    public JsonMessage multiRequestException(MultiRequestException e) {
+    public BaseResponse<?> multiRequestException(MultiRequestException e) {
         final RequestInfo requestInfo = e.getRequestInfo();
-        final HttpEntity responseEntity = e.getResponseEntity();
+        final HttpEntity<?> responseEntity = e.getResponseEntity();
         if (requestInfo != null) {
             log.error("HTTP请求异常>>>请求地址->{},请求参数->{},响应数据->{},异常error->",
                     requestInfo.getUrl(),
@@ -110,20 +106,32 @@ public class ControllerAdviceHolder {
         } else {
             log.error("HTTP请求异常", e.getCause());
         }
-        return JsonMessage.error(e.getMessage());
+        return BaseResponse.error(e.getMessage());
     }
 
     /**
-     * 聚合Http请求异常拦截响应
+     * 不支持的http方法
      *
-     * @param e MultiRequestException
+     * @param e HttpRequestMethodNotSupportedException
      * @return http响应
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public JsonMessage HttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
+    public BaseResponse<?> HttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
         log.error("url->{}:不支持的请求,{}", request.getRequestURI(), e.getMessage());
-        return JsonMessage.error(e.getMessage());
+        return BaseResponse.error(e.getMessage());
+    }
+
+    /**
+     * 请求参数校验异常
+     *
+     * @param e ValidateException
+     * @return http响应
+     */
+    @ExceptionHandler(ValidateException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> validateException(ValidateException e) {
+        return BaseResponse.error(ResponseCode.PARAM_ERROR, e.getMessage());
     }
 
     /**
