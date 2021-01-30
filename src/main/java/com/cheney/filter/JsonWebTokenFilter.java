@@ -59,6 +59,12 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         CurrentUserHolder.remove();
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // OPTIONS方法不执行权限拦截
+        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
+    }
+
     private String extractToken(String token) {
         if (token == null || !token.startsWith(TOKEN_PRE)) {
             return null;
@@ -74,11 +80,6 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
     private JwtPrincipal loadUserByJwt(JwtUtils jwtUtils) {
         String token = jwtUtils.getToken();
         return jsonRedisClient.getValue(RedisKey.AUTH_TOKEN_KEY.getKey(token));
-    }
-
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        // OPTIONS方法不执行权限拦截
-        return request.getMethod().equals(HttpSupport.Method.HTTP_METHOD_OPTIONS);
     }
 
 }
