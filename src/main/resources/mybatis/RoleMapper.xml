@@ -173,7 +173,7 @@
         <include refid="filters"/>
     </select>
 
-    <select id="exists" resultType="boolean">
+    <select id="exists" resultType="integer">
         select 1
         from sys_role t0
         <include refid="filters"/>

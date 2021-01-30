@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseMapper<T extends BaseEntity<ID>, ID extends Serializable> {
 
@@ -60,7 +61,7 @@ public interface BaseMapper<T extends BaseEntity<ID>, ID extends Serializable> {
     /**
      * 判断是否存在
      */
-    boolean exists(@Param("filters") Collection<Filter> filters);
+    Optional<Integer> exists(@Param("filters") Collection<Filter> filters);
 
     /**
      * 分页
