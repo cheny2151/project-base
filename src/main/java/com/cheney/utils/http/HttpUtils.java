@@ -26,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -105,6 +104,51 @@ public class HttpUtils {
     }
 
     /**
+     * get请求，直接返回body数据
+     *
+     * @param url          请求地址
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public static <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
+        try {
+            R responseBody = getTemplate(url).getForObject(url, resultType, uriVariables);
+            if (DUG)
+                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
+            return responseBody;
+        } catch (Exception e) {
+            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * get请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public static <R> ResponseEntity<R> getForResponse(String url,
+                                                       ParameterizedTypeReference<R> resultType,
+                                                       Object... uriVariables) {
+        HttpEntity<?> requestEntity = new HttpEntity<>(getHeader());
+        try {
+            ResponseEntity<R> responseEntity = getTemplate(url).exchange(url, HttpMethod.GET, requestEntity, resultType, uriVariables);
+            if (DUG)
+                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
+            return responseEntity;
+        } catch (Exception e) {
+            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
      * get请求，返回包括响应状态的entity
      *
      * @param url          请求地址
@@ -116,16 +160,7 @@ public class HttpUtils {
     public static <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url,
                                                                                       ParameterizedTypeReference<B> resultType,
                                                                                       Object... uriVariables) {
-        HttpEntity<?> requestEntity = new HttpEntity<>(getHeader());
-        try {
-            ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.GET, requestEntity, resultType, uriVariables);
-            if (DUG)
-                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
-            return responseEntity;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
-            throw e;
-        }
+        return getForResponse(url, resultType, uriVariables);
     }
 
     /**
@@ -160,89 +195,6 @@ public class HttpUtils {
             throw new FailRCResponseException(responseBody);
         }
         return responseBody;
-    }
-
-    /**
-     * post请求，返回包括响应状态的entity
-     *
-     * @param url          请求地址
-     * @param requestBody  请求数据
-     * @param resultType   返回类型Class
-     * @param <R>          返回类型
-     * @param uriVariables url参数(替换{}占位符)
-     * @return 响应体
-     */
-    public static <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody,
-                                                                                       ParameterizedTypeReference<B> resultType,
-                                                                                       Object... uriVariables) {
-        HttpEntity<?> requestEntity = wrapRequest(requestBody);
-        try {
-            ResponseEntity<B> responseEntity = getTemplate(url).exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
-            if (DUG)
-                log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
-            return responseEntity;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
-                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
-            throw e;
-        }
-    }
-
-    /**
-     * get请求，返回包括响应状态的entity
-     * rc不等于200时抛出业务异常
-     *
-     * @param url          请求地址
-     * @param requestBody  请求数据
-     * @param resultType   返回类型Class
-     * @param <R>          返回类型
-     * @param uriVariables url参数(替换{}占位符)
-     * @return 响应体
-     * @throws FailRCResponseException
-     */
-    public static <R, B extends BaseResponse<R>> B postForBaseResponseThrowFail(String url, Object requestBody,
-                                                                                ParameterizedTypeReference<B> resultType,
-                                                                                Object... uriVariables) throws FailRCResponseException {
-        ResponseEntity<B> response = postForBaseResponse(url, requestBody, resultType, uriVariables);
-        BaseResponse<R> responseBody = response.getBody();
-        int statusCodeValue = response.getStatusCodeValue();
-        //http请求异常
-        if (statusCodeValue < 200 || statusCodeValue > 299) {
-            log.error("请求url->{},requestBody->{},uriVariables->{},返回HttpStatus->{}不为成功码,response->{}"
-                    , url, JsonUtils.toJson(requestBody), JsonUtils.toJson(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
-            throw new FailHttpStatusResponseException(
-                    "http请求失败,HttpCode为" + statusCodeValue, ResponseCode.ERROR);
-        }
-        if (responseBody == null) {
-            throw new FailRCResponseException("url:\"" + url + "\"请求失败,响应体为null", null);
-        }
-        //业务异常，通过controller通知器直接透传给前端
-        if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
-            throw new FailRCResponseException("url:\"" + url + "\"请求失败", responseBody);
-        }
-        return response.getBody();
-    }
-
-    /**
-     * get请求，直接返回body数据
-     *
-     * @param url          请求地址
-     * @param resultType   返回类型Class
-     * @param <R>          返回类型
-     * @param uriVariables url参数(替换{}占位符)
-     * @return 响应体
-     */
-    public static <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
-        try {
-            R responseBody = getTemplate(url).getForObject(url, resultType, uriVariables);
-            if (DUG)
-                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
-            return responseBody;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
-            throw e;
-        }
     }
 
     /**
@@ -294,6 +246,84 @@ public class HttpUtils {
             log.error("url->{}请求异常,request body->{}，msg->{}", url, JsonUtils.toJson(requestBody), e.getMessage());
             throw e;
         }
+    }
+
+    /**
+     * post请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public static <R> ResponseEntity<R> postForResponse(String url, Object requestBody,
+                                                        ParameterizedTypeReference<R> resultType,
+                                                        Object... uriVariables) {
+        HttpEntity<?> requestEntity = wrapRequest(requestBody);
+        try {
+            ResponseEntity<R> responseEntity = getTemplate(url).exchange(url, HttpMethod.POST, requestEntity, resultType, uriVariables);
+            if (DUG)
+                log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
+                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
+            return responseEntity;
+        } catch (Exception e) {
+            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
+                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * post请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public static <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody,
+                                                                                       ParameterizedTypeReference<B> resultType,
+                                                                                       Object... uriVariables) {
+        return postForResponse(url, requestBody, resultType, uriVariables);
+    }
+
+    /**
+     * get请求，返回包括响应状态的entity
+     * rc不等于200时抛出业务异常
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     * @throws FailRCResponseException
+     */
+    public static <R, B extends BaseResponse<R>> B postForBaseResponseThrowFail(String url, Object requestBody,
+                                                                                ParameterizedTypeReference<B> resultType,
+                                                                                Object... uriVariables) throws FailRCResponseException {
+        ResponseEntity<B> response = postForBaseResponse(url, requestBody, resultType, uriVariables);
+        BaseResponse<R> responseBody = response.getBody();
+        int statusCodeValue = response.getStatusCodeValue();
+        //http请求异常
+        if (statusCodeValue < 200 || statusCodeValue > 299) {
+            log.error("请求url->{},requestBody->{},uriVariables->{},返回HttpStatus->{}不为成功码,response->{}"
+                    , url, JsonUtils.toJson(requestBody), JsonUtils.toJson(uriVariables), statusCodeValue, LogUtils.cutLog(responseBody));
+            throw new FailHttpStatusResponseException(
+                    "http请求失败,HttpCode为" + statusCodeValue, ResponseCode.ERROR);
+        }
+        if (responseBody == null) {
+            throw new FailRCResponseException("url:\"" + url + "\"请求失败,响应体为null", null);
+        }
+        //业务异常，通过controller通知器直接透传给前端
+        if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
+            throw new FailRCResponseException("url:\"" + url + "\"请求失败", responseBody);
+        }
+        return response.getBody();
     }
 
     public static void setCurrentHeader(Map<String, String> headers) {
