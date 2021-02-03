@@ -56,11 +56,6 @@ public class HttpUtils {
     private static ThreadLocal<HttpHeaders> currentHeader;
 
     /**
-     * 账户服务头
-     */
-    public static Map<String, String> ACCOUNT_HEADERS;
-
-    /**
      * http请求template
      */
     private final static RestTemplate REST_TEMPLATE;
@@ -75,9 +70,6 @@ public class HttpUtils {
         defaultHeader.setContentType(MediaType.APPLICATION_JSON);
 
         currentHeader = new ThreadLocal<>();
-
-        ACCOUNT_HEADERS = new HashMap<>();
-        ACCOUNT_HEADERS.put("EXCHANGE", "AUCTION");
 
         // 初始化template
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
@@ -453,7 +445,12 @@ public class HttpUtils {
 
     private static HttpHeaders getHeader() {
         HttpHeaders httpHeaders = currentHeader.get();
-        return httpHeaders != null ? httpHeaders : defaultHeader;
+        if (httpHeaders == null) {
+            httpHeaders = defaultHeader;
+        } else {
+            currentHeader.remove();
+        }
+        return httpHeaders;
     }
 
     /**
