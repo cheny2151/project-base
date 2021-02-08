@@ -32,6 +32,14 @@ jwt:
   sha256:
     key: 182234c3-a3dd-48d5-a107-c628cc80f2df
 
+http:
+  util:
+   debug-model: false
+
+# url
+server:
+  servlet:
+    context-path: ''
 # filter url
 user:
   auth:

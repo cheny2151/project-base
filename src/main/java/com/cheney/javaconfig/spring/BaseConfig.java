@@ -2,9 +2,14 @@ package com.cheney.javaconfig.spring;
 
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
+import com.cheney.utils.http.HttpUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 /**
  * 配置profiles
@@ -13,7 +18,22 @@ import org.springframework.context.annotation.Profile;
  * 3,tomcat启动脚本中配置激活的profiles --> catalina.bar/sh -->添加JVM环境变量：JAVA_OPTS="-Dspring.profiles.active=test"(windows 加set)
  */
 @Configuration
-public class BaseConfig {
+public class BaseConfig implements ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
+    private Environment env;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+        this.env = applicationContext.getEnvironment();
+        postConstruct();
+    }
+
+    private void postConstruct() {
+        Boolean httpDebug = env.getProperty("http.util.debug-model", boolean.class, false);
+        HttpUtils.setDUG(httpDebug);
+    }
 
     @Profile("dev")
     @Bean(name = "profilesBean")
