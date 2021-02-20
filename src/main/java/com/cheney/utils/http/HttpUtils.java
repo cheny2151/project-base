@@ -572,7 +572,7 @@ public class HttpUtils {
      */
     private static RestTemplate getTemplate(String url) {
         RestTemplate restTemplate = REST_TEMPLATE;
-        if (url.toLowerCase().startsWith("https")) {
+        if (url.substring(0, 5).equalsIgnoreCase("https")) {
             restTemplate = HTTPS_REST_TEMPLATE;
         }
         return restTemplate;
