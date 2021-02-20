@@ -45,6 +45,11 @@ public class HttpUtils {
     private static boolean DUG = false;
 
     /**
+     * 是否抛出response code异常
+     */
+    private static boolean THROW_RC_FAIL = false;
+
+    /**
      * 默认请求头
      */
     private static final HttpHeaders defaultHeader;
@@ -182,7 +187,7 @@ public class HttpUtils {
      */
     public static <R, B extends BaseResponse<R>> B getForBaseResponseThrowFail(String url,
                                                                                ParameterizedTypeReference<B> resultType,
-                                                                               Object... uriVariables) throws FailRCResponseException {
+                                                                               Object... uriVariables) {
         return forBaseResponseThrowFail(HttpMethod.GET, url, null, resultType, uriVariables);
     }
 
@@ -343,7 +348,7 @@ public class HttpUtils {
                                            ParameterizedTypeReference<R> resultType,
                                            Object... uriVariables) {
         ResponseEntity<R> response = forEntity(method, url, requestBody, resultType, uriVariables);
-        checkRespStatus(HttpMethod.POST, url, requestBody, uriVariables, response);
+        checkRespStatus(method, url, requestBody, uriVariables, response);
         return response.getBody();
     }
 
@@ -378,14 +383,16 @@ public class HttpUtils {
                                                                             ParameterizedTypeReference<B> resultType,
                                                                             Object... uriVariables) {
         ResponseEntity<B> response = forBaseResponse(method, url, requestBody, resultType, uriVariables);
-        BaseResponse<R> responseBody = response.getBody();
-        checkRespStatus(HttpMethod.POST, url, requestBody, uriVariables, response);
-        if (responseBody == null) {
-            throw new FailRCResponseException("url:\"" + url + "\"请求失败,响应体为null", null);
-        }
-        //业务异常，通过controller通知器直接透传给前端
-        if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
-            throw new FailRCResponseException("url:\"" + url + "\"请求失败", responseBody);
+        checkRespStatus(method, url, requestBody, uriVariables, response);
+        if (THROW_RC_FAIL) {
+            BaseResponse<R> responseBody = response.getBody();
+            if (responseBody == null) {
+                throw new FailRCResponseException("url:\"" + url + "\"请求失败,响应体为null", null);
+            }
+            //业务异常，通过controller通知器直接透传给前端
+            if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
+                throw new FailRCResponseException("url:\"" + url + "\"请求失败", responseBody);
+            }
         }
         return response.getBody();
     }
@@ -499,6 +506,15 @@ public class HttpUtils {
      */
     public static void setDUG(boolean dug) {
         HttpUtils.DUG = dug;
+    }
+
+    /**
+     * 设置是否抛出业务异常
+     *
+     * @param throwRcFail 是否抛出response code业务异常
+     */
+    public static void setThrowRcFail(boolean throwRcFail) {
+        HttpUtils.THROW_RC_FAIL = throwRcFail;
     }
 
     /**
