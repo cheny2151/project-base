@@ -32,7 +32,7 @@ public class JsonUtils {
     public static <T> T toObject(String json, Class<T> type) {
         try {
             return objectMapper().readValue(json, type);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsonParseException(e);
         }
     }
@@ -40,7 +40,7 @@ public class JsonUtils {
     public static <T> T toObject(String json, TypeReference<T> type) {
         try {
             return objectMapper().readValue(json, type);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new JsonParseException(e);
         }
     }
@@ -48,7 +48,7 @@ public class JsonUtils {
     public static String toJson(Object obj) {
         try {
             return objectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new JsonParseException(e);
         }
     }
