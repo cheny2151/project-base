@@ -21,11 +21,14 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -57,7 +60,7 @@ public class HttpUtils {
     /**
      * 特殊请求头设置
      */
-    private static ThreadLocal<HttpHeaders> currentHeader;
+    private static ThreadLocal<Map<String, String>> currentHeader;
 
     /**
      * http请求template
@@ -417,12 +420,7 @@ public class HttpUtils {
     public static void setCurrentHeader(Map<String, String> headers) {
         if (headers == null)
             throw new NullPointerException();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        if (!headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        }
-        headers.forEach(httpHeaders::set);
-        currentHeader.set(httpHeaders);
+        currentHeader.set(headers);
     }
 
     /**
@@ -454,9 +452,8 @@ public class HttpUtils {
      *
      * @param fileUrl 目标文件地址
      * @return 文件
-     * @throws IOException
      */
-    public static File downloadFile(String fileUrl) throws IOException {
+    public static File downloadFile(String fileUrl) {
         return downloadFile(fileUrl, TMPDIR);
     }
 
@@ -466,36 +463,30 @@ public class HttpUtils {
      * @param fileUrl 目标文件地址
      * @param path    下载目录
      * @return 文件
-     * @throws IOException
      */
-    public static File downloadFile(String fileUrl, String path) throws IOException {
-        URL url = new URL(fileUrl);
-        URLConnection urlConnection = url.openConnection();
-
-        // 提取文件名
-        String filename = extractFilenameInUrl(fileUrl, urlConnection.getHeaderField("Content-Disposition"));
-        File dir = new File(path);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        String filepath = FilenameUtils.concat(path, filename);
-        File file = new File(filepath);
-
-        // 获取响应流
-        InputStream inputStream = urlConnection.getInputStream();
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        byte[] data = new byte[1024];
-        int length = data.length;
-        int len;
-        while ((len = bufferedInputStream.read(data, 0, length)) > 0) {
-            fileOutputStream.write(data, 0, len);
-            fileOutputStream.flush();
-        }
-        fileOutputStream.close();
-        inputStream.close();
-        return file;
+    public static File downloadFile(String fileUrl, String path) {
+        RestTemplate template = getTemplate(fileUrl);
+        RequestCallback requestCallback = req -> {
+            HttpHeaders headers = req.getHeaders();
+            Map<String, String> ch = currentHeader.get();
+            if (ch != null) {
+                currentHeader.remove();
+                ch.forEach(headers::set);
+            }
+        };
+        ResponseExtractor<File> fileResp = resp -> {
+            HttpHeaders respHeaders = resp.getHeaders();
+            String filename = extractFilenameInUrl(fileUrl, respHeaders.getFirst("Content-Disposition"));
+            File dir = new File(path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            String filepath = FilenameUtils.concat(path, filename);
+            File file = new File(filepath);
+            StreamUtils.copy(resp.getBody(), new FileOutputStream(file));
+            return file;
+        };
+        return template.execute(fileUrl, HttpMethod.GET, requestCallback, fileResp);
     }
 
     /**
@@ -546,7 +537,7 @@ public class HttpUtils {
      */
     private static String simpleExecute(String url, HttpRequestBase httpRequest) {
         CloseableHttpClient client = HttpClientBuilder.create().build();
-        HttpHeaders httpHeaders = currentHeader.get();
+        HttpHeaders httpHeaders = getHeader();
         if (!CollectionUtils.isEmpty(httpHeaders)) {
             httpHeaders.forEach((k, v) -> httpRequest.addHeader(k, String.valueOf(v)));
         }
@@ -571,13 +562,15 @@ public class HttpUtils {
     }
 
     private static HttpHeaders getHeader() {
-        HttpHeaders httpHeaders = currentHeader.get();
-        if (httpHeaders == null) {
-            httpHeaders = defaultHeader;
+        Map<String, String> curHeaders = currentHeader.get();
+        if (curHeaders == null) {
+            return defaultHeader;
         } else {
             currentHeader.remove();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            curHeaders.forEach(httpHeaders::set);
+            return httpHeaders;
         }
-        return httpHeaders;
     }
 
     /**
