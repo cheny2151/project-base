@@ -2,9 +2,9 @@ package com.cheney.utils;
 
 import com.cheney.exception.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,6 @@ import java.util.Map;
 /**
  * Json工具类
  */
-@Slf4j
 public class JsonUtils {
 
     private JsonUtils() {
@@ -34,8 +33,15 @@ public class JsonUtils {
         try {
             return objectMapper().readValue(json, type);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            throw new JsonParseException();
+            throw new JsonParseException(e);
+        }
+    }
+
+    public static <T> T toObject(String json, TypeReference<T> type) {
+        try {
+            return objectMapper().readValue(json, type);
+        } catch (JsonProcessingException e) {
+            throw new JsonParseException(e);
         }
     }
 
@@ -43,8 +49,7 @@ public class JsonUtils {
         try {
             return objectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-            throw new JsonParseException();
+            throw new JsonParseException(e);
         }
     }
 
@@ -55,8 +60,9 @@ public class JsonUtils {
         return objectMapper().readTree(file);
     }
 
-    public static Map<String, ?> object2Map(Object obj) {
-        return toObject(toJson(obj), Map.class);
+    public static Map<String, Object> object2Map(Object obj) {
+        return toObject(toJson(obj), new TypeReference<>() {
+        });
     }
 
     public static <V> V map2Object(Map<String, Object> map, Class<V> clazz) {
