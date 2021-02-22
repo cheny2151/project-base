@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -420,6 +421,21 @@ public class HttpUtils {
         if (headers == null)
             throw new NullPointerException();
         currentHeader.set(headers);
+    }
+
+    public static void addHeader(String key, String value) {
+        if (key != null && value != null) {
+            Map<String, String> headers = currentHeader.get();
+            if (headers == null) {
+                headers = new HashMap<>();
+                currentHeader.set(headers);
+            }
+            headers.put(key, value);
+        }
+    }
+
+    public static void setContentType(String contentType) {
+        addHeader("Content-Type", contentType);
     }
 
     /**
