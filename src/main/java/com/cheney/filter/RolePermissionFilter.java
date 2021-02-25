@@ -93,7 +93,7 @@ public class RolePermissionFilter extends OncePerRequestFilter {
      * @param httpServletResponse 响应
      */
     private void writeUnauthorized(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        httpServletResponse.setStatus(HttpStatus.OK.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
         PrintWriter writer = httpServletResponse.getWriter();
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.USER_NOT_LOGIN);
@@ -107,7 +107,7 @@ public class RolePermissionFilter extends OncePerRequestFilter {
      * @param httpServletResponse 响应
      */
     private void writeForbidden(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        httpServletResponse.setStatus(HttpStatus.OK.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
         PrintWriter writer = httpServletResponse.getWriter();
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);

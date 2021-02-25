@@ -141,7 +141,7 @@ public class ControllerAdviceHolder {
      * @return http响应
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> exceptionHandler(Exception e) {
         log.error(e.getMessage(), e);
         return BaseResponse.SERVER_ERROR;
