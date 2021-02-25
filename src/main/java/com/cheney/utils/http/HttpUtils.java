@@ -417,12 +417,25 @@ public class HttpUtils {
         }
     }
 
+    /**
+     * 设置自定义请求头
+     * 注意:设置的请求头只能使用一次，被使用后（发送一次http请求）移除自定义请求头
+     *
+     * @param headers 请求头
+     */
     public static void setCurrentHeader(Map<String, String> headers) {
         if (headers == null)
             throw new NullPointerException();
         currentHeader.set(headers);
     }
 
+    /**
+     * 添加自定义请求头
+     * 注意:设置的请求头只能使用一次，被使用后（发送一次http请求）移除自定义请求头
+     *
+     * @param key   请求头key
+     * @param value 请求头value
+     */
     public static void addHeader(String key, String value) {
         if (key != null && value != null) {
             Map<String, String> headers = currentHeader.get();
@@ -434,6 +447,12 @@ public class HttpUtils {
         }
     }
 
+    /**
+     * 设置请求头content type
+     * 注意:设置的请求头只能使用一次，被使用后（发送一次http请求）移除自定义请求头
+     *
+     * @param contentType 请求头content type
+     */
     public static void setContentType(String contentType) {
         addHeader("Content-Type", contentType);
     }
