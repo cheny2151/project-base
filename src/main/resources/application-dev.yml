@@ -6,7 +6,9 @@ spring:
     username: root
     password: cheney@mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+ data:
+  mongodb:
+   uri: mongodb://localhost:27017/test
  ## kafka
  kafka:
   bootstrap-servers: '192.168.99.100:9092'
@@ -55,16 +57,6 @@ spring:
 ## redis config
 redis:
  throwRedisException: true
-
-## mongodb config
-mongodb:
- auth: false
- authBase: admin
- host: 127.0.0.1
- port:
- database: blog
- username: root
- password: cheney@mongo
 
 toolbox:
  entity-cache:
