@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Slf4j
@@ -50,6 +51,25 @@ public class DateUtils {
         throw new IllegalArgumentException();
     }
 
+    public static Date getDayStartTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        return calendar.getTime();
+    }
+
+    public static Date getDayEndTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        return calendar.getTime();
+    }
 
     private static SimpleDateFormat getDateFormat(ThreadLocal<SimpleDateFormat> formatThreadLocal, String pattern) {
         SimpleDateFormat simpleDateFormat = formatThreadLocal.get();
