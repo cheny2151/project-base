@@ -46,9 +46,9 @@ public class ControllerAdviceHolder {
      * @param e BusinessRunTimeException
      * @return 响应
      */
-    @ExceptionHandler(BusinessRunTimeException.class)
+    @ExceptionHandler(BusinessRuntimeException.class)
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse<?> BusinessRunTimeException(BusinessRunTimeException e) {
+    public BaseResponse<?> BusinessRunTimeException(BusinessRuntimeException e) {
         BaseResponse<?> errorResponse = e.getErrorResponse();
         log.info("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
         return errorResponse;

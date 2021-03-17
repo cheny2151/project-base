@@ -4,7 +4,7 @@ import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.constants.RedisKey;
 import com.cheney.dao.mybatis.AuthUserMapper;
 import com.cheney.entity.AuthUser;
-import com.cheney.exception.BusinessRunTimeException;
+import com.cheney.exception.BusinessRuntimeException;
 import com.cheney.service.AuthUserService;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.Md5Utils;
@@ -40,11 +40,11 @@ public class AuthUserServiceImpl extends BaseServiceImpl<AuthUser, Long> impleme
     public JwtPrincipal authenticated(String username, String password) {
         AuthUser authUser = authUserMapper.findByUsername(username);
         if (authUser == null) {
-            throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+            throw new BusinessRuntimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
         boolean validate = Md5Utils.getSaltverifyMD5(password, authUser.getPassword());
         if (!validate) {
-            throw new BusinessRunTimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+            throw new BusinessRuntimeException(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
         return JwtPrincipal.createJwtPrincipal(authUser);
     }

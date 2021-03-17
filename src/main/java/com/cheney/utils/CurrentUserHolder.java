@@ -1,6 +1,6 @@
 package com.cheney.utils;
 
-import com.cheney.exception.BusinessRunTimeException;
+import com.cheney.exception.BusinessRuntimeException;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.jwt.JwtPrincipal;
 
@@ -21,7 +21,7 @@ public class CurrentUserHolder {
     public static JwtPrincipal requiredCurrentUser() {
         JwtPrincipal user = getCurrentUser();
         if (user == null){
-            throw new BusinessRunTimeException(ResponseCode.USER_NOT_LOGIN);
+            throw new BusinessRuntimeException(ResponseCode.USER_NOT_LOGIN);
         }
         return user;
     }
