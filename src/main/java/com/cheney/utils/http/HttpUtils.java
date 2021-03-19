@@ -585,6 +585,9 @@ public class HttpUtils {
     }
 
     private static <T> HttpEntity<T> wrapRequest(T requestBody) {
+        if (requestBody == null) {
+            return null;
+        }
         HttpEntity<T> requestEntity;
         if (requestBody instanceof HttpEntity) {
             requestEntity = (HttpEntity<T>) requestBody;
