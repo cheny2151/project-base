@@ -1,5 +1,6 @@
 package com.cheney.filter;
 
+import cn.cheny.toolbox.other.map.EasyMap;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -144,7 +145,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 requestParam = new BaseRequest<>();
             } else if (requestParam.getData() == null) {
                 //防止空指针
-                requestParam.setData(new JSONObject());
+                requestParam.setData(new EasyMap());
             }
             RequestParamHolder.setRequestParam(requestParam);
             return json;
