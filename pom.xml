@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
             <artifactId>apollo-client</artifactId>
-            <version>1.1.1</version>
+            <version>1.8.0</version>
         </dependency>
 
         <!--aop依赖-->
