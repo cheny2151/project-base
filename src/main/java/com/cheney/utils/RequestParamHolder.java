@@ -1,5 +1,6 @@
 package com.cheney.utils;
 
+import cn.cheny.toolbox.other.map.EasyMap;
 import cn.cheny.toolbox.other.page.Pageable;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -55,6 +56,14 @@ public class RequestParamHolder {
         return JSON.parseObject(
                 JSON.toJSONString(request.getData()), clazz
         );
+    }
+
+    public static EasyMap dataAsEasyMap() {
+        Object data = data();
+        if (data instanceof EasyMap) {
+            return (EasyMap) data;
+        }
+        return new EasyMap(data(JSONObject.class));
     }
 
     public static JSONObject dataAsJSONObject() {
