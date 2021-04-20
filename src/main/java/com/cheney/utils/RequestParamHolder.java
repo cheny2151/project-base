@@ -63,7 +63,7 @@ public class RequestParamHolder {
         if (data instanceof EasyMap) {
             return (EasyMap) data;
         }
-        return new EasyMap(data(JSONObject.class));
+        return new EasyMap(dataAsJSONObject());
     }
 
     public static JSONObject dataAsJSONObject() {
