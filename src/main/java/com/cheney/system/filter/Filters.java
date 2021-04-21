@@ -1,16 +1,14 @@
 package com.cheney.system.filter;
 
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 属性过滤实体
  */
-public class Filters extends ArrayList<Filter> {
+public class Filters {
 
     public enum Operator {
 
@@ -22,21 +20,25 @@ public class Filters extends ArrayList<Filter> {
 
         LT("<"),
 
-        GE(">="),
+        GTE(">="),
 
-        LE("<="),
+        LTE("<="),
 
         LIKE("like"),
 
-        NO_LIKE("not like"),
+        NOT_LIKE("not like"),
 
         IN("in"),
 
         IS_NULL("is null"),
 
-        IS_NOT_NULL("is not null");
+        IS_NOT_NULL("is not null"),
 
-        private String script;
+        AND("and"),
+
+        OR("or");
+
+        private final String script;
 
         Operator(String script) {
             this.script = script;
@@ -47,21 +49,29 @@ public class Filters extends ArrayList<Filter> {
         }
     }
 
+    private List<FilterSegment> filters;
+
     /**
      * 存储以map为载体的其他过滤参数
      */
     private Map<String, Object> otherParams;
 
     public Filters() {
+        this.filters = new ArrayList<>();
     }
 
     public Filters(Filter filter) {
-        super();
-        add(filter);
+        this();
+        andFilter(filter);
     }
 
-    public Filters addFilter(Filter filter) {
-        this.add(filter);
+    public Filters andFilter(Filter filter) {
+        this.filters.add(new FilterSegment(filter, Operator.AND.getScript()));
+        return this;
+    }
+
+    public Filters orFilter(Filter filter) {
+        this.filters.add(new FilterSegment(filter, Operator.OR.getScript()));
         return this;
     }
 
@@ -90,67 +100,50 @@ public class Filters extends ArrayList<Filter> {
     }
 
     public boolean isHasOtherParams() {
-        return !CollectionUtils.isEmpty(this.otherParams);
+        Map<String, Object> otherParams = this.otherParams;
+        return otherParams != null && otherParams.size() > 0;
     }
 
-    public static Filter eq(String property, Object value) {
-        return new EqualFilter(property, value);
+    public List<FilterSegment> getFilters() {
+        return filters;
     }
 
-    public static Filter notEq(String property, Object value) {
-        return new NotEqualFilter(property, value);
-    }
-
-    public static Filter gt(String property, Object value) {
-        return new GreaterThanFilter(property, value);
-    }
-
-    public static Filter ge(String property, Object value) {
-        return new GreaterThanOrEqualFilter(property, value);
-    }
-
-    public static Filter lt(String property, Object value) {
-        return new LessThanFilter(property, value);
-    }
-
-    public static Filter le(String property, Object value) {
-        return new LessThanOrEqualFilter(property, value);
-    }
-
-    public static <T> Filter in(String property, Collection<T> value) {
-        return new InFilter(property, value);
-    }
-
-    public static <T> Filter in(String property, T[] value) {
-        return new InFilter(property, value);
-    }
-
-    public static Filter like(String property, Object value) {
-        return new LikeFilter(property, value);
-    }
-
-    public static Filter notLike(String property, Object value) {
-        return new NotLikeFilter(property, value);
-    }
-
-    public static Filter isNull(String property) {
-        return new NullFilter(property);
-    }
-
-    public static Filter isNotNull(String property) {
-        return new NotNullFilter(property);
-    }
-
-    public static Filter isNotLike(String property, Object value) {
-        return new NotLikeFilter(property, value);
-    }
-
-    public static Filters create() {
+    public static Filters build() {
         return new Filters();
     }
 
-    public static Filters create(Filter filters) {
-        return new Filters(filters);
+    public String toSql() {
+        StringBuilder sqlBuilder = new StringBuilder();
+        boolean first = true;
+        for (FilterSegment filterSegment : this.filters) {
+            Filter filter = filterSegment.filter;
+            if (first) {
+                first = false;
+                sqlBuilder.append(" ").append(filter.toSql());
+            } else {
+                sqlBuilder.append(" ").append(filterSegment.connection).append(" （")
+                        .append(" ").append(filter.toSql()).append(")");
+            }
+        }
+        return sqlBuilder.substring(1);
+    }
+
+    private static class FilterSegment {
+        private final Filter filter;
+        private final String connection;
+
+        public FilterSegment(Filter filter, String connection) {
+            this.filter = filter;
+            this.connection = connection;
+        }
+
+        public Filter getFilter() {
+            return filter;
+        }
+
+        public String getConnection() {
+            return connection;
+        }
     }
 
 }

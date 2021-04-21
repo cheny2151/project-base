@@ -42,9 +42,9 @@ public class Pageable extends PageInfo {
     public Filters addFilter(Filter filter) {
         Filters filters = this.filters;
         if (filters == null) {
-            filters = this.filters = new Filters();
+            filters = this.filters = Filters.build();
         }
-        filters.add(filter);
+        filters.andFilter(filter);
         return filters;
     }
 

@@ -4,6 +4,8 @@ import com.cheney.entity.Role;
 import com.cheney.redis.client.RedisClient;
 import com.cheney.redis.clustertask.pub.ClusterTaskPublisher;
 import com.cheney.service.RoleService;
+import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.Filters;
 import com.cheney.system.protocol.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -46,7 +48,12 @@ public class PageCommonController {
     @RequestMapping("/test2")
     @ResponseBody
     public void test2() {
-        Role test = roleService.getByCache("test3");
-        System.out.println(test);
+        Filter filter = Filter.eq("username", "val1").andEq("test", "test")
+                .andEq("test1", "test1")
+                .orEq("test2", "test2")
+                .orLike("test3", "test3");
+        Filter filter1 = Filter.isNotNull("test4").orGt("test5", 5);
+        Filters filters = Filters.build().andFilter(filter).andFilter(filter1);
+        roleService.findList(filters);
     }
 }

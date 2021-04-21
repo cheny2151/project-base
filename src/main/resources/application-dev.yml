@@ -2,9 +2,9 @@
 ## DB Config
 spring:
  datasource:
-     url: jdbc:mysql://localhost:3306/base_project?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-     username: root
-     password: cheney@mysql
+     url: jdbc:mysql://121.11.220.141:6303/label_test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+     username: shopline_label
+     password: Pk0b1cHjhl9eKVAavHLEqt3m
      driver-class-name: com.mysql.cj.jdbc.Driver
 
  ## kafka

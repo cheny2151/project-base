@@ -79,7 +79,7 @@
     <loggers>
         <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="OFF" />
         <logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="OFF" />
-        <logger name="com.cheney.dao.mybatis" level="INFO" additivity="false" >
+        <logger name="com.cheney.dao.mybatis" level="DEBUG" additivity="false" >
             <appender-ref ref="Console"/>
         </logger>
 

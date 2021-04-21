@@ -2,12 +2,12 @@ package com.cheney.service;
 
 import com.cheney.entity.BaseEntity;
 import com.cheney.system.filter.Filter;
+import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
 import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
     /**
      * 根据filter查找
      */
-    T filter(List<Filter> filters);
+    T filter(Filters filters);
 
     /**
      * 查找所有实体
@@ -66,17 +66,17 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
     /**
      * 过滤
      */
-    List<T> findList(Collection<Filter> filters);
+    List<T> findList(Filters filters);
 
     /**
      * 过滤
      */
-    List<T> findList(Collection<Filter> filters, Orders orders);
+    List<T> findList(Filters filters, Orders orders);
 
     /**
      * 过滤count
      */
-    long count(Collection<Filter> filters);
+    long count(Filters filters);
 
     /**
      * 分页

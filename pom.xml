@@ -95,6 +95,12 @@
             <version>${spring.cloud.version}</version>
         </dependency>
 
+        <!--junit-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
         <!--apollo-->
         <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
@@ -267,11 +273,11 @@
             <version>6.2.0.Final</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.cheny2151</groupId>
             <artifactId>toolbox</artifactId>
             <version>2.1.2-jdk8</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

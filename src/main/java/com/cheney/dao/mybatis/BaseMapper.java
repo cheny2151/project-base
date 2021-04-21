@@ -1,15 +1,12 @@
 package com.cheney.dao.mybatis;
 
 import com.cheney.entity.BaseEntity;
-import com.cheney.system.filter.Filter;
 import com.cheney.system.filter.Filters;
 import com.cheney.system.order.Orders;
-import com.cheney.system.page.Page;
 import com.cheney.system.page.Pageable;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +20,7 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 根据filter查找
      */
-    T filter(@Param("filters") List<Filter> filters);
+    T filter(@Param("filters") Filters filters);
 
     /**
      * 查找所有实体
@@ -53,20 +50,21 @@ public interface BaseMapper<T extends BaseEntity, ID extends Serializable> {
     /**
      * 过滤排序查找
      */
-    List<T> findList(@Param("filters") Collection<Filter> filters, @Param("orders") Orders orders);
+    List<T> findList(@Param("filters") Filters filters, @Param("orders") Orders orders);
 
     /**
      * 过滤count
      */
-    long count(@Param("filters") Collection<Filter> filters);
+    long count(@Param("filters") Filters filters);
 
     /**
      * 判断是否存在
      */
-    Optional<Integer> exists(@Param("filters") Collection<Filter> filters);
+    Optional<Integer> exists(@Param("filters") Filters filters);
 
     /**
      * 分页
+     *
      * @return maybe null
      */
     List<T> findPage(@Param("pageable") Pageable pageable);
