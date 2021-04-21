@@ -19,31 +19,41 @@
     </sql>
 
     <sql id="commonFilters">
-        <where>
-            <if test="filters != null">
-                <foreach collection="filters" item="filter" separator="and">
-                    <choose>
-                        <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                            t0.${filter.property} ${filter.symbol}
-                        </when>
-                        <when test="filter.symbol == 'in'">
-                            t0.${filter.property}
-                            in
-                            <foreach collection="filter.value" item="item" separator="," open="(" close=")">
-                                #{item}
-                            </foreach>
-                        </when>
-                        <otherwise>
-                            t0.${filter.property} ${filter.symbol} #{filter.value}
-                        </otherwise>
-                    </choose>
-                </foreach>
-                <if test="filters.hasOtherParams == true">
-                    <bind name="_ps" value="filters.otherParams"/>
+            <where>
+                <if test="filters != null">
+                    <foreach collection="filters.filters" item="filterSegment" index="idx">
+                        ${filterSegment.connection}
+                        <if test="idx != 0">
+                            (
+                        </if>
+                        <foreach collection="filterSegment.filter.linkToList" item="filter">
+                            ${filter.connectionSymbol}
+                            <choose>
+                                <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                                    ${filter.property} ${filter.symbol}
+                                </when>
+                                <when test="filter.symbol == 'in'">
+                                    ${filter.property}
+                                    in
+                                    <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                                        #{item}
+                                    </foreach>
+                                </when>
+                                <otherwise>
+                                    ${filter.property} ${filter.symbol} #{filter.value}
+                                </otherwise>
+                            </choose>
+                        </foreach>
+                        <if test="idx != 0">
+                            )
+                        </if>
+                    </foreach>
+                    <if test="filters.hasOtherParams == true">
+                        <bind name="_others" value="filters.otherParams"/>
+                    </if>
                 </if>
-            </if>
-        </where>
-    </sql>
+            </where>
+        </sql>
 
     <sql id="orders">
       <if test="orders != null and orders.valid == true">

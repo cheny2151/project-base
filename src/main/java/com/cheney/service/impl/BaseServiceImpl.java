@@ -1,17 +1,15 @@
 package com.cheney.service.impl;
 
+import cn.cheny.toolbox.other.filter.Filters;
 import cn.cheny.toolbox.other.order.Orders;
 import cn.cheny.toolbox.other.page.Page;
 import cn.cheny.toolbox.other.page.Pageable;
 import com.cheney.dao.mybatis.BaseMapper;
 import com.cheney.entity.BaseEntity;
 import com.cheney.service.BaseService;
-import cn.cheny.toolbox.other.filter.Filter;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Transactional
@@ -29,7 +27,7 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
     }
 
     @Override
-    public T filter(List<Filter> filters) {
+    public T filter(Filters filters) {
         return baseMapper.filter(filters);
     }
 
@@ -59,31 +57,17 @@ public class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Serializable> 
     }
 
     @Override
-    public List<T> findList(Filter filter) {
-        List<Filter> filters = new ArrayList<>();
-        filters.add(filter);
+    public List<T> findList(Filters filters) {
         return baseMapper.findList(filters, null);
     }
 
     @Override
-    public List<T> findList(Filter filter, Orders orders) {
-        List<Filter> filters = new ArrayList<>();
-        filters.add(filter);
+    public List<T> findList(Filters filters, Orders orders) {
         return baseMapper.findList(filters, orders);
     }
 
     @Override
-    public List<T> findList(Collection<Filter> filters) {
-        return baseMapper.findList(filters, null);
-    }
-
-    @Override
-    public List<T> findList(Collection<Filter> filters, Orders orders) {
-        return baseMapper.findList(filters, orders);
-    }
-
-    @Override
-    public long count(Collection<Filter> filters) {
+    public long count(Filters filters) {
         return baseMapper.count(filters);
     }
 
