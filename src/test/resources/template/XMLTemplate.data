@@ -142,7 +142,7 @@
         limit 1
     </select>
 
-    <select id="findPage" parameterType="com.cheney.system.page.Pageable" resultMap="base">
+    <select id="findPage" parameterType="cn.cheny.toolbox.other.page.Pageable" resultMap="base">
         select t0.*
         from @{tableName} t0
         <include refid="pageFilters"/>
