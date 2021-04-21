@@ -19,41 +19,41 @@
     </sql>
 
     <sql id="commonFilters">
-            <where>
-                <if test="filters != null">
-                    <foreach collection="filters.filters" item="filterSegment" index="idx">
-                        ${filterSegment.connection}
-                        <if test="idx != 0">
-                            (
-                        </if>
-                        <foreach collection="filterSegment.filter.linkToList" item="filter">
-                            ${filter.connectionSymbol}
-                            <choose>
-                                <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
-                                    ${filter.property} ${filter.symbol}
-                                </when>
-                                <when test="filter.symbol == 'in'">
-                                    ${filter.property}
-                                    in
-                                    <foreach collection="filter.value" item="item" separator="," open="(" close=")">
-                                        #{item}
-                                    </foreach>
-                                </when>
-                                <otherwise>
-                                    ${filter.property} ${filter.symbol} #{filter.value}
-                                </otherwise>
-                            </choose>
-                        </foreach>
-                        <if test="idx != 0">
-                            )
-                        </if>
-                    </foreach>
-                    <if test="filters.hasOtherParams == true">
-                        <bind name="_others" value="filters.otherParams"/>
+        <where>
+            <if test="filters != null">
+                <foreach collection="filters.filters" item="filterSegment" index="idx">
+                    ${filterSegment.connection}
+                    <if test="idx != 0">
+                        (
                     </if>
+                    <foreach collection="filterSegment.filter.linkToList" item="filter">
+                        ${filter.connectionSymbol}
+                        <choose>
+                            <when test="filter.symbol == 'is null' or filter.symbol == 'is not null'">
+                                ${filter.property} ${filter.symbol}
+                            </when>
+                            <when test="filter.symbol == 'in'">
+                                ${filter.property}
+                                in
+                                <foreach collection="filter.value" item="item" separator="," open="(" close=")">
+                                    #{item}
+                                </foreach>
+                            </when>
+                            <otherwise>
+                                ${filter.property} ${filter.symbol} #{filter.value}
+                            </otherwise>
+                        </choose>
+                    </foreach>
+                    <if test="idx != 0">
+                        )
+                    </if>
+                </foreach>
+                <if test="filters.hasOtherParams == true">
+                    <bind name="_others" value="filters.otherParams"/>
                 </if>
-            </where>
-        </sql>
+            </if>
+        </where>
+    </sql>
 
     <sql id="orders">
       <if test="orders != null and orders.valid == true">
@@ -136,14 +136,6 @@
     </select>
 
     <select id="exists" resultType="integer">
-        select 1
-        from @{tableName} t0
-        <include refid="filters"/>
-        limit 1
-    </select>
-
-    <select id="findPage" parameterType="cn.cheny.toolbox.other.page.Pageable" resultMap="base">
-    <select id="exists" resultType="boolean">
         select 1
         from @{tableName} t0
         <include refid="filters"/>
