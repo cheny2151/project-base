@@ -2,7 +2,7 @@ package com.cheney.utils;
 
 import com.cheney.exception.ReflectException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

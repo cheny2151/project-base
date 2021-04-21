@@ -5,7 +5,7 @@ import com.cheney.websocket.consumer.impl.PingTypeConsumer;
 import com.cheney.websocket.consumer.impl.SchedulePushTypeConsumer;
 import com.cheney.websocket.consumer.impl.UserNotifyTypeConsumer;
 import com.cheney.websocket.dto.Message;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.websocket.Session;
 import java.util.Set;

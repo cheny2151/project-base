@@ -9,7 +9,7 @@ import com.cheney.service.AuthUserService;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.Md5Utils;
 import com.cheney.utils.jwt.JwtPrincipal;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;

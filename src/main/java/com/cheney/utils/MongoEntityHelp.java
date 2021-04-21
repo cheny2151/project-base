@@ -1,7 +1,7 @@
 package com.cheney.utils;
 
 import com.cheney.entity.mongo.MongoBaseEntity;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.query.Update;
 

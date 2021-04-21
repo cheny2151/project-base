@@ -13,7 +13,7 @@
         <!-- mysql驱动版本号 -->
         <mysql-driver.version>8.0.16</mysql-driver.version>
         <!--spring cloud-->
-        <spring.cloud.version>3.0.0</spring.cloud.version>
+        <spring.cloud.version>3.0.2</spring.cloud.version>
     </properties>
 
     <parent>
@@ -207,12 +207,6 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
 
         <dependency>
