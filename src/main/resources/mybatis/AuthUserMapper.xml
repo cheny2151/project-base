@@ -31,9 +31,8 @@
         <where>
             <if test="filters != null">
                 <foreach collection="filters.filters" item="filterSegment" index="idx">
-                    ${filterSegment.connection}
                     <if test="idx != 0">
-                        (
+                        ${filterSegment.connection} (
                     </if>
                     <foreach collection="filterSegment.filter.linkToList" item="filter">
                         ${filter.connectionSymbol}

@@ -1,5 +1,6 @@
 package com.cheney.service.impl;
 
+import cn.cheny.toolbox.other.filter.Filter;
 import cn.cheny.toolbox.other.filter.Filters;
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.cheney.constants.CacheBaseKey;
@@ -31,7 +32,7 @@ public class RoleServiceImpl extends CommonCacheImpl<Role, Long> implements Role
 
     @Override
     public List<Role> findByCacheKeys(Collection<String> keys) {
-        Filters filters = Filters.create(Filters.in("code", keys));
+        Filters filters = Filters.build().andFilter(Filter.in("code", keys));
         return roleMapper.findList(filters, null);
     }
 }
