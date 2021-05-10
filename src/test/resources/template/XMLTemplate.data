@@ -72,6 +72,12 @@
         </if>
     </sql>
 
+    <sql id="limit">
+        <if test="pageable != null">
+            limit #{pageable.startSize},#{pageable.pageSize}
+        </if>
+    </sql>
+
     <insert id="persist" parameterType="@{package}" useGeneratedKeys="true" keyProperty="id">
         insert into @{tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -146,7 +152,7 @@
         from @{tableName} t0
         <include refid="pageFilters"/>
         <include refid="pageOrders"/>
-        limit #{pageable.startSize},#{pageable.pageSize}
+        <include refid="limit"/>
     </select>
 
 </mapper>
