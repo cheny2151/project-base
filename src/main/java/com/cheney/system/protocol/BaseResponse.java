@@ -1,8 +1,12 @@
 package com.cheney.system.protocol;
 
+import com.alibaba.fastjson.JSON;
 import com.cheney.utils.RequestParamHolder;
 import lombok.Data;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 @Data
@@ -80,5 +84,13 @@ public class BaseResponse<T> {
     public String getRequestId() {
         return RequestParamHolder.requestId().orElse(null);
     }
+
+    public void writeToResponse(HttpServletResponse response) throws IOException {
+        PrintWriter writer = response.getWriter();
+        String respBody = JSON.toJSONString(this);
+        response.setContentType("application/json");
+        writer.write(respBody);
+    }
+
 
 }

@@ -5,9 +5,10 @@ import cn.cheny.toolbox.other.page.PageInfo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.cheney.exception.BusinessRuntimeException;
+import com.cheney.exception.JsonParseException;
 import com.cheney.filter.request.InputStreamHttpServletRequestWrapper;
 import com.cheney.system.protocol.BaseRequest;
+import com.cheney.system.protocol.BaseResponse;
 import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,12 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 if (StringUtils.isEmpty(contentType) || !contentType.toLowerCase().startsWith("application/json")) {
                     break;
                 }
-                reqStr = setRequestParamForBody(httpServletRequest);
+                try {
+                    reqStr = setRequestParamForBody(httpServletRequest);
+                } catch (JsonParseException e) {
+                    BaseResponse.error(e.getMessage()).writeToResponse(httpServletResponse);
+                    return;
+                }
                 //包装请求将消费的流设置回去
                 httpServletRequest = new InputStreamHttpServletRequestWrapper(httpServletRequest);
                 break;
@@ -150,8 +156,8 @@ public class RequestParamFilter extends OncePerRequestFilter {
             RequestParamHolder.setRequestParam(requestParam);
             return json;
         } catch (Exception e) {
-            log.error("请求体解析失败", e);
-            throw new BusinessRuntimeException("Invalid Request Body");
+            log.error("请求体解析失败:{}", e.getMessage());
+            throw new JsonParseException("Invalid Request Body");
         }
     }
 
