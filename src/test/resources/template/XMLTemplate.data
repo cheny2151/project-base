@@ -50,6 +50,16 @@
                 <if test="filters.hasOtherParams == true">
                     <bind name="_others" value="filters.otherParams"/>
                 </if>
+                <if test="filters.limit != null">
+                    <trim prefix="limit" suffixOverrides=",">
+                        <if test="filters.skip != null">
+                            #{filters.skip},
+                        </if>
+                        <if test="filters.limit != null">
+                            #{filters.limit}
+                        </if>
+                    </trim>
+                </if>
             </if>
         </where>
     </sql>
