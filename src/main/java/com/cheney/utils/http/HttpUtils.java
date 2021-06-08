@@ -394,7 +394,7 @@ public class HttpUtils {
             }
             //业务异常，通过controller通知器直接透传给前端
             if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
-                throw new FailRCResponseException("url:\"" + url + "\"请求失败", responseBody);
+                throw new FailRCResponseException("url:\"" + url + "\"请求失败:" + responseBody.getMsg(), responseBody);
             }
         }
         return response.getBody();
