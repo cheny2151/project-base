@@ -101,6 +101,10 @@ public class XMLGenerator {
             } else {
                 file = new File(generatorFilePath + File.separator + target.getSimpleName() + key + ".java");
             }
+            File parentFile = file.getParentFile();
+            if (!parentFile.exists()){
+                parentFile.mkdirs();
+            }
             file.createNewFile();
             fileWriter = new FileWriter(file);
             while ((t = reader.readLine()) != null) {

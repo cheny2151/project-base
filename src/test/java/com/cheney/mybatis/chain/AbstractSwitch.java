@@ -12,7 +12,7 @@ public abstract class AbstractSwitch implements Switch {
 
     public final static String EQUAL_TO = " = ";
 
-    private final static char UNDERLINE = "_".toCharArray()[0];
+    private final static char UNDERLINE = '_';
 
     public final static String LINE_BREAK = System.getProperty("line.separator");
 
@@ -57,7 +57,7 @@ public abstract class AbstractSwitch implements Switch {
     }
 
     String toJavaPackage(String pack) {
-        String javaPage = pack.replaceAll("\\\\", ".");
+        String javaPage = pack.replaceAll(File.separator, ".");
         if (javaPage.contains("src.test.java") || javaPage.contains("src.main.java")) {
             return javaPage.substring(14);
         }
