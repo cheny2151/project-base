@@ -31,8 +31,8 @@ public class BaseConfig implements ApplicationContextAware {
     }
 
     private void postConstruct() {
-        Boolean httpDebug = env.getProperty("http.util.debug-model", boolean.class, false);
-        HttpUtils.setDUG(httpDebug);
+        Boolean httpDebug = env.getProperty("http.util.show-log", boolean.class, false);
+        HttpUtils.showLog(httpDebug);
         Boolean throwRcFail = env.getProperty("http.util.throw-rc-fail", boolean.class, false);
         HttpUtils.setThrowRcFail(throwRcFail);
     }
