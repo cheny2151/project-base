@@ -1,4 +1,4 @@
-package sg.joyy.shopline.basicDataTranslate.utils.http;
+package com.cheney.utils.http;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * http client builder
  *
  * @author by chenyi
- * @Date 2021/6/11
+ * @date 2021/6/11
  */
 public class HttpClientBuilderSupport {
 

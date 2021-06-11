@@ -60,7 +60,7 @@ public class HttpUtils {
     /**
      * 特殊请求头设置
      */
-    private static ThreadLocal<Map<String, String>> currentHeader;
+    private static final ThreadLocal<Map<String, String>> currentHeader;
 
     /**
      * http请求template
@@ -77,7 +77,7 @@ public class HttpUtils {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setConnectTimeout(5 * 1000);
         requestFactory.setReadTimeout(10 * 1000);
-        requestFactory.setHttpClient(sg.joyy.shopline.basicDataTranslate.utils.http.HttpClientBuilderSupport.httpClientBuilder().build());
+        requestFactory.setHttpClient(HttpClientBuilderSupport.httpClientBuilder().build());
         REST_TEMPLATE = new RestTemplate(requestFactory);
     }
 
