@@ -39,6 +39,10 @@ public class HttpClientBuilderSupport {
         return httpClientBuilder(DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE, DEFAULT_VALIDATE_AFTER_INACTIVITY, DEFAULT_IDLE_TIMEOUT_SECONDS);
     }
 
+    public static HttpClientBuilder httpClientBuilder(int maxTotal, int maxPerRoute) {
+        return httpClientBuilder(maxTotal, maxPerRoute, DEFAULT_VALIDATE_AFTER_INACTIVITY, DEFAULT_IDLE_TIMEOUT_SECONDS);
+    }
+
     public static HttpClientBuilder httpClientBuilder(int maxTotal, int maxPerRoute, int validateAfterInactivity, int idleTimeoutSeconds) {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         HttpClientConnectionManager connManager = poolingConnectionManager(maxTotal, maxPerRoute, validateAfterInactivity, idleTimeoutSeconds);
