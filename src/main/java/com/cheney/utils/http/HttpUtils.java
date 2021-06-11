@@ -67,11 +67,6 @@ public class HttpUtils {
      */
     private final static RestTemplate REST_TEMPLATE;
 
-    /**
-     * http+ssl请求template
-     */
-    private final static RestTemplate HTTPS_REST_TEMPLATE;
-
     static {
         defaultHeader = new HttpHeaders();
         defaultHeader.setContentType(MediaType.APPLICATION_JSON);
@@ -80,14 +75,10 @@ public class HttpUtils {
 
         // 初始化template
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(5000);
-        requestFactory.setReadTimeout(10000);
+        requestFactory.setConnectTimeout(5 * 1000);
+        requestFactory.setReadTimeout(10 * 1000);
+        requestFactory.setHttpClient(sg.joyy.shopline.basicDataTranslate.utils.http.HttpClientBuilderSupport.httpClientBuilder().build());
         REST_TEMPLATE = new RestTemplate(requestFactory);
-
-        HttpsClientRequestFactory sslRequestFactory = new HttpsClientRequestFactory();
-        requestFactory.setConnectTimeout(5000);
-        requestFactory.setReadTimeout(10000);
-        HTTPS_REST_TEMPLATE = new RestTemplate(sslRequestFactory);
     }
 
     /**
@@ -617,10 +608,6 @@ public class HttpUtils {
      * @return restTemplate
      */
     private static RestTemplate getTemplate(String url) {
-        RestTemplate restTemplate = REST_TEMPLATE;
-        if (url.substring(0, 5).equalsIgnoreCase("https")) {
-            restTemplate = HTTPS_REST_TEMPLATE;
-        }
-        return restTemplate;
+        return REST_TEMPLATE;
     }
 }
