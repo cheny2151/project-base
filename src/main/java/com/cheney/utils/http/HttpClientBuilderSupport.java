@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpClientBuilderSupport {
 
-    public static final int DEFAULT_MAX_TOTAL = 1000;
-    public static final int DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL;
+    public static final int DEFAULT_MAX_TOTAL = 300;
+    public static final int DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 10;
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 10 * 1000;
     public static final int DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
     public static final int DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
@@ -46,7 +46,7 @@ public class HttpClientBuilderSupport {
         ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new MyConnectionKeepAliveStrategy();
         httpClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy);
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(10 * 1000)
+                .setConnectTimeout(5 * 1000)
                 .setSocketTimeout(10 * 1000)
                 .setConnectionRequestTimeout(10 * 1000)
                 .build();
