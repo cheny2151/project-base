@@ -26,6 +26,9 @@ public class PropertiesListener {
         this.refreshScope = refreshScope;
     }
 
+    /**
+     * {@link ApolloConfigChangeListener} 需要指定namespace，默认为application
+     */
     @ApolloConfigChangeListener
     public void onchange(ConfigChangeEvent event) {
         for (String key : event.changedKeys()) {
