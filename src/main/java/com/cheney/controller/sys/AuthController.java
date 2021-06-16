@@ -1,4 +1,4 @@
-package com.cheney.controller.user;
+package com.cheney.controller.sys;
 
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import com.alibaba.fastjson.JSONObject;

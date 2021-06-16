@@ -1,4 +1,4 @@
-package com.cheney.controller;
+package com.cheney.controller.sys;
 
 import com.cheney.service.RoleService;
 import com.cheney.system.protocol.JsonMessage;
