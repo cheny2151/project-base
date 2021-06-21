@@ -109,6 +109,14 @@ public class RequestParamHolder {
         currentResponse.set(httpServletResponse);
     }
 
+    public static HttpServletRequest currentRequest() {
+        return currentRequest.get();
+    }
+
+    public static HttpServletResponse currentResponse() {
+        return currentResponse.get();
+    }
+
     public static void remove() {
         requestParam.remove();
         currentRequest.remove();
