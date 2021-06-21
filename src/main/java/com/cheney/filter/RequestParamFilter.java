@@ -87,8 +87,13 @@ public class RequestParamFilter extends OncePerRequestFilter {
         } else {
             log.info("[{}]url->{}", method, requestURI);
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-        RequestParamHolder.remove();
+        try {
+            RequestParamHolder.setCurrentRequest(httpServletRequest);
+            RequestParamHolder.setCurrentResponse(httpServletResponse);
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+        } finally {
+            RequestParamHolder.remove();
+        }
     }
 
     private String setRequestParamForUrl(HttpServletRequest request) {

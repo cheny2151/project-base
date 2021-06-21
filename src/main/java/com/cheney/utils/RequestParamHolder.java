@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.RequestEmptyException;
 import com.cheney.system.protocol.BaseRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 /**
@@ -16,10 +18,8 @@ import java.util.Optional;
 public class RequestParamHolder {
 
     private static final InheritableThreadLocal<BaseRequest<?>> requestParam = new InheritableThreadLocal<>();
-
-    public static void setRequestParam(BaseRequest<?> requestParam) {
-        RequestParamHolder.requestParam.set(requestParam);
-    }
+    private static final InheritableThreadLocal<HttpServletRequest> currentRequest = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<HttpServletResponse> currentResponse = new InheritableThreadLocal<>();
 
     public static BaseRequest<?> request() {
         return requestParam.get();
@@ -97,7 +97,21 @@ public class RequestParamHolder {
         return pageable;
     }
 
+    public static void setRequestParam(BaseRequest<?> requestParam) {
+        RequestParamHolder.requestParam.set(requestParam);
+    }
+
+    public static void setCurrentRequest(HttpServletRequest httpServletRequest) {
+        currentRequest.set(httpServletRequest);
+    }
+
+    public static void setCurrentResponse(HttpServletResponse httpServletResponse) {
+        currentResponse.set(httpServletResponse);
+    }
+
     public static void remove() {
         requestParam.remove();
+        currentRequest.remove();
+        currentResponse.remove();
     }
 }
