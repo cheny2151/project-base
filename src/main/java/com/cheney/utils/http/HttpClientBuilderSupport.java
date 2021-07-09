@@ -96,7 +96,7 @@ public class HttpClientBuilderSupport {
                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
                 .build();
         PoolingHttpClientConnectionManager poolingConnectionManager = new PoolingHttpClientConnectionManager(registry);
-        // 设置最大连接数
+        // 设置最大连接数（连接池大小）
         poolingConnectionManager.setMaxTotal(maxTotal);
         // 每个路由的最大连接
         poolingConnectionManager.setDefaultMaxPerRoute(maxPerRoute);
