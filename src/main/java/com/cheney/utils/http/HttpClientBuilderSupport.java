@@ -79,7 +79,7 @@ public class HttpClientBuilderSupport {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(connectTimeout)
                 .setSocketTimeout(socketTimeout)
-                .setConnectionRequestTimeout(connectionRequestTimeout)
+                .setConnectionRequestTimeout(connectionRequestTimeout) // 从连接池中获取连接最大等待时间
                 .build();
         httpClientBuilder.setDefaultRequestConfig(requestConfig);
         return httpClientBuilder;
