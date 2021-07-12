@@ -27,6 +27,9 @@ spring:
    ## 批量消费
    type: batch
    concurrency: 3
+ elasticsearch:
+  rest:
+   uris: 127.0.0.1:2910
 
  ## redis
  redis:
