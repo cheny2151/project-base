@@ -24,8 +24,9 @@ spring:
   listener:
    ## 手动确认消费
    ack-mode: manual
-   ## 批量消费
+   ## 开启批量消费
    type: batch
+   ## 监听实例数（默认1，由于kafka客户端实例应<=分区数：机器数量*concurrency <= 分区数）
    concurrency: 3
  elasticsearch:
   rest:
