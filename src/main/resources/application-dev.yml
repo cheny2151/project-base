@@ -24,6 +24,9 @@ spring:
   listener:
    ## 手动确认消费
    ack-mode: manual
+   ## 批量消费
+   type: batch
+   concurrency: 3
 
  ## redis
  redis:

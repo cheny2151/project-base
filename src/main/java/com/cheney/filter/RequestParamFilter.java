@@ -159,7 +159,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 requestParam.setData(new EasyMap());
             }
             RequestParamHolder.setRequestParam(requestParam);
-            return json;
+            return JSON.toJSONString(requestParam);
         } catch (Exception e) {
             log.error("请求体解析失败:{}", e.getMessage());
             throw new JsonParseException("Invalid Request Body");

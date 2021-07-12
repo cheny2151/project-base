@@ -34,7 +34,7 @@ jwt:
 
 http:
   util:
-   debug-model: false
+   show-log: false
 
 # url
 server:
