@@ -10,6 +10,7 @@ import com.cheney.system.protocol.BaseRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**
@@ -17,9 +18,13 @@ import java.util.Optional;
  */
 public class RequestParamHolder {
 
+    private static final int ID_NUM_SIZE = 5;
+    private static final DateTimeFormatter ID_TIME_FORMAT = DateTimeFormatter.ofPattern("yyMMddHHmm");
+
     private static final InheritableThreadLocal<BaseRequest<?>> requestParam = new InheritableThreadLocal<>();
     private static final InheritableThreadLocal<HttpServletRequest> currentRequest = new InheritableThreadLocal<>();
     private static final InheritableThreadLocal<HttpServletResponse> currentResponse = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<String> innerReqId = new InheritableThreadLocal<>();
 
     public static BaseRequest<?> request() {
         return requestParam.get();
@@ -117,9 +122,23 @@ public class RequestParamHolder {
         return currentResponse.get();
     }
 
+    public static String getInnerId() {
+        return innerReqId.get();
+    }
+
     public static void remove() {
         requestParam.remove();
         currentRequest.remove();
         currentResponse.remove();
+        innerReqId.remove();
+    }
+
+    public static void generateInnerId() {
+        try {
+            String id = RandomIdGenerator.generateWithTime(ID_TIME_FORMAT, ID_NUM_SIZE);
+            innerReqId.set(id);
+        } catch (Exception e) {
+            // do nothing
+        }
     }
 }

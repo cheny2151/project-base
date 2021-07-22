@@ -12,6 +12,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -66,5 +68,27 @@ public class PageCommonController {
     @ResponseBody
     public void test3() {
         entityBufferHolder.refreshCache(Role.class);
+    }
+
+
+    /*public static void main(String[] args) throws InterruptedException {
+        WebClient.create().get().uri("https://www.baidu.com").headers(h ->{
+            System.out.println("header thread:"+Thread.currentThread().getName());
+        }).exchangeToMono(resp ->{
+            System.out.println("exchange thread:"+Thread.currentThread().getName());
+            return resp.toEntity(String.class);
+        }).subscribe(e -> {
+            System.out.println("subscribe thread:"+Thread.currentThread().getName());
+            System.out.println(e);
+        });
+
+        Thread.sleep(1000);
+    }*/
+
+    public static void main(String[] args) {
+        Flux.just("test1", "test2").concatMap(e -> {
+            System.out.println("test");
+            return Mono.just(e);
+        }).next().subscribe(e -> System.out.println(e));
     }
 }

@@ -83,14 +83,17 @@ public class RequestParamFilter extends OncePerRequestFilter {
                 log.warn("un support Http Request Method");
             }
         }
-        if (reqStr != null) {
-            log.info("[{}]url->{},request param->{}", method, requestURI, reqStr);
-        } else {
-            log.info("[{}]url->{}", method, requestURI);
-        }
         try {
             RequestParamHolder.setCurrentRequest(httpServletRequest);
             RequestParamHolder.setCurrentResponse(httpServletResponse);
+            RequestParamHolder.generateInnerId();
+            if (reqStr != null) {
+                log.info("[{}][{}]url->[{}],request param:{}", RequestParamHolder.getInnerId(),
+                        method, requestURI, reqStr);
+            } else {
+                log.info("[{}][{}]url->[{}]", RequestParamHolder.getInnerId(),
+                        method, requestURI);
+            }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
             RequestParamHolder.remove();
