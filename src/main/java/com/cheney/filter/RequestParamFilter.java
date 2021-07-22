@@ -58,6 +58,7 @@ public class RequestParamFilter extends OncePerRequestFilter {
             }
             case HttpSupport.Method.HTTP_METHOD_POST:
             case HttpSupport.Method.HTTP_METHOD_PUT:
+            case HttpSupport.Method.HTTP_METHOD_PATCH:
             case HttpSupport.Method.HTTP_METHOD_DELETE: {
                 String contentType = httpServletRequest.getContentType();
                 if (StringUtils.isEmpty(contentType) || !contentType.toLowerCase().startsWith("application/json")) {
