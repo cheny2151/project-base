@@ -87,12 +87,11 @@ public class RequestParamFilter extends OncePerRequestFilter {
             RequestParamHolder.setCurrentRequest(httpServletRequest);
             RequestParamHolder.setCurrentResponse(httpServletResponse);
             RequestParamHolder.generateInnerId();
+            String innerId = RequestParamHolder.getInnerId();
             if (reqStr != null) {
-                log.info("[{}][{}]url->[{}],request param:{}", RequestParamHolder.getInnerId(),
-                        method, requestURI, reqStr);
+                log.info("[{}][{}]url->[{}],request param:{}", innerId, method, requestURI, reqStr);
             } else {
-                log.info("[{}][{}]url->[{}]", RequestParamHolder.getInnerId(),
-                        method, requestURI);
+                log.info("[{}][{}]url->[{}]", innerId, method, requestURI);
             }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
