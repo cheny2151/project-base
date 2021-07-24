@@ -6,6 +6,8 @@ mybatis:
 
 ## other common config
 spring:
+  application:
+    name: base-project
   # jdbc
   datasource:
     hikari:
@@ -24,6 +26,23 @@ spring:
         acknowledge-mode: manual
       direct:
         acknowledge-mode: manual
+   # cloud
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: ehlxm.nacos.duowan.com:6801
+#        namespace: develop
+
+#dubbo:
+#  application:
+#    id: ${spring.application.name}
+#  registry:
+#    address: spring-cloud://localhost #采用spring cloud 注册中心
+#    address: nacos://localhost:8848 #直接指定nacos
+#  scan:
+#    base-packages: com.cheney.service
+#  cloud: #cloud配置：订阅的服务
+#    subscribed-services:
 
 ## system config
 # jsonWebToken
