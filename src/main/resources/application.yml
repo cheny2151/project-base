@@ -30,6 +30,7 @@ spring:
 #  cloud:
 #    nacos:
 #      discovery:
+#        enabled: true
 #        server-addr: ehlxm.nacos.duowan.com:6801
 #        namespace: develop
 
