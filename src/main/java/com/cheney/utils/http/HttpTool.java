@@ -5,6 +5,7 @@ import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.JsonUtils;
+import com.cheney.utils.URLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -111,7 +112,9 @@ public class HttpTool {
             ResponseEntity<R> responseEntity;
             RestTemplate template = getTemplate();
             if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                responseEntity = template.getForEntity(url, resultType, (Map<String, ?>) uriVariables[0]);
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseEntity = template.getForEntity(fixUrl, resultType, uriVariableMap);
             } else {
                 responseEntity = template.getForEntity(url, resultType, uriVariables);
             }
@@ -139,7 +142,9 @@ public class HttpTool {
             R responseBody;
             RestTemplate template = getTemplate();
             if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                responseBody = template.getForObject(url, resultType, (Map<String, ?>) uriVariables[0]);
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseBody = template.getForObject(fixUrl, resultType, uriVariableMap);
             } else {
                 responseBody = template.getForObject(url, resultType, uriVariables);
             }
@@ -232,7 +237,9 @@ public class HttpTool {
             RestTemplate template = getTemplate();
             ResponseEntity<R> responseEntity;
             if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                responseEntity = template.postForEntity(url, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseEntity = template.postForEntity(fixUrl, requestEntity, resultType, uriVariableMap);
             } else {
                 responseEntity = template.postForEntity(url, requestEntity, resultType, uriVariables);
             }
@@ -265,7 +272,9 @@ public class HttpTool {
             RestTemplate template = getTemplate();
             R responseBody;
             if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                responseBody = template.postForObject(url, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseBody = template.postForObject(fixUrl, requestEntity, resultType, uriVariableMap);
             } else {
                 responseBody = template.postForObject(url, requestEntity, resultType, uriVariables);
             }
@@ -363,7 +372,9 @@ public class HttpTool {
             ResponseEntity<R> responseEntity;
             RestTemplate template = getTemplate();
             if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                responseEntity = template.exchange(url, method, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseEntity = template.exchange(fixUrl, method, requestEntity, resultType, uriVariableMap);
             } else {
                 responseEntity = template.exchange(url, method, requestEntity, resultType, uriVariables);
             }
@@ -636,9 +647,26 @@ public class HttpTool {
         return split[split.length - 1];
     }
 
+    /**
+     * 补充参数名指url参数
+     *
+     * @param url            原url
+     * @param uriVariableMap url参数map
+     * @return url
+     */
+    private String fixUrlVariable(String url, Map<String, ?> uriVariableMap) {
+        Map<String, String> paramFromURL = URLUtils.getParamFromURL(url);
+        for (String key : uriVariableMap.keySet()) {
+            if (!paramFromURL.containsKey(key)) {
+                url = URLUtils.addRestTemplateParam(url, key);
+            }
+        }
+        return url;
+    }
+
     private <T> HttpEntity<T> wrapRequest(T requestBody) {
         if (requestBody == null) {
-            return null;
+            return new HttpEntity<>(null, getHeader());
         }
         HttpEntity<T> requestEntity;
         if (requestBody instanceof HttpEntity) {

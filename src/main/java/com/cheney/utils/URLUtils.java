@@ -35,6 +35,24 @@ public class URLUtils {
         }
     }
 
+    /**
+     * 为string restTemplate 添加url参数
+     *
+     * @param url url
+     * @param param url参数
+     * @return 完成添加参数的url
+     */
+    public static String addRestTemplateParam(String url, String param) {
+        StringBuilder urlBuilder = new StringBuilder(url);
+        if (!url.contains("?")) {
+            urlBuilder.append("?");
+        } else if (!url.endsWith("?")) {
+            urlBuilder.append("&");
+        }
+        urlBuilder.append(param).append("=").append("{").append(param).append("}");
+        return urlBuilder.toString();
+    }
+
     public static int getLastCharIndex(String src, String chat) {
         int index;
         int lastIndex = -1;
