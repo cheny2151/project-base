@@ -105,9 +105,16 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
+    @SuppressWarnings("unchecked")
     public <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
         try {
-            ResponseEntity<R> responseEntity = getTemplate().getForEntity(url, resultType, uriVariables);
+            ResponseEntity<R> responseEntity;
+            RestTemplate template = getTemplate();
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                responseEntity = template.getForEntity(url, resultType, (Map<String, ?>) uriVariables[0]);
+            } else {
+                responseEntity = template.getForEntity(url, resultType, uriVariables);
+            }
             if (showLog)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
             return responseEntity;
@@ -126,9 +133,16 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
+    @SuppressWarnings("unchecked")
     public <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
         try {
-            R responseBody = getTemplate().getForObject(url, resultType, uriVariables);
+            R responseBody;
+            RestTemplate template = getTemplate();
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                responseBody = template.getForObject(url, resultType, (Map<String, ?>) uriVariables[0]);
+            } else {
+                responseBody = template.getForObject(url, resultType, uriVariables);
+            }
             if (showLog)
                 log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
             return responseBody;
@@ -211,10 +225,17 @@ public class HttpTool {
      * @param <R>          返回类型
      * @return 响应体
      */
+    @SuppressWarnings("unchecked")
     public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
-            ResponseEntity<R> responseEntity = getTemplate().postForEntity(url, requestEntity, resultType, uriVariables);
+            RestTemplate template = getTemplate();
+            ResponseEntity<R> responseEntity;
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                responseEntity = template.postForEntity(url, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+            } else {
+                responseEntity = template.postForEntity(url, requestEntity, resultType, uriVariables);
+            }
             if (showLog)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
@@ -237,10 +258,17 @@ public class HttpTool {
      * @param <R>          返回类型
      * @return 响应体
      */
+    @SuppressWarnings("unchecked")
     public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
         HttpEntity<T> requestEntity = wrapRequest(requestBody);
         try {
-            R responseBody = getTemplate().postForObject(url, requestEntity, resultType, uriVariables);
+            RestTemplate template = getTemplate();
+            R responseBody;
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                responseBody = template.postForObject(url, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+            } else {
+                responseBody = template.postForObject(url, requestEntity, resultType, uriVariables);
+            }
             if (showLog)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseBody));
@@ -326,12 +354,19 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
+    @SuppressWarnings("unchecked")
     public <R> ResponseEntity<R> forEntity(HttpMethod method, String url, Object requestBody,
                                            ParameterizedTypeReference<R> resultType,
                                            Object... uriVariables) {
         HttpEntity<?> requestEntity = wrapRequest(requestBody);
         try {
-            ResponseEntity<R> responseEntity = getTemplate().exchange(url, method, requestEntity, resultType, uriVariables);
+            ResponseEntity<R> responseEntity;
+            RestTemplate template = getTemplate();
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                responseEntity = template.exchange(url, method, requestEntity, resultType, (Map<String, ?>) uriVariables[0]);
+            } else {
+                responseEntity = template.exchange(url, method, requestEntity, resultType, uriVariables);
+            }
             if (showLog)
                 log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
                         , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
