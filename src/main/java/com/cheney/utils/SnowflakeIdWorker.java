@@ -63,6 +63,15 @@ public class SnowflakeIdWorker {
     private long lastTimestamp = -1L;
 
     //==============================Constructors=====================================
+
+    /**
+     * 构造函数
+     */
+    public SnowflakeIdWorker() {
+        this.workerId = maxWorkerId;
+        this.datacenterId = maxDatacenterId;
+    }
+
     /**
      * 构造函数
      * @param workerId 工作ID (0~31)
