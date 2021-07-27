@@ -17,6 +17,7 @@ spring:
    key-serializer: org.apache.kafka.common.serialization.StringSerializer
    value-serializer: org.apache.kafka.common.serialization.StringSerializer
   consumer:
+   auto-offset-reset: earliest
    enable-auto-commit: false
    group-id: test
    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
