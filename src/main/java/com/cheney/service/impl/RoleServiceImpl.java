@@ -32,7 +32,7 @@ public class RoleServiceImpl extends CommonCacheImpl<Role, Long> implements Role
 
     @Override
     public List<Role> findByCacheKeys(Collection<String> keys) {
-        Filters filters = Filters.build().andFilter(Filter.in("code", keys));
+        Filters filters = Filters.build().andFilter(Filter.in("t0.code", keys));
         return roleMapper.findList(filters, null);
     }
 }

@@ -26,7 +26,7 @@ import java.io.IOException;
 @Component
 public class JsonWebTokenFilter extends OncePerRequestFilter {
 
-    public static final String TOKEN_PRE = "Bearer ";
+    public static final String TOKEN_PRE = "Bearer";
 
     private static final String AUTH_REQUEST_HEAD = "Authorization";
 
@@ -69,7 +69,7 @@ public class JsonWebTokenFilter extends OncePerRequestFilter {
         if (token == null || !token.startsWith(TOKEN_PRE)) {
             return null;
         }
-        return token.substring(TOKEN_PRE.length());
+        return token.substring(TOKEN_PRE.length()).trim();
     }
 
     /**
