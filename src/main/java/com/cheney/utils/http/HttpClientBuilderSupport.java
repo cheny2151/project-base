@@ -13,7 +13,9 @@ import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +44,7 @@ public class HttpClientBuilderSupport {
     private Integer connectTimeout;
     private Integer socketTimeout;
     private Integer connectionRequestTimeout;
+    private List<ClientHttpRequestInterceptor> interceptors;
 
     public HttpClientBuilderSupport() {
         this(DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
@@ -217,4 +220,16 @@ public class HttpClientBuilderSupport {
         return this;
     }
 
+    public List<ClientHttpRequestInterceptor> getInterceptors() {
+        return interceptors;
+    }
+
+    public void setInterceptors(List<ClientHttpRequestInterceptor> interceptors) {
+        this.interceptors = interceptors;
+    }
+
+    public HttpClientBuilderSupport interceptors(List<ClientHttpRequestInterceptor> interceptors) {
+        setInterceptors(interceptors);
+        return this;
+    }
 }

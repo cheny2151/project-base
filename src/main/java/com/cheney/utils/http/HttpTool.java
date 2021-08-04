@@ -20,6 +20,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StreamUtils;
@@ -30,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -90,11 +92,19 @@ public class HttpTool {
     }
 
     public HttpTool(HttpClientBuilderSupport httpClientBuilderSupport) {
-        this(httpClientBuilderSupport.httpClientBuilder().build());
+        this(httpClientBuilderSupport.httpClientBuilder());
+        // 设置额外拦截器
+        List<ClientHttpRequestInterceptor> addInterceptors = httpClientBuilderSupport.getInterceptors();
+        if (!CollectionUtils.isEmpty(addInterceptors)) {
+            RestTemplate template = getTemplate();
+            List<ClientHttpRequestInterceptor> interceptors = template.getInterceptors();
+            interceptors.addAll(addInterceptors);
+            template.setInterceptors(interceptors);
+        }
     }
 
     public HttpTool() {
-        this(HttpClientBuilderSupport.INSTANCE.httpClientBuilder().build());
+        this(HttpClientBuilderSupport.INSTANCE);
     }
 
     /**
