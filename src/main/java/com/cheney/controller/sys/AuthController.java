@@ -11,6 +11,7 @@ import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -60,6 +61,11 @@ public class AuthController {
         String currentToken = CurrentUserHolder.getCurrentUser().getToken();
         jsonRedisClient.removeKey(RedisKey.AUTH_TOKEN_KEY.getKey(currentToken));
         return JsonMessage.success();
+    }
+
+    @RequestMapping("/user/info")
+    public JsonMessage curUserInfo(){
+        return JsonMessage.success(CurrentUserHolder.requiredCurrentUser());
     }
 
 }
