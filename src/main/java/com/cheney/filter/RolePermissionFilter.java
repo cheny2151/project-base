@@ -32,7 +32,6 @@ import java.util.Objects;
  * @author cheney
  * @date 2019-11-10
  */
-@Component
 @Slf4j
 public class RolePermissionFilter extends OncePerRequestFilter {
 

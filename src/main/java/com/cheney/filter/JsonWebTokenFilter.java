@@ -23,7 +23,6 @@ import java.io.IOException;
  * 若拦截到含有token的请求头 则尝试进行认证
  */
 @Slf4j
-@Component
 public class JsonWebTokenFilter extends OncePerRequestFilter {
 
     public static final String TOKEN_PRE = "Bearer";

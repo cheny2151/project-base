@@ -33,7 +33,6 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
  * filter根据类全名自然排序
  */
 @Slf4j
-@Component
 public class RequestParamFilter extends OncePerRequestFilter {
 
     // 忽略的url正则表达式
