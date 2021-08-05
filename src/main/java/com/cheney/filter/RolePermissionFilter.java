@@ -33,6 +33,7 @@ import java.util.Objects;
  * @date 2019-11-10
  */
 @Slf4j
+@Component
 public class RolePermissionFilter extends OncePerRequestFilter {
 
     @Value("${user.auth.urlPatterns:''}")
