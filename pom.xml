@@ -14,6 +14,10 @@
         <mysql-driver.version>8.0.16</mysql-driver.version>
         <!--spring cloud-->
         <spring.cloud.version>3.0.2</spring.cloud.version>
+        <toolbox.version>2.2.8-jdk8</toolbox.version>
+        <mybatis-spring.version>2.1.4</mybatis-spring.version>
+        <apollo.version>1.8.0</apollo.version>
+        <fastjson.version>1.2.75</fastjson.version>
     </properties>
 
     <parent>
@@ -120,7 +124,6 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.12</artifactId>
-            <version>2.0.0</version>
         </dependency>
 
         <dependency>
@@ -133,7 +136,7 @@
         <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
             <artifactId>apollo-client</artifactId>
-            <version>1.8.0</version>
+            <version>${apollo.version}</version>
         </dependency>
 
         <!--aop依赖-->
@@ -156,7 +159,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.4</version>
+            <version>${mybatis-spring.version}</version>
         </dependency>
 
         <!-- ehcache缓存 -->
@@ -200,7 +203,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.75</version>
+            <version>${fastjson.version}</version>
         </dependency>
 
         <dependency>
@@ -298,7 +301,7 @@
         <dependency>
             <groupId>io.github.cheny2151</groupId>
             <artifactId>toolbox</artifactId>
-            <version>2.2.7-jdk8</version>
+            <version>${toolbox.version}</version>
         </dependency>
     </dependencies>
 
