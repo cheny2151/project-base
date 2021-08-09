@@ -18,9 +18,9 @@ import java.nio.charset.StandardCharsets;
  */
 public class InputStreamHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-    private byte[] body;
+    private final byte[] body;
 
-    private ServletInputStream inputStream;
+    private final ServletInputStream inputStream;
 
     public InputStreamHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
@@ -41,7 +41,7 @@ public class InputStreamHttpServletRequestWrapper extends HttpServletRequestWrap
 
     public class BodyServletInputStream extends ServletInputStream {
 
-        private ByteArrayInputStream inputStream = new ByteArrayInputStream(body);
+        private final ByteArrayInputStream inputStream = new ByteArrayInputStream(body);
 
         @Override
         public boolean isFinished() {

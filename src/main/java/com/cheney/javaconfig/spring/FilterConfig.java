@@ -1,5 +1,6 @@
 package com.cheney.javaconfig.spring;
 
+import com.cheney.filter.GzipRequestBodyFilter;
 import com.cheney.filter.JsonWebTokenFilter;
 import com.cheney.filter.RequestParamFilter;
 import com.cheney.filter.RolePermissionFilter;
@@ -17,10 +18,18 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     @Bean
-    public FilterRegistrationBean<JsonWebTokenFilter> jsonWebTokenFilterFilterRegistration(JsonWebTokenFilter jsonWebTokenFilter) {
+    public FilterRegistrationBean<GzipRequestBodyFilter> gzipRequestBodyFilterRegistrationBean(GzipRequestBodyFilter gzipRequestBodyFilter) {
+        FilterRegistrationBean<GzipRequestBodyFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
+        filterFilterRegistrationBean.setFilter(gzipRequestBodyFilter);
+        filterFilterRegistrationBean.setOrder(1);
+        return filterFilterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JsonWebTokenFilter> jsonWebTokenFilterRegistration(JsonWebTokenFilter jsonWebTokenFilter) {
         FilterRegistrationBean<JsonWebTokenFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(jsonWebTokenFilter);
-        filterFilterRegistrationBean.setOrder(1);
+        filterFilterRegistrationBean.setOrder(2);
         return filterFilterRegistrationBean;
     }
 
@@ -28,7 +37,7 @@ public class FilterConfig {
     public FilterRegistrationBean<RolePermissionFilter> RolePermissionFilterRegistration(RolePermissionFilter rolePermissionFilter) {
         FilterRegistrationBean<RolePermissionFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(rolePermissionFilter);
-        filterFilterRegistrationBean.setOrder(2);
+        filterFilterRegistrationBean.setOrder(3);
         return filterFilterRegistrationBean;
     }
 
@@ -36,7 +45,7 @@ public class FilterConfig {
     public FilterRegistrationBean<RequestParamFilter> RequestParamFilterRegistration(RequestParamFilter requestParamFilter) {
         FilterRegistrationBean<RequestParamFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(requestParamFilter);
-        filterFilterRegistrationBean.setOrder(3);
+        filterFilterRegistrationBean.setOrder(4);
         return filterFilterRegistrationBean;
     }
 
