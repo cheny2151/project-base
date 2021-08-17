@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * 随机id生成器
@@ -16,6 +17,19 @@ public class RandomIdGenerator {
 
     public static String generateWithTime(DateTimeFormatter formatter, int randomSize) {
         String id = LocalDateTime.now().format(formatter);
+        if (randomSize > 0) {
+            int max = (int) Math.pow(10, randomSize) - 1;
+            int numFlag = RandomUtils.nextInt(0, max);
+            id += fixSize(numFlag, randomSize);
+        }
+        return id;
+    }
+
+    public static String generateWithUUID(int uuidSize, int randomSize) {
+        String id = UUID.randomUUID().toString().replace("-", "");
+        if (id.length() > uuidSize) {
+            id = id.substring(0, uuidSize);
+        }
         if (randomSize > 0) {
             int max = (int) Math.pow(10, randomSize) - 1;
             int numFlag = RandomUtils.nextInt(0, max);
