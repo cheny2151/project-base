@@ -30,7 +30,7 @@ public class KafkaConfig {
 
     /**
      * 单独配置一个自定义消费者工厂
-     * 此处设置enable.auto.commit=true
+     * 此处设置enable.auto.commit=false(enable.auto.commit为kafka原生配置)
      */
     @Bean
     public DefaultKafkaConsumerFactory<String, String> manualConsumerFactory() {
