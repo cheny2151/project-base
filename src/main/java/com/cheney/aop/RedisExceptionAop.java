@@ -1,7 +1,9 @@
 package com.cheney.aop;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -81,5 +83,14 @@ public class RedisExceptionAop {
             throw t;
         }
     }
+
+    /**
+     * 切点为返回基本类型的方法
+     */
+    @AfterReturning(value = "returnBase()", returning = "val")
+    public void baseAfterReturn(JoinPoint joinPoint, Object val) {
+        System.out.println(joinPoint.getSignature().getName() + " return: " + val);
+    }
+
 
 }
