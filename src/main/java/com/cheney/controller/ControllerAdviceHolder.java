@@ -50,7 +50,7 @@ public class ControllerAdviceHolder {
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> BusinessRunTimeException(BusinessRuntimeException e) {
         BaseResponse<?> errorResponse = e.getErrorResponse();
-        log.info("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
+        log.error("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
         return errorResponse;
     }
 
@@ -68,7 +68,7 @@ public class ControllerAdviceHolder {
             return BaseResponse.SERVER_ERROR;
         }
         response.setRequestId(RequestParamHolder.requestId().orElse(null));
-        log.info("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
+        log.error("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
         return response;
     }
 
@@ -83,7 +83,7 @@ public class ControllerAdviceHolder {
     public BaseResponse<?> failHttpStatusResponseException(FailHttpStatusResponseException e) {
         ResponseCode code = e.getCode();
         String message = e.getMessage();
-        log.info("内部服务调用失败，msg->{}，code->{}", message, code);
+        log.error("内部服务调用失败，msg->{}，code->{}", message, code);
         return BaseResponse.error(code.getStatus(), message);
     }
 
