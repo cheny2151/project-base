@@ -3,6 +3,7 @@ package com.cheney.javaconfig.mq;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,8 @@ import java.util.Map;
 @EnableConfigurationProperties({KafkaProperties.class})
 public class KafkaConfig {
 
+    @Value("${spring.kafka.listener.concurrency}")
+    private Integer listenerConcurrency;
     private final KafkaProperties properties;
 
     public KafkaConfig(KafkaProperties properties) {
@@ -50,6 +53,9 @@ public class KafkaConfig {
         ContainerProperties containerProperties = factory.getContainerProperties();
         containerProperties.setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchListener(true);
+        if (listenerConcurrency != null) {
+            factory.setConcurrency(listenerConcurrency);
+        }
         return factory;
     }
 
