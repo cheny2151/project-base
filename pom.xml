@@ -18,6 +18,7 @@
         <mybatis-spring.version>2.1.4</mybatis-spring.version>
         <apollo.version>1.8.0</apollo.version>
         <fastjson.version>1.2.75</fastjson.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
     </properties>
 
     <parent>
@@ -149,12 +150,6 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
-        <!--<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>-->
-
         <!-- mybatis核心包 -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -188,11 +183,11 @@
             <artifactId>jedis</artifactId>
         </dependency>
         <!-- redisson-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.8.2</version>
-        </dependency>
+        </dependency>-->
 
         <!-- 添加json解析 -->
         <dependency>
@@ -295,7 +290,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.2.0.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
 
         <dependency>
