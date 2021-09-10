@@ -2,6 +2,7 @@ package com.cheney.javaconfig.mq;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -25,6 +26,10 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.listener.concurrency}")
     private Integer listenerConcurrency;
+    @Value("${spring.kafka.my-bootstrap-servers}")
+    private String myKafkaServers;
+    @Value("${spring.kafka.producer.my-acks:0}")
+    private String myAcks;
     private final KafkaProperties properties;
 
     public KafkaConfig(KafkaProperties properties) {
@@ -77,7 +82,10 @@ public class KafkaConfig {
 
     @Bean
     public ProducerFactory<String, String> myKafkaProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(this.properties.buildProducerProperties());
+        Map<String, Object> configs = this.properties.buildProducerProperties();
+        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, myKafkaServers);
+        configs.put(ProducerConfig.ACKS_CONFIG, myAcks);
+        return new DefaultKafkaProducerFactory<>(configs);
     }
 
     @Bean
