@@ -13,6 +13,7 @@ import com.cheney.utils.HttpSupport;
 import com.cheney.utils.RequestParamHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -88,14 +89,16 @@ public class RequestParamFilter extends OncePerRequestFilter {
             RequestParamHolder.setCurrentResponse(httpServletResponse);
             RequestParamHolder.generateInnerId();
             String innerId = RequestParamHolder.getInnerId();
+            MDC.put("INNER_ID", innerId);
             if (reqStr != null) {
-                log.info("[{}][{}]url->[{}],request param:{}", innerId, method, requestURI, reqStr);
+                log.info("[{}]url->[{}],request param:{}", method, requestURI, reqStr);
             } else {
-                log.info("[{}][{}]url->[{}]", innerId, method, requestURI);
+                log.info("[{}]url->[{}]", method, requestURI);
             }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
             RequestParamHolder.remove();
+            MDC.clear();
         }
     }
 

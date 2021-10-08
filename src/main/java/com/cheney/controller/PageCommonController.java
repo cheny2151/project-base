@@ -60,8 +60,8 @@ public class PageCommonController {
     @RequestMapping("/test2")
     @ResponseBody
     public void test2() {
-        Role test = roleService.getByCache("test3");
-        System.out.println(test);
+//        Role test = roleService.getByCache("test3");
+//        System.out.println(test);
     }
 
     @RequestMapping("/test3")

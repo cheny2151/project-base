@@ -3,8 +3,6 @@
     <contextName>logback</contextName>
     <!--定义参数,后面可以通过${app.name}使用-->
     <property name="app.name" value="translation"/>
-    <!-- 配置自定义字段 -->
-    <conversionRule conversionWord="innerId" converterClass="com.cheney.utils.LogInnerIdConverter" />
     <!--ConsoleAppender 用于在屏幕上输出日志-->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来-->
@@ -14,7 +12,7 @@
         <!-- encoder 默认配置为PatternLayoutEncoder -->
         <!--定义控制台输出格式-->
         <encoder>
-            <pattern>%boldMagenta(%d) %yellow([%thread]) %highlight(%-5level) %cyan(%logger{36}) %cyan([%file : %line]) - %msg%n</pattern>
+            <pattern>[%X{INNER_ID}] %boldMagenta(%d) %yellow([%thread]) %highlight(%-5level) %cyan(%logger{36}) %cyan([%file : %line]) - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -31,7 +29,7 @@
         </rollingPolicy>
         <!--定义输出格式-->
         <encoder>
-            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%innerId\t%msg%n</pattern>
+            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -49,7 +47,7 @@
             <maxFileSize>100MB</maxFileSize>
         </rollingPolicy>
         <encoder>
-            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%innerId\t%msg%n</pattern>
+            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
