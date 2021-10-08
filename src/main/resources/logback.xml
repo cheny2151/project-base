@@ -1,0 +1,69 @@
+<configuration debug="true" scan="true" scanPeriod="1 seconds">
+    <!-- http://logback.qos.ch/manual/layouts.html#coloring -->
+    <contextName>logback</contextName>
+    <!--定义参数,后面可以通过${app.name}使用-->
+    <property name="app.name" value="translation"/>
+    <!-- 配置自定义字段 -->
+    <conversionRule conversionWord="innerId" converterClass="com.cheney.utils.LogInnerIdConverter" />
+    <!--ConsoleAppender 用于在屏幕上输出日志-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <!--定义控制台输出格式-->
+        <encoder>
+            <pattern>%boldMagenta(%d) %yellow([%thread]) %highlight(%-5level) %cyan(%logger{36}) %cyan([%file : %line]) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--定义日志输出的路径-->
+        <file>logs/${app.name}.log</file>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>logs/%d{yyyyMMdd}/${app.name}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <MaxHistory>3</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%innerId\t%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <file>logs/${app.name}-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/%d{yyyyMMdd}/${app.name}-error-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%innerId\t%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--root是默认的logger 这里设定输出级别是debug-->
+    <root level="info">
+        <!--定义了两个appender，日志会通过往这两个appender里面写-->
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="file"/>
+        <appender-ref ref="error"/>
+    </root>
+
+    <!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台-->
+    <!--这个logger没有指定appender，它会继承root节点中定义的那些appender-->
+<!--    <logger name="com.cheney.dao.mybatis" level="debug"/>-->
+
+</configuration>
