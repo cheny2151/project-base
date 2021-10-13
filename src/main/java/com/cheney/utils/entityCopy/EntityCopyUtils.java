@@ -3,7 +3,7 @@ package com.cheney.utils.entityCopy;
 import com.cheney.entity.AuthUser;
 import com.cheney.entity.TestCopyEntity;
 import com.cheney.exception.EntityCopyException;
-import com.cheney.utils.ReflectUtils;
+import cn.cheny.toolbox.reflect.ReflectUtils;
 import com.cheney.utils.entityCopy.annotation.CopyAsClass;
 import com.cheney.utils.entityCopy.annotation.CopyAsField;
 import com.cheney.utils.entityCopy.meta.factory.CopyClassMetaDataFactory;

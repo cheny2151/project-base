@@ -2,7 +2,7 @@ package com.cheney.mybatis.chain;
 
 import cn.cheny.toolbox.property.PropertyNameUtils;
 import com.cheney.mybatis.XMLGenerator;
-import com.cheney.utils.ReflectUtils;
+import cn.cheny.toolbox.reflect.ReflectUtils;
 
 import java.util.Set;
 

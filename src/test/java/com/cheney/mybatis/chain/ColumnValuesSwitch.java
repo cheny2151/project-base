@@ -1,6 +1,6 @@
 package com.cheney.mybatis.chain;
 
-import com.cheney.utils.ReflectUtils;
+import cn.cheny.toolbox.reflect.ReflectUtils;
 import com.cheney.mybatis.XMLGenerator;
 
 import java.util.Set;

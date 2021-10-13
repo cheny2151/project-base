@@ -1,6 +1,6 @@
 package com.cheney.utils.entityCopy.meta;
 
-import com.cheney.utils.ReflectUtils;
+import cn.cheny.toolbox.reflect.ReflectUtils;
 import com.cheney.utils.meta.ClassMetaData;
 
 import java.lang.reflect.Field;
