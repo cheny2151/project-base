@@ -30,7 +30,7 @@ public class HttpClientBuilderSupport {
 
     public static final Integer DEFAULT_MAX_TOTAL = 200;
     public static final Integer DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 10;
-    public static final Integer DEFAULT_VALIDATE_AFTER_INACTIVITY = 10 * 1000;
+    public static final Integer DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final Integer DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
     public static final Integer DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
     public static final Integer DEFAULT_CONNECT_TIMEOUT = 5 * 1000;
