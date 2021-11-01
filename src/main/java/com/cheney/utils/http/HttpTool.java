@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.core.ParameterizedTypeReference;
@@ -75,7 +76,15 @@ public class HttpTool {
      */
     private final HttpClient httpClient;
 
-    public HttpTool(HttpClient client) {
+    public HttpTool() {
+        this(HttpClientBuilderSupport.INSTANCE);
+    }
+
+    public HttpTool(HttpClientBuilderSupport httpClientBuilderSupport) {
+        Integer connectTimeout = httpClientBuilderSupport.getConnectTimeout();
+        Integer connectionRequestTimeout = httpClientBuilderSupport.getConnectionRequestTimeout();
+        HttpClientBuilder httpClientBuilder = httpClientBuilderSupport.httpClientBuilder();
+        CloseableHttpClient client = httpClientBuilder.build();
         defaultHeader = new HttpHeaders();
         defaultHeader.setContentType(MediaType.APPLICATION_JSON);
         currentHeader = new ThreadLocal<>();
@@ -83,16 +92,11 @@ public class HttpTool {
         // 初始化template
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
+        requestFactory.setConnectTimeout(connectTimeout);
+        requestFactory.setReadTimeout(connectionRequestTimeout);
+        requestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
         this.httpClient = client;
         this.restTemplate = new RestTemplate(requestFactory);
-    }
-
-    public HttpTool(HttpClientBuilder httpClientBuilder) {
-        this(httpClientBuilder.build());
-    }
-
-    public HttpTool(HttpClientBuilderSupport httpClientBuilderSupport) {
-        this(httpClientBuilderSupport.httpClientBuilder());
         // 设置额外拦截器
         List<ClientHttpRequestInterceptor> addInterceptors = httpClientBuilderSupport.getInterceptors();
         if (!CollectionUtils.isEmpty(addInterceptors)) {
@@ -103,8 +107,16 @@ public class HttpTool {
         }
     }
 
-    public HttpTool() {
-        this(HttpClientBuilderSupport.INSTANCE);
+    public HttpTool(HttpClient client) {
+        defaultHeader = new HttpHeaders();
+        defaultHeader.setContentType(MediaType.APPLICATION_JSON);
+        currentHeader = new ThreadLocal<>();
+
+        // 初始化template
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(client);
+        this.httpClient = client;
+        this.restTemplate = new RestTemplate(requestFactory);
     }
 
     /**
