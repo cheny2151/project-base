@@ -12,9 +12,9 @@ public class HttpSupport {
 
     public static class ContentEncoding {
 
-        private final static String KEY = "Content-Encoding";
+        public final static String KEY = "Content-Encoding";
 
-        private final static String HEADER_GZIP = "gzip";
+        public final static String HEADER_GZIP = "gzip";
 
     }
 
