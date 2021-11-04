@@ -28,14 +28,14 @@ public class HttpClientBuilderSupport {
 
     public static final HttpClientBuilderSupport INSTANCE = new HttpClientBuilderSupport();
 
-    public static final Integer DEFAULT_MAX_TOTAL = 200;
-    public static final Integer DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 10;
-    public static final Integer DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
-    public static final Integer DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
-    public static final Integer DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
-    public static final Integer DEFAULT_CONNECT_TIMEOUT = 5 * 1000;
-    public static final Integer DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
-    public static final Integer DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_MAX_TOTAL = 200;
+    public static final int DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 10;
+    public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
+    public static final int DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
+    public static final int DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
+    public static final int DEFAULT_CONNECT_TIMEOUT = 5 * 1000;
+    public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
 
     private Integer maxTotal;
     private Integer maxPerRoute;
@@ -57,6 +57,13 @@ public class HttpClientBuilderSupport {
 
     public HttpClientBuilderSupport(Integer maxTotal, Integer maxPerRoute, Integer validateAfterInactivity, Integer idleTimeoutSeconds,
                                     Integer connectTimeout, Integer socketTimeout, Integer connectionRequestTimeout) {
+        maxTotal = maxTotal == null ? DEFAULT_MAX_TOTAL : maxTotal;
+        maxPerRoute = maxPerRoute == null ? DEFAULT_MAX_PER_ROUTE : maxPerRoute;
+        validateAfterInactivity = validateAfterInactivity == null ? DEFAULT_VALIDATE_AFTER_INACTIVITY : validateAfterInactivity;
+        idleTimeoutSeconds = idleTimeoutSeconds == null ? DEFAULT_IDLE_TIMEOUT_SECONDS : idleTimeoutSeconds;
+        connectTimeout = connectTimeout == null ? DEFAULT_CONNECT_TIMEOUT : connectTimeout;
+        socketTimeout = socketTimeout == null ? DEFAULT_SOCKET_TIMEOUT : socketTimeout;
+        connectionRequestTimeout = connectionRequestTimeout == null ? DEFAULT_CONNECTION_REQUEST_TIMEOUT : connectionRequestTimeout;
         this.maxTotal = maxTotal;
         this.maxPerRoute = maxPerRoute;
         this.validateAfterInactivity = validateAfterInactivity;
@@ -67,15 +74,8 @@ public class HttpClientBuilderSupport {
     }
 
     public HttpClientBuilder httpClientBuilder() {
-        int maxTotal = this.maxTotal == null ? DEFAULT_MAX_TOTAL : this.maxTotal;
-        int maxPerRoute = this.maxPerRoute == null ? DEFAULT_MAX_PER_ROUTE : this.maxPerRoute;
-        int validateAfterInactivity = this.validateAfterInactivity == null ? DEFAULT_VALIDATE_AFTER_INACTIVITY : this.validateAfterInactivity;
-        int idleTimeoutSeconds = this.idleTimeoutSeconds == null ? DEFAULT_IDLE_TIMEOUT_SECONDS : this.idleTimeoutSeconds;
-        int connectTimeout = this.connectTimeout == null ? DEFAULT_CONNECT_TIMEOUT : this.connectTimeout;
-        int socketTimeout = this.socketTimeout == null ? DEFAULT_SOCKET_TIMEOUT : this.socketTimeout;
-        int connectionRequestTimeout = this.connectionRequestTimeout == null ? DEFAULT_CONNECTION_REQUEST_TIMEOUT : this.connectionRequestTimeout;
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-        HttpClientConnectionManager connManager = poolingConnectionManager(maxTotal, maxPerRoute, validateAfterInactivity, idleTimeoutSeconds);
+        HttpClientConnectionManager connManager = poolingConnectionManager();
         httpClientBuilder.setConnectionManager(connManager);
         ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new MyConnectionKeepAliveStrategy();
         httpClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy);
@@ -93,7 +93,7 @@ public class HttpClientBuilderSupport {
      * 每个主机的并发 ValidateAfterInactivity
      * 可用空闲连接过期时间,重用空闲连接时会先检查是否空闲时间超过这个时间，如果超过，释放socket重新建立
      */
-    private static HttpClientConnectionManager poolingConnectionManager(Integer maxTotal, Integer maxPerRoute, Integer validateAfterInactivity, Integer idleTimeoutSeconds) {
+    private HttpClientConnectionManager poolingConnectionManager() {
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
                 .register("https", SSLConnectionSocketFactory.getSocketFactory())

@@ -6,6 +6,7 @@ import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.JsonUtils;
 import com.cheney.utils.URLUtils;
+import com.cheney.utils.http.interceptor.GZIPRequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -96,12 +97,13 @@ public class HttpTool {
         requestFactory.setReadTimeout(connectionRequestTimeout);
         requestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
         this.httpClient = client;
-        this.restTemplate = new RestTemplate(requestFactory);
+        RestTemplate template = new RestTemplate(requestFactory);
+        this.restTemplate = template;
         // 设置额外拦截器
         List<ClientHttpRequestInterceptor> addInterceptors = httpClientBuilderSupport.getInterceptors();
+        List<ClientHttpRequestInterceptor> interceptors = template.getInterceptors();
+        interceptors.add(new GZIPRequestInterceptor());
         if (!CollectionUtils.isEmpty(addInterceptors)) {
-            RestTemplate template = getTemplate();
-            List<ClientHttpRequestInterceptor> interceptors = template.getInterceptors();
             interceptors.addAll(addInterceptors);
             template.setInterceptors(interceptors);
         }
