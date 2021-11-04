@@ -2,7 +2,7 @@ package com.cheney.utils;
 
 public class HttpSupport {
 
-    public class ContentType {
+    public static class ContentType {
 
         public final static String KEY = "Content-Type";
 
@@ -10,7 +10,7 @@ public class HttpSupport {
 
     }
 
-    public class ContentEncoding {
+    public static class ContentEncoding {
 
         private final static String KEY = "Content-Encoding";
 
@@ -18,7 +18,7 @@ public class HttpSupport {
 
     }
 
-    public class Method {
+    public static class Method {
 
         public final static String HTTP_METHOD_GET = "GET";
 
