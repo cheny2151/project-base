@@ -13,7 +13,7 @@
         <console name="Console" target="SYSTEM_OUT">
 
             <!--输出日志的格式-->
-            <PatternLayout pattern="[%X{INNER_ID}] [cheney][%d{yyyy-MM-dd HH:mm:ss}] [%p][%t] - %l - %m%n"/>
+            <PatternLayout pattern="[%X{INNER_ID}] [%d{yyyy-MM-dd HH:mm:ss}] [%p][%t] - %l - %msg%n"/>
 
         </console>
 
@@ -32,7 +32,7 @@
 
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
 
-            <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p][%t] - %l - %m%n"/>
+            <PatternLayout pattern="%X{INNER_ID}\t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n"/>
 
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -46,7 +46,7 @@
 
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
 
-            <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p][%t] - %l - %m%n"/>
+            <PatternLayout pattern="%X{INNER_ID}\t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n"/>
 
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -64,7 +64,7 @@
 
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
 
-            <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p][%t] - %l - %m%n"/>
+            <PatternLayout pattern="%X{INNER_ID}\t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n"/>
 
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -85,9 +85,9 @@
 
         <root level="INFO">
             <appender-ref ref="Console"/>
-<!--            <appender-ref ref="RollingFileInfo"/>-->
-<!--            <appender-ref ref="RollingFileWarn"/>-->
-<!--            <appender-ref ref="RollingFileError"/>-->
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
         </root>
     </loggers>
 
