@@ -715,8 +715,9 @@ public class HttpTool {
             return defaultHeader;
         } else {
             currentHeader.remove();
-            HttpHeaders httpHeaders = new HttpHeaders(defaultHeader);
-            curHeaders.forEach(httpHeaders::set);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setAll(this.defaultHeader.toSingleValueMap());
+            httpHeaders.setAll(curHeaders);
             return httpHeaders;
         }
     }
