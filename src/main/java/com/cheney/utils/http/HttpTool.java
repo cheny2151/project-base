@@ -1,5 +1,6 @@
 package com.cheney.utils.http;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
@@ -716,7 +717,7 @@ public class HttpTool {
         } else {
             currentHeader.remove();
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setAll(this.defaultHeader.toSingleValueMap());
+            httpHeaders.addAll(this.defaultHeader);
             httpHeaders.setAll(curHeaders);
             return httpHeaders;
         }
