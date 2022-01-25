@@ -704,7 +704,6 @@ public class HttpTool {
         if (requestBody instanceof HttpEntity) {
             requestEntity = (HttpEntity<T>) requestBody;
         } else {
-            //默认为application/json;charset=utf-8请求
             requestEntity = new HttpEntity<>(requestBody, getHeader());
         }
         return requestEntity;
