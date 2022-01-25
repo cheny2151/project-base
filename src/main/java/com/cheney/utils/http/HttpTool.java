@@ -50,7 +50,7 @@ public class HttpTool {
     /**
      * 是否显示日志
      */
-    private boolean showLog = false;
+    private boolean showLog = true;
 
     /**
      * 是否抛出response code异常
@@ -78,18 +78,29 @@ public class HttpTool {
     private final HttpClient httpClient;
 
     public HttpTool() {
-        this(HttpClientBuilderSupport.INSTANCE);
+        this(HttpClientBuilderSupport.INSTANCE, null);
+    }
+
+    public HttpTool(HttpHeaders defaultHeader) {
+        this(HttpClientBuilderSupport.INSTANCE, defaultHeader);
     }
 
     public HttpTool(HttpClientBuilderSupport httpClientBuilderSupport) {
+        this(httpClientBuilderSupport, null);
+    }
+
+    public HttpTool(HttpClientBuilderSupport httpClientBuilderSupport, HttpHeaders defaultHeader) {
+        if (defaultHeader == null) {
+            defaultHeader = new HttpHeaders();
+            defaultHeader.setContentType(MediaType.APPLICATION_JSON);
+        }
+        this.defaultHeader = defaultHeader;
+        this.currentHeader = new ThreadLocal<>();
+
         Integer connectTimeout = httpClientBuilderSupport.getConnectTimeout();
         Integer connectionRequestTimeout = httpClientBuilderSupport.getConnectionRequestTimeout();
         HttpClientBuilder httpClientBuilder = httpClientBuilderSupport.httpClientBuilder();
         CloseableHttpClient client = httpClientBuilder.build();
-        defaultHeader = new HttpHeaders();
-        defaultHeader.setContentType(MediaType.APPLICATION_JSON);
-        currentHeader = new ThreadLocal<>();
-
         // 初始化template
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
@@ -106,78 +117,6 @@ public class HttpTool {
         if (!CollectionUtils.isEmpty(addInterceptors)) {
             interceptors.addAll(addInterceptors);
             template.setInterceptors(interceptors);
-        }
-    }
-
-    public HttpTool(HttpClient client) {
-        defaultHeader = new HttpHeaders();
-        defaultHeader.setContentType(MediaType.APPLICATION_JSON);
-        currentHeader = new ThreadLocal<>();
-
-        // 初始化template
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setHttpClient(client);
-        this.httpClient = client;
-        this.restTemplate = new RestTemplate(requestFactory);
-    }
-
-    /**
-     * get请求，返回包括响应状态的entity
-     *
-     * @param url          请求地址
-     * @param resultType   返回类型Class
-     * @param <R>          返回类型
-     * @param uriVariables url参数(替换{}占位符)
-     * @return 响应体
-     */
-    @SuppressWarnings("unchecked")
-    public <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
-        try {
-            ResponseEntity<R> responseEntity;
-            RestTemplate template = getTemplate();
-            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
-                String fixUrl = fixUrlVariable(url, uriVariableMap);
-                responseEntity = template.getForEntity(fixUrl, resultType, uriVariableMap);
-            } else {
-                responseEntity = template.getForEntity(url, resultType, uriVariables);
-            }
-            if (showLog)
-                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseEntity.getBody()));
-            return responseEntity;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
-            throw e;
-        }
-    }
-
-    /**
-     * get请求，直接返回body数据
-     *
-     * @param url          请求地址
-     * @param resultType   返回类型Class
-     * @param <R>          返回类型
-     * @param uriVariables url参数(替换{}占位符)
-     * @return 响应体
-     */
-    @SuppressWarnings("unchecked")
-    public <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
-        try {
-            R responseBody;
-            RestTemplate template = getTemplate();
-            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
-                String fixUrl = fixUrlVariable(url, uriVariableMap);
-                responseBody = template.getForObject(fixUrl, resultType, uriVariableMap);
-            } else {
-                responseBody = template.getForObject(url, resultType, uriVariables);
-            }
-            if (showLog)
-                log.info("请求url -> {}，responseBody -> {}", url, LogUtils.cutLog(responseBody));
-            return responseBody;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,params->{}，msg->{}", url, uriVariables, e.getMessage());
-            throw e;
         }
     }
 
@@ -241,75 +180,6 @@ public class HttpTool {
                                                                         ParameterizedTypeReference<B> resultType,
                                                                         Object... uriVariables) {
         return forBaseResponseThrowFail(HttpMethod.GET, url, null, resultType, uriVariables);
-    }
-
-    /**
-     * post请求,返回包括响应状态的entity
-     *
-     * @param url          请求地址
-     * @param requestBody  请求实体
-     * @param resultType   返回类型Class
-     * @param uriVariables url参数(替换{}占位符)
-     * @param <T>          请求类型
-     * @param <R>          返回类型
-     * @return 响应体
-     */
-    @SuppressWarnings("unchecked")
-    public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity<T> requestEntity = wrapRequest(requestBody);
-        try {
-            RestTemplate template = getTemplate();
-            ResponseEntity<R> responseEntity;
-            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
-                String fixUrl = fixUrlVariable(url, uriVariableMap);
-                responseEntity = template.postForEntity(fixUrl, requestEntity, resultType, uriVariableMap);
-            } else {
-                responseEntity = template.postForEntity(url, requestEntity, resultType, uriVariables);
-            }
-            if (showLog)
-                log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
-            return responseEntity;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
-                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
-            throw e;
-        }
-    }
-
-    /**
-     * post请求，直接返回body数据
-     *
-     * @param url          请求地址
-     * @param requestBody  请求实体
-     * @param resultType   返回类型Class
-     * @param uriVariables url参数(替换{}占位符)
-     * @param <T>          请求类型
-     * @param <R>          返回类型
-     * @return 响应体
-     */
-    @SuppressWarnings("unchecked")
-    public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
-        HttpEntity<T> requestEntity = wrapRequest(requestBody);
-        try {
-            RestTemplate template = getTemplate();
-            R responseBody;
-            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
-                String fixUrl = fixUrlVariable(url, uriVariableMap);
-                responseBody = template.postForObject(fixUrl, requestEntity, resultType, uriVariableMap);
-            } else {
-                responseBody = template.postForObject(url, requestEntity, resultType, uriVariables);
-            }
-            if (showLog)
-                log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseBody));
-            return responseBody;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,request body->{}，msg->{}", url, JsonUtils.toJson(requestBody), e.getMessage());
-            throw e;
-        }
     }
 
     /**
@@ -377,6 +247,81 @@ public class HttpTool {
         return forBaseResponseThrowFail(HttpMethod.POST, url, requestBody, resultType, uriVariables);
     }
 
+
+    /**
+     * get请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> ResponseEntity<R> getForEntity(String url, Class<R> resultType, Object... uriVariables) {
+        return forEntity(HttpMethod.POST, url, null, resultType, uriVariables);
+    }
+
+    /**
+     * get请求，直接返回body数据
+     *
+     * @param url          请求地址
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> R getForObject(String url, Class<R> resultType, Object... uriVariables) {
+        ResponseEntity<R> response = forEntity(HttpMethod.GET, url, null, resultType, uriVariables);
+        return response.getBody();
+    }
+
+    /**
+     * post请求,返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求实体
+     * @param resultType   返回类型Class
+     * @param uriVariables url参数(替换{}占位符)
+     * @param <T>          请求类型
+     * @param <R>          返回类型
+     * @return 响应体
+     */
+    public <T, R> ResponseEntity<R> postForEntity(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
+        return forEntity(HttpMethod.POST, url, requestBody, resultType, uriVariables);
+    }
+
+    /**
+     * post请求，直接返回body数据
+     *
+     * @param url          请求地址
+     * @param requestBody  请求实体
+     * @param resultType   返回类型Class
+     * @param uriVariables url参数(替换{}占位符)
+     * @param <T>          请求类型
+     * @param <R>          返回类型
+     * @return 响应体
+     */
+    public <T, R> R postForObject(String url, T requestBody, Class<R> resultType, Object... uriVariables) {
+        ResponseEntity<R> response = forEntity(HttpMethod.POST, url, requestBody, resultType, uriVariables);
+        return response.getBody();
+    }
+
+    /**
+     * http请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回泛型类型
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> ResponseEntity<R> forEntity(HttpMethod method, String url, Object requestBody,
+                                           ParameterizedTypeReference<R> resultType,
+                                           Object... uriVariables) {
+        return forEntity(method, url, requestBody, (Object) resultType, uriVariables);
+    }
+
     /**
      * http请求，返回包括响应状态的entity
      *
@@ -387,30 +332,27 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    @SuppressWarnings("unchecked")
     public <R> ResponseEntity<R> forEntity(HttpMethod method, String url, Object requestBody,
-                                           ParameterizedTypeReference<R> resultType,
-                                           Object... uriVariables) {
-        HttpEntity<?> requestEntity = wrapRequest(requestBody);
-        try {
-            ResponseEntity<R> responseEntity;
-            RestTemplate template = getTemplate();
-            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
-                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
-                String fixUrl = fixUrlVariable(url, uriVariableMap);
-                responseEntity = template.exchange(fixUrl, method, requestEntity, resultType, uriVariableMap);
-            } else {
-                responseEntity = template.exchange(url, method, requestEntity, resultType, uriVariables);
-            }
-            if (showLog)
-                log.info("请求url -> {}，requestBody -> {}，responseBody -> {}"
-                        , url, JsonUtils.toJson(requestBody), LogUtils.cutLog(responseEntity.getBody()));
-            return responseEntity;
-        } catch (Exception e) {
-            log.error("url->{}请求异常,request body->{},params->{}，msg->{}",
-                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
-            throw e;
-        }
+                                           Class<R> resultType, Object... uriVariables) {
+        return forEntity(method, url, requestBody, (Object) resultType, uriVariables);
+    }
+
+    /**
+     * post请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回泛型类型
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> R forObjectThrowFail(HttpMethod method, String url, Object requestBody,
+                                    ParameterizedTypeReference<R> resultType,
+                                    Object... uriVariables) {
+        ResponseEntity<R> response = forEntity(method, url, requestBody, resultType, uriVariables);
+        checkRespStatus(method, url, requestBody, uriVariables, response);
+        return response.getBody();
     }
 
     /**
@@ -424,7 +366,7 @@ public class HttpTool {
      * @return 响应体
      */
     public <R> R forObjectThrowFail(HttpMethod method, String url, Object requestBody,
-                                    ParameterizedTypeReference<R> resultType,
+                                    Class<R> resultType,
                                     Object... uriVariables) {
         ResponseEntity<R> response = forEntity(method, url, requestBody, resultType, uriVariables);
         checkRespStatus(method, url, requestBody, uriVariables, response);
@@ -453,7 +395,7 @@ public class HttpTool {
      *
      * @param url          请求地址
      * @param requestBody  请求数据
-     * @param resultType   返回类型Class
+     * @param resultType   返回泛型类型
      * @param <R>          返回类型
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
@@ -474,6 +416,55 @@ public class HttpTool {
             }
         }
         return response.getBody();
+    }
+
+    /**
+     * http请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    @SuppressWarnings("unchecked")
+    private <R> ResponseEntity<R> forEntity(HttpMethod method, String url, Object requestBody,
+                                            Object resultType, Object... uriVariables) {
+        HttpEntity<?> requestEntity = wrapRequest(requestBody);
+        try {
+            ResponseEntity<R> responseEntity;
+            RestTemplate template = getTemplate();
+            boolean parameterizedResult = ParameterizedTypeReference.class.isAssignableFrom(resultType.getClass());
+            long startTime = System.currentTimeMillis();
+            if (uriVariables.length == 1 && uriVariables[0] instanceof Map) {
+                Map<String, ?> uriVariableMap = (Map<String, ?>) uriVariables[0];
+                String fixUrl = fixUrlVariable(url, uriVariableMap);
+                responseEntity = parameterizedResult ?
+                        template.exchange(fixUrl, method, requestEntity, (ParameterizedTypeReference<R>) resultType, uriVariableMap) :
+                        template.exchange(fixUrl, method, requestEntity, (Class<R>) resultType, uriVariableMap);
+            } else {
+                responseEntity = parameterizedResult ?
+                        template.exchange(url, method, requestEntity, (ParameterizedTypeReference<R>) resultType, uriVariables) :
+                        template.exchange(url, method, requestEntity, (Class<R>) resultType, uriVariables);
+            }
+            if (showLog) {
+                long useTime = System.currentTimeMillis() - startTime;
+                Object resp = responseEntity.getBody();
+                if (uriVariables.length > 0) {
+                    log.info("useTime:{}ms, reqUrl:{}, requestBody:{}, uriVariables:{}, responseBody:{}",
+                            useTime, url, JsonUtils.toJson(uriVariables), JsonUtils.toJson(requestBody), LogUtils.cutLog(resp));
+                } else {
+                    log.info("useTime:{}ms, reqUrl:{}, requestBody:{}, responseBody:{}",
+                            useTime, url, JsonUtils.toJson(requestBody), LogUtils.cutLog(resp));
+                }
+            }
+            return responseEntity;
+        } catch (Exception e) {
+            log.error("reqUrl:{}请求异常,requestBody:{},uriVariables:{}，msg:{}",
+                    url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -626,6 +617,20 @@ public class HttpTool {
         return this;
     }
 
+    /**
+     * 设置默认请求头
+     *
+     * @param defaultHeader 默认请求头
+     */
+    public HttpTool defaultHeader(HttpHeaders defaultHeader) {
+        this.defaultHeader = defaultHeader;
+        return this;
+    }
+
+    public HttpHeaders getDefaultHeader() {
+        return defaultHeader;
+    }
+
     public RestTemplate getTemplate() {
         return restTemplate;
     }
@@ -642,12 +647,13 @@ public class HttpTool {
         int statusCode = response.getStatusCodeValue();
         //http请求异常
         if (statusCode < 200 || statusCode > 299) {
-            log.error("[{}]请求url->{},requestBody->{},uriVariables->{},返回HttpStatus->{}不为成功码,response->{}"
+            Object body = response.getBody();
+            String resp = body == null ? "" : JsonUtils.toJson(body);
+            log.error("[{}]reqUrl:{},requestBody:{},uriVariables:{},HttpStatus:{},response:{}"
                     , method.name(), url,
-                    JsonUtils.toJson(requestBody), JsonUtils.toJson(uriVariables), statusCode,
-                    LogUtils.cutLog(response.getBody()));
-            throw new FailHttpStatusResponseException(
-                    "http请求失败,http status为" + statusCode, ResponseCode.ERROR);
+                    JsonUtils.toJson(requestBody), JsonUtils.toJson(uriVariables),
+                    statusCode, resp);
+            throw new FailHttpStatusResponseException(resp, statusCode);
         }
     }
 

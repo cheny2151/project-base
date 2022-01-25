@@ -227,6 +227,21 @@ public class HttpUtils {
     }
 
     /**
+     * http请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> ResponseEntity<R> forEntity(HttpMethod method, String url, Object requestBody,
+                                           Class<R> resultType, Object... uriVariables) {
+        return HTTP_TOOL.forEntity(method, url, requestBody, resultType, uriVariables);
+    }
+
+    /**
      * post请求，返回包括响应状态的entity
      *
      * @param url          请求地址
@@ -239,6 +254,22 @@ public class HttpUtils {
     public static <R> R forObjectThrowFail(HttpMethod method, String url, Object requestBody,
                                            ParameterizedTypeReference<R> resultType,
                                            Object... uriVariables) {
+        return HTTP_TOOL.forObjectThrowFail(method, url, requestBody, resultType, uriVariables);
+    }
+
+    /**
+     * post请求，返回包括响应状态的entity
+     *
+     * @param url          请求地址
+     * @param requestBody  请求数据
+     * @param resultType   返回类型Class
+     * @param <R>          返回类型
+     * @param uriVariables url参数(替换{}占位符)
+     * @return 响应体
+     */
+    public <R> R forObjectThrowFail(HttpMethod method, String url, Object requestBody,
+                                    Class<R> resultType,
+                                    Object... uriVariables) {
         return HTTP_TOOL.forObjectThrowFail(method, url, requestBody, resultType, uriVariables);
     }
 

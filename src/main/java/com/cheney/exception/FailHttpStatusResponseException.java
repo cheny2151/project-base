@@ -1,24 +1,18 @@
 package com.cheney.exception;
 
-import com.cheney.system.protocol.ResponseCode;
-
 /**
  * Http请求异常，抛出后由controller通知器统一处理
  */
 public class FailHttpStatusResponseException extends RuntimeException {
 
-    private ResponseCode code;
+    private final int httpStatusCode;
 
-    public FailHttpStatusResponseException(ResponseCode code) {
-        this.code = code;
-    }
-
-    public FailHttpStatusResponseException(String message, ResponseCode code) {
+    public FailHttpStatusResponseException(String message, int httpState) {
         super(message);
-        this.code = code;
+        this.httpStatusCode = httpState;
     }
 
-    public ResponseCode getCode() {
-        return code;
+    public int getHttpStatusCode() {
+        return httpStatusCode;
     }
 }

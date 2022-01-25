@@ -50,7 +50,7 @@ public class ControllerAdviceHolder {
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> BusinessRunTimeException(BusinessRuntimeException e) {
         BaseResponse<?> errorResponse = e.getErrorResponse();
-        log.error("业务异常，msg->{}，code->{}", errorResponse.getMsg(), errorResponse.getCode());
+        log.error("业务异常，msg:{}，code:{}", errorResponse.getMsg(), errorResponse.getCode());
         return errorResponse;
     }
 
@@ -68,7 +68,7 @@ public class ControllerAdviceHolder {
             return BaseResponse.SERVER_ERROR;
         }
         response.setRequestId(RequestParamHolder.requestId().orElse(null));
-        log.error("内部服务调用失败，msg->{}，response->{}", e.getMessage(), response);
+        log.error("内部服务调用失败，msg:{}，response:{}", e.getMessage(), response);
         return response;
     }
 
@@ -81,10 +81,10 @@ public class ControllerAdviceHolder {
     @ExceptionHandler(FailHttpStatusResponseException.class)
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse<?> failHttpStatusResponseException(FailHttpStatusResponseException e) {
-        ResponseCode code = e.getCode();
+        int code = e.getHttpStatusCode();
         String message = e.getMessage();
-        log.error("内部服务调用失败，msg->{}，code->{}", message, code);
-        return BaseResponse.error(code.getStatus(), message);
+        log.error("内部服务调用失败，msg:{}，httpStatusCode:{}", message, code);
+        return BaseResponse.error(ResponseCode.ERROR, "内部服务调用失败");
     }
 
     /**
@@ -118,7 +118,7 @@ public class ControllerAdviceHolder {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public BaseResponse<?> HttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
-        log.error("url->{}:不支持的请求,{}", request.getRequestURI(), e.getMessage());
+        log.error("url:{}:不支持的请求,{}", request.getRequestURI(), e.getMessage());
         return BaseResponse.error(e.getMessage());
     }
 
