@@ -92,9 +92,9 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public static <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url,
-                                                                                      ParameterizedTypeReference<B> resultType,
-                                                                                      Object... uriVariables) {
+    public static <R, B extends BaseResponse<R>> B getForBaseResponse(String url,
+                                                                      ParameterizedTypeReference<B> resultType,
+                                                                      Object... uriVariables) {
         return HTTP_TOOL.getForBaseResponse(url, resultType, uriVariables);
     }
 
@@ -187,9 +187,9 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public static <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody,
-                                                                                       ParameterizedTypeReference<B> resultType,
-                                                                                       Object... uriVariables) {
+    public static <R, B extends BaseResponse<R>> B postForBaseResponse(String url, Object requestBody,
+                                                                       ParameterizedTypeReference<B> resultType,
+                                                                       Object... uriVariables) {
         return HTTP_TOOL.postForBaseResponse(url, requestBody, resultType, uriVariables);
     }
 
@@ -283,9 +283,9 @@ public class HttpUtils {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public static <R, B extends BaseResponse<R>> ResponseEntity<B> forBaseResponse(HttpMethod method, String url, Object requestBody,
-                                                                                   ParameterizedTypeReference<B> resultType,
-                                                                                   Object... uriVariables) {
+    public static <R, B extends BaseResponse<R>> B forBaseResponse(HttpMethod method, String url, Object requestBody,
+                                                                   ParameterizedTypeReference<B> resultType,
+                                                                   Object... uriVariables) {
         return HTTP_TOOL.forBaseResponse(method, url, requestBody, resultType, uriVariables);
     }
 

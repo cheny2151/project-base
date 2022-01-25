@@ -159,9 +159,9 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R, B extends BaseResponse<R>> ResponseEntity<B> getForBaseResponse(String url,
-                                                                               ParameterizedTypeReference<B> resultType,
-                                                                               Object... uriVariables) {
+    public <R, B extends BaseResponse<R>> B getForBaseResponse(String url,
+                                                               ParameterizedTypeReference<B> resultType,
+                                                               Object... uriVariables) {
         return forBaseResponse(HttpMethod.GET, url, null, resultType, uriVariables);
     }
 
@@ -224,9 +224,9 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R, B extends BaseResponse<R>> ResponseEntity<B> postForBaseResponse(String url, Object requestBody,
-                                                                                ParameterizedTypeReference<B> resultType,
-                                                                                Object... uriVariables) {
+    public <R, B extends BaseResponse<R>> B postForBaseResponse(String url, Object requestBody,
+                                                                ParameterizedTypeReference<B> resultType,
+                                                                Object... uriVariables) {
         return forBaseResponse(HttpMethod.POST, url, requestBody, resultType, uriVariables);
     }
 
@@ -383,10 +383,12 @@ public class HttpTool {
      * @param uriVariables url参数(替换{}占位符)
      * @return 响应体
      */
-    public <R, B extends BaseResponse<R>> ResponseEntity<B> forBaseResponse(HttpMethod method, String url, Object requestBody,
-                                                                            ParameterizedTypeReference<B> resultType,
-                                                                            Object... uriVariables) {
-        return forEntity(method, url, requestBody, resultType, uriVariables);
+    public <R, B extends BaseResponse<R>> B forBaseResponse(HttpMethod method, String url, Object requestBody,
+                                                            ParameterizedTypeReference<B> resultType,
+                                                            Object... uriVariables) {
+        ResponseEntity<B> response = forEntity(method, url, requestBody, resultType, uriVariables);
+        checkRespStatus(method, url, requestBody, uriVariables, response);
+        return response.getBody();
     }
 
     /**
@@ -403,19 +405,19 @@ public class HttpTool {
     public <R, B extends BaseResponse<R>> B forBaseResponseThrowFail(HttpMethod method, String url, Object requestBody,
                                                                      ParameterizedTypeReference<B> resultType,
                                                                      Object... uriVariables) {
-        ResponseEntity<B> response = forBaseResponse(method, url, requestBody, resultType, uriVariables);
-        checkRespStatus(method, url, requestBody, uriVariables, response);
+        B responseBody = forBaseResponse(method, url, requestBody, resultType, uriVariables);
         if (throwRcFail) {
-            BaseResponse<R> responseBody = response.getBody();
             if (responseBody == null) {
                 throw new FailRCResponseException("url:\"" + url + "\"请求失败,响应体为null", null);
             }
             //业务异常，通过controller通知器直接透传给前端
-            if (ResponseCode.SUCCESS.getStatus() != responseBody.getCode()) {
-                throw new FailRCResponseException("url:\"" + url + "\"请求失败:" + responseBody.getMsg(), responseBody);
+            Integer code = responseBody.getCode();
+            if (code == null || ResponseCode.SUCCESS.getStatus() != code) {
+                throw new FailRCResponseException("url:" + url + ", 请求异常, code:" + code + ", msg:" + responseBody.getMsg(),
+                        responseBody);
             }
         }
-        return response.getBody();
+        return responseBody;
     }
 
     /**
