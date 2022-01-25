@@ -31,10 +31,10 @@ public class BaseConfig implements ApplicationContextAware {
     }
 
     private void postConstruct() {
-        Boolean httpDebug = env.getProperty("http.util.show-log", boolean.class, false);
+        Boolean httpDebug = env.getProperty("http.util.show-log", boolean.class, true);
         HttpUtils.showLog(httpDebug);
-        Boolean throwRcFail = env.getProperty("http.util.throw-rc-fail", boolean.class, false);
-        HttpUtils.setThrowRcFail(throwRcFail);
+        Boolean throwRcFail = env.getProperty("http.util.throw-rc-fail", boolean.class, true);
+        HttpUtils.throwRcFail(throwRcFail);
     }
 
     @Profile("dev")

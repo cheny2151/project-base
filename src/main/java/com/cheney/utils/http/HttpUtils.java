@@ -405,7 +405,7 @@ public class HttpUtils {
      *
      * @param throwRcFail 是否抛出response code业务异常
      */
-    public static void setThrowRcFail(boolean throwRcFail) {
+    public static void throwRcFail(boolean throwRcFail) {
         HTTP_TOOL.throwRcFail(throwRcFail);
     }
 
