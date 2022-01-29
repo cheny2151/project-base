@@ -28,8 +28,8 @@ public class HttpClientBuilderSupport {
 
     public static final HttpClientBuilderSupport INSTANCE = new HttpClientBuilderSupport();
 
-    public static final int DEFAULT_MAX_TOTAL = 200;
-    public static final int DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 10;
+    public static final int DEFAULT_MAX_TOTAL = 500;
+    public static final int DEFAULT_MAX_PER_ROUTE = DEFAULT_MAX_TOTAL / 5;
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
     public static final int DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
