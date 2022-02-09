@@ -29,7 +29,7 @@
         </rollingPolicy>
         <!--定义输出格式-->
         <encoder>
-            <pattern>%X{INNER_ID}\t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n</pattern>
+            <pattern>%X{INNER_ID} \t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -47,7 +47,7 @@
             <maxFileSize>100MB</maxFileSize>
         </rollingPolicy>
         <encoder>
-            <pattern>%X{INNER_ID}\t%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
+            <pattern>%X{INNER_ID} \t%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
