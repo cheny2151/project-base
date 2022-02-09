@@ -15,7 +15,7 @@
         <spring.security>5.0.3.RELEASE</spring.security>
 
         <!--Hibernate版本号-->
-        <hibernate.version>5.2.14.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
 
         <!-- mysql驱动版本号 -->
         <mysql-driver.version>8.0.11</mysql-driver.version>
