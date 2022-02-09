@@ -1,6 +1,5 @@
 package com.cheney.utils.http;
 
-import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;
@@ -414,6 +413,8 @@ public class HttpTool {
             //业务异常，通过controller通知器直接透传给前端
             Integer code = responseBody.getCode();
             if (code == null || ResponseCode.SUCCESS.getStatus() != code) {
+                log.error("请求异常, reqUrl:{}, requestBody:{}, uriVariables:{}，resp:{}",
+                        url, JsonUtils.toJson(requestBody), uriVariables, JsonUtils.toJson(responseBody));
                 throw new FailRCResponseException("url:" + url + ", 请求异常, code:" + code + ", msg:" + responseBody.getMsg(),
                         responseBody);
             }
@@ -464,7 +465,7 @@ public class HttpTool {
             }
             return responseEntity;
         } catch (Exception e) {
-            log.error("reqUrl:{}请求异常,requestBody:{},uriVariables:{}，msg:{}",
+            log.error("请求异常, reqUrl:{}, requestBody:{}, uriVariables:{}, msg:{}",
                     url, JsonUtils.toJson(requestBody), uriVariables, e.getMessage());
             throw e;
         }
