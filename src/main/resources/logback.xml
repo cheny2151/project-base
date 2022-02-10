@@ -2,7 +2,7 @@
     <!-- http://logback.qos.ch/manual/layouts.html#coloring -->
     <contextName>logback</contextName>
     <!--定义参数,后面可以通过${app.name}使用-->
-    <property name="app.name" value="translation"/>
+    <property name="app.name" value="base"/>
     <!--ConsoleAppender 用于在屏幕上输出日志-->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来-->
