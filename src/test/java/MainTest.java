@@ -4,7 +4,7 @@ public class MainTest {
 
     @Test
     public void test() throws InterruptedException {
-        System.out.println(" ".matches("\\s"));
+        System.out.println(" ".matches("\u00A0"));
     }
 
 }
