@@ -63,6 +63,8 @@
 
         <!-- alibaba -->
 
+        <!-- 如果单纯使用nacos，也建议用spring-cloud-starter-alibaba-nacos-discovery而不是boot -->
+
         <!-- spring boot dubbo use nacos
         <dependency>
             <groupId>com.alibaba.boot</groupId>
@@ -77,7 +79,7 @@
         </dependency>-->
 
         <!-- spring cloud use nacos and dubbo
-                <dependency>
+        <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>${spring-cloud-alibaba.version}</version>
