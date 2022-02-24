@@ -12,7 +12,7 @@
         <!-- encoder 默认配置为PatternLayoutEncoder -->
         <!--定义控制台输出格式-->
         <encoder>
-            <pattern>[%X{INNER_ID}] %boldMagenta(%d) %yellow([%thread]) %highlight(%-5level) %cyan(%logger{36}) %cyan([%file : %line]) - %msg%n</pattern>
+            <pattern>[%X{INNER_ID:--}] %boldMagenta(%d) %yellow([%thread]) %highlight(%-5level) %cyan(%logger{36}) %cyan([%file : %line]) - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -29,7 +29,29 @@
         </rollingPolicy>
         <!--定义输出格式-->
         <encoder>
-            <pattern>%X{INNER_ID} \t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n</pattern>
+            <pattern>%X{INNER_ID:--}\t%d\t%thread\t%-5level\t%logger{36}\t%file:%line\t%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="file"/>
+    </appender>
+
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>warn</level>
+        </filter>
+        <file>logs/${app.name}-warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/%d{yyyyMMdd}/${app.name}-warn-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%X{INNER_ID:--}\t%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -47,21 +69,21 @@
             <maxFileSize>100MB</maxFileSize>
         </rollingPolicy>
         <encoder>
-            <pattern>%X{INNER_ID} \t%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
+            <pattern>%X{INNER_ID:--}\t%d\t%thread\t%-5level\t%logger{36}\t%file : %line\t%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
-    <!--root是默认的logger 这里设定输出级别是debug-->
+    <!--root是默认的logger-->
     <root level="info">
-        <!--定义了两个appender，日志会通过往这两个appender里面写-->
         <appender-ref ref="stdout"/>
-        <appender-ref ref="file"/>
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="warn"/>
         <appender-ref ref="error"/>
     </root>
 
     <!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台-->
     <!--这个logger没有指定appender，它会继承root节点中定义的那些appender-->
-<!--    <logger name="com.cheney.dao.mybatis" level="debug"/>-->
+    <!--    <logger name="com.cheney.dao.mybatis" level="debug"/>-->
 
 </configuration>
