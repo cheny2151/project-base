@@ -35,6 +35,7 @@
     </appender>
 
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
         <appender-ref ref="file"/>
     </appender>
 
