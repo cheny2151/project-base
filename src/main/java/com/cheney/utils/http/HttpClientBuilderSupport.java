@@ -48,6 +48,7 @@ public class HttpClientBuilderSupport {
     private Integer socketTimeout;
     private Integer connectionRequestTimeout;
     private List<ClientHttpRequestInterceptor> interceptors;
+    private HttpRequestRetryHandler retryHandler;
 
     public HttpClientBuilderSupport() {
         this(DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
@@ -76,21 +77,7 @@ public class HttpClientBuilderSupport {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
-    public HttpClientBuilder httpClientBuilder() {
-        return httpClientBuilder(null);
-    }
-
-    public HttpClientBuilder httpClientBuilder(boolean sentRetryEnabled) {
-        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(DEFAULT_RETRY_TIME, sentRetryEnabled);
-        return httpClientBuilder(retryHandler);
-    }
-
-    public HttpClientBuilder httpClientBuilder(int retryTime, boolean sentRetryEnabled) {
-        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(retryTime, sentRetryEnabled);
-        return httpClientBuilder(retryHandler);
-    }
-
-    private HttpClientBuilder httpClientBuilder(HttpRequestRetryHandler retryHandler) {
+    private HttpClientBuilder httpClientBuilder() {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         HttpClientConnectionManager connManager = poolingConnectionManager();
         httpClientBuilder.setConnectionManager(connManager);
@@ -250,6 +237,25 @@ public class HttpClientBuilderSupport {
 
     public HttpClientBuilderSupport interceptors(List<ClientHttpRequestInterceptor> interceptors) {
         setInterceptors(interceptors);
+        return this;
+    }
+
+    public HttpRequestRetryHandler getRetryHandler() {
+        return retryHandler;
+    }
+
+    public void setRetryHandler(HttpRequestRetryHandler retryHandler) {
+        this.retryHandler = retryHandler;
+    }
+
+    public HttpClientBuilderSupport retryHandler(boolean sentRetryEnabled) {
+        return retryHandler(DEFAULT_RETRY_TIME, sentRetryEnabled);
+    }
+
+    public HttpClientBuilderSupport retryHandler(int retryTime, boolean sentRetryEnabled) {
+        if (retryTime > 0) {
+            this.retryHandler = new DefaultHttpRequestRetryHandler(retryTime, sentRetryEnabled);
+        }
         return this;
     }
 }
