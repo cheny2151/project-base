@@ -77,7 +77,7 @@ public class HttpClientBuilderSupport {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
-    private HttpClientBuilder httpClientBuilder() {
+    public HttpClientBuilder httpClientBuilder() {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         HttpClientConnectionManager connManager = poolingConnectionManager();
         httpClientBuilder.setConnectionManager(connManager);
