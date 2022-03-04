@@ -1,6 +1,7 @@
 package com.cheney.utils.http;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -10,6 +11,7 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
@@ -36,6 +38,7 @@ public class HttpClientBuilderSupport {
     public static final int DEFAULT_CONNECT_TIMEOUT = 5 * 1000;
     public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_RETRY_TIME = 3;
 
     private Integer maxTotal;
     private Integer maxPerRoute;
@@ -74,11 +77,28 @@ public class HttpClientBuilderSupport {
     }
 
     public HttpClientBuilder httpClientBuilder() {
+        return httpClientBuilder(null);
+    }
+
+    public HttpClientBuilder httpClientBuilder(boolean sentRetryEnabled) {
+        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(DEFAULT_RETRY_TIME, sentRetryEnabled);
+        return httpClientBuilder(retryHandler);
+    }
+
+    public HttpClientBuilder httpClientBuilder(int retryTime, boolean sentRetryEnabled) {
+        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(retryTime, sentRetryEnabled);
+        return httpClientBuilder(retryHandler);
+    }
+
+    private HttpClientBuilder httpClientBuilder(HttpRequestRetryHandler retryHandler) {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         HttpClientConnectionManager connManager = poolingConnectionManager();
         httpClientBuilder.setConnectionManager(connManager);
         ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new MyConnectionKeepAliveStrategy();
         httpClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy);
+        if (retryHandler != null) {
+            httpClientBuilder.setRetryHandler(retryHandler);
+        }
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(connectTimeout)
                 .setSocketTimeout(socketTimeout)
