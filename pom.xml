@@ -296,6 +296,12 @@
             <version>${hibernate-validator.version}</version>
         </dependency>
 
+        <!-- logback if脚本解析依赖 -->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.github.cheny2151</groupId>
             <artifactId>toolbox</artifactId>
