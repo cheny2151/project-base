@@ -8,6 +8,8 @@ import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
+ * 配置监听器
+ *
  * 另外Apollo jvm参数：
  * -Dapollo.cluster=${cluster}
  * -Dapollo.meta=http://xxx
