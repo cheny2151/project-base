@@ -42,7 +42,7 @@ spring:
 #   - 127.0.0.1:6379
 #   - xxx.x.x.x:xxxx
 #  password: cheney@redis
-  timeout: 30000ms
+  timeout: 10000ms
   database: 0
 #  jedis:
 #   pool:
