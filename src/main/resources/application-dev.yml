@@ -54,6 +54,10 @@ spring:
     max-active: 16
     max-idle: 16
     max-wait: 30000ms
+   cluster:
+    refresh:
+     adaptive: true
+     period: 3000
 
  #rabbitmq
  rabbitmq:
