@@ -53,7 +53,7 @@ spring:
    pool:
     max-active: 16
     max-idle: 16
-    max-wait: 30000ms
+    max-wait: 5000ms
    cluster:
     refresh:
      adaptive: true
