@@ -12,6 +12,8 @@
         <java.version>11</java.version>
         <!-- mysql驱动版本号 -->
         <mysql-driver.version>8.0.28</mysql-driver.version>
+        <spring-nacos.version>0.2.7</spring-nacos.version>
+        <spring-boot-dubbo.version>2.7.8</spring-boot-dubbo.version>
         <!--spring cloud-->
         <spring.cloud.version>3.1.1</spring.cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
@@ -69,13 +71,13 @@
         <dependency>
             <groupId>com.alibaba.boot</groupId>
             <artifactId>nacos-discovery-spring-boot-starter</artifactId>
-            <version>0.2.7</version>
+            <version>${spring-nacos.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>2.7.8</version>
+            <version>${spring-boot-dubbo.version}</version>
         </dependency>-->
 
         <!-- spring cloud use nacos and dubbo
