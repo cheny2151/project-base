@@ -1,4 +1,4 @@
-<configuration debug="true" scan="true" scanPeriod="1 seconds">
+<configuration scan="true" scanPeriod="1 seconds">
     <!-- http://logback.qos.ch/manual/layouts.html#coloring -->
     <contextName>logback</contextName>
     <!--定义参数,后面可以通过${app.name}使用-->
