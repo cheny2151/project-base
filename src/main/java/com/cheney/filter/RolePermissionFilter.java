@@ -19,10 +19,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -95,10 +95,10 @@ public class RolePermissionFilter extends OncePerRequestFilter {
     private void writeUnauthorized(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(HttpStatus.OK.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
-        PrintWriter writer = httpServletResponse.getWriter();
+        ServletOutputStream outputStream = httpServletResponse.getOutputStream();
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.USER_NOT_LOGIN);
-        JSON.writeJSONString(writer, responseBody);
-        writer.flush();
+        JSON.writeJSONString(outputStream, responseBody);
+        outputStream.flush();
     }
 
     /**
@@ -109,10 +109,10 @@ public class RolePermissionFilter extends OncePerRequestFilter {
     private void writeForbidden(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(HttpStatus.OK.value());
         httpServletResponse.setHeader("Content-Type", "application/json;charset=utf-8");
-        PrintWriter writer = httpServletResponse.getWriter();
+        ServletOutputStream outputStream = httpServletResponse.getOutputStream();
         BaseResponse<?> responseBody = BaseResponse.error(ResponseCode.FORBIDDEN);
-        JSON.writeJSONString(writer, responseBody);
-        writer.flush();
+        JSON.writeJSONString(outputStream, responseBody);
+        outputStream.flush();
     }
 
 }
