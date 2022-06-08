@@ -19,6 +19,7 @@
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
         <toolbox.version>2.2.22-jdk8</toolbox.version>
         <mybatis-spring.version>2.2.2</mybatis-spring.version>
+        <sharding.version>4.1.1</sharding.version>
         <apollo.version>1.8.0</apollo.version>
         <fastjson.version>2.0.3</fastjson.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
@@ -160,6 +161,12 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>${sharding.version}</version>
         </dependency>
 
         <!-- ehcache缓存 -->

@@ -1,0 +1,42 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://localhost:3306/test0??useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&autoReconnect=true&allowMultiQueries=true&nullCatalogMeansCurrent=true
+        username: root
+        password: root
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://localhost:3306/test1??useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&autoReconnect=true&allowMultiQueries=true&nullCatalogMeansCurrent=true
+        username: root
+        password: root
+    sharding:
+      tables:
+        table_test0:
+          actual-data-nodes: ds0.table_test0$->{0..1}
+          database-strategy:
+            none:
+          table-strategy:
+            inline:
+              sharding-column: session_id
+              algorithm-expression: table_test0$->{Long.valueOf(session_id) % 2}
+        table_test1:
+          actual-data-nodes: ds$->{0..1}.table_test1$->{0..1}
+          table-strategy:
+            inline:
+              sharding-column: column_test
+              algorithm-expression: table_test1$->{column_test.hashCode() % 2}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+      default-database-strategy:
+        inline:
+          sharding-column: tenant_id
+          algorithm-expression: ds$->{tenant_id % 2}
+    props:
+      sql:
+        show: true
