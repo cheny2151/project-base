@@ -1,7 +1,7 @@
 package com.cheney.system.protocol;
 
 import com.alibaba.fastjson.JSON;
-import com.cheney.utils.RequestParamHolder;
+import com.cheney.utils.http.RequestParamHolder;
 import lombok.Data;
 
 import javax.servlet.http.HttpServletResponse;

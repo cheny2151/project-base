@@ -1,4 +1,4 @@
-package com.cheney.utils.http;
+package com.cheney.utils.httpclient;
 
 import lombok.Data;
 import org.springframework.http.ResponseEntity;

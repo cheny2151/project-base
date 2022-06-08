@@ -1,16 +1,12 @@
 package com.cheney.filter;
 
 import cn.cheny.toolbox.other.map.EasyMap;
-import cn.cheny.toolbox.other.page.PageInfo;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.cheney.exception.JsonParseException;
 import com.cheney.filter.request.InputStreamHttpServletRequestWrapper;
-import com.cheney.system.protocol.BaseRequest;
 import com.cheney.system.protocol.BaseResponse;
 import com.cheney.utils.HttpSupport;
-import com.cheney.utils.http.RequestParamHolder;
+import com.cheney.utils.http.RequestParamHolderWithoutBaseRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -27,15 +23,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
-
 /**
  * 使用webFilter必须在启动类上加@ServletComponentScan
  * filter根据类全名自然排序
  */
 @Slf4j
 @Component
-public class RequestParamFilter extends OncePerRequestFilter {
+public class RequestParamFilterWithoutBaseRequest extends OncePerRequestFilter {
 
     // 忽略的url正则表达式
     private final static String[] IGNORE_PATTERN = new String[]{".*.ico", ".*.html"};
@@ -85,10 +79,10 @@ public class RequestParamFilter extends OncePerRequestFilter {
             }
         }
         try {
-            RequestParamHolder.setCurrentRequest(httpServletRequest);
-            RequestParamHolder.setCurrentResponse(httpServletResponse);
-            RequestParamHolder.generateInnerId();
-            String innerId = RequestParamHolder.getInnerId();
+            RequestParamHolderWithoutBaseRequest.setCurrentRequest(httpServletRequest);
+            RequestParamHolderWithoutBaseRequest.setCurrentResponse(httpServletResponse);
+            RequestParamHolderWithoutBaseRequest.generateInnerId();
+            String innerId = RequestParamHolderWithoutBaseRequest.getInnerId();
             MDC.put("INNER_ID", innerId);
             if (reqStr != null) {
                 log.info("[{}]url->[{}],request param:{}", method, requestURI, reqStr);
@@ -97,52 +91,23 @@ public class RequestParamFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
-            RequestParamHolder.remove();
+            RequestParamHolderWithoutBaseRequest.remove();
             MDC.clear();
         }
     }
 
     private String setRequestParamForUrl(HttpServletRequest request) {
-        BaseRequest<JSONObject> param = new BaseRequest<>();
         Map<String, String[]> parameterMap = request.getParameterMap();
-        final JSONObject data = new JSONObject();
-        param.setData(data);
+        final EasyMap data = new EasyMap();
         parameterMap.forEach((k, v) -> {
-            switch (k) {
-                //设置基础参数
-                case "requestId": {
-                    param.setRequestId(v[0]);
-                    break;
-                }
-                case "timestamp": {
-                    param.setTimestamp(v[0]);
-                    break;
-                }
-                //设置分页
-                case "pageNumber":
-                case "currentPage": {
-                    int pageNumber = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
-                            ? Integer.parseInt(v[0]) : PageInfo.DEFAULT_PAGE_NUMBER;
-                    param.initPageable().setPageNumber(pageNumber);
-                    break;
-                }
-                case "pageSize": {
-                    int pageSize = StringUtils.isNotEmpty(v[0]) && StringUtils.isNumeric(v[0])
-                            ? Integer.parseInt(v[0]) : DEFAULT_PAGE_SIZE;
-                    param.initPageable().setPageSize(pageSize);
-                    break;
-                }
-                //设置业务参数
-                default: {
-                    if (v.length == 1)
-                        data.put(k, v[0]);
-                    else
-                        data.put(k, v);
-                }
-            }
+            //设置业务参数
+            if (v.length == 1)
+                data.put(k, v[0]);
+            else
+                data.put(k, v);
         });
 
-        RequestParamHolder.setRequestParam(param);
+        RequestParamHolderWithoutBaseRequest.setRequestParam(data);
         return JSON.toJSONString(parameterMap);
     }
 
@@ -155,17 +120,13 @@ public class RequestParamFilter extends OncePerRequestFilter {
             while ((len = inputStream.read(temp)) != -1) {
                 byteArray.write(temp, 0, len);
             }
-            String json = byteArray.toString(StandardCharsets.UTF_8);
-            BaseRequest<Object> requestParam = JSON.parseObject(json, new TypeReference<>() {
-            });
+            String json = byteArray.toString(String.valueOf(StandardCharsets.UTF_8));
+            EasyMap requestParam = JSON.parseObject(json, EasyMap.class);
             if (requestParam == null) {
-                requestParam = new BaseRequest<>();
-            } else if (requestParam.getData() == null) {
-                //防止空指针
-                requestParam.setData(new EasyMap());
+                requestParam = new EasyMap();
             }
-            RequestParamHolder.setRequestParam(requestParam);
-            return JSON.toJSONString(requestParam);
+            RequestParamHolderWithoutBaseRequest.setRequestParam(requestParam);
+            return json;
         } catch (Exception e) {
             log.error("请求体解析失败:{}", e.getMessage());
             throw new JsonParseException("Invalid Request Body");

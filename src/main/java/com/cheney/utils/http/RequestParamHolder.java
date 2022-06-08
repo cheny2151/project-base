@@ -1,4 +1,4 @@
-package com.cheney.utils;
+package com.cheney.utils.http;
 
 import cn.cheny.toolbox.other.map.EasyMap;
 import cn.cheny.toolbox.other.page.Pageable;
@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cheney.exception.RequestEmptyException;
 import com.cheney.system.protocol.BaseRequest;
+import com.cheney.utils.RandomIdGenerator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

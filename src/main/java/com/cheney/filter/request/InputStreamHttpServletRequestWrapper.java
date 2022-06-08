@@ -1,7 +1,7 @@
 package com.cheney.filter.request;
 
 import com.alibaba.fastjson.JSON;
-import com.cheney.utils.RequestParamHolder;
+import com.cheney.utils.http.RequestParamHolder;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;

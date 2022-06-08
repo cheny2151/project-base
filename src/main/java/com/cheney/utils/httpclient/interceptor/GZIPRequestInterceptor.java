@@ -1,4 +1,4 @@
-package com.cheney.utils.http.interceptor;
+package com.cheney.utils.httpclient.interceptor;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;

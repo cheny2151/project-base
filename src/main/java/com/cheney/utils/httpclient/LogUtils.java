@@ -1,4 +1,4 @@
-package com.cheney.utils.http;
+package com.cheney.utils.httpclient;
 
 import com.alibaba.fastjson.JSON;
 import com.cheney.utils.JsonUtils;

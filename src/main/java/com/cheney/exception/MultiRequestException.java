@@ -1,6 +1,6 @@
 package com.cheney.exception;
 
-import com.cheney.utils.http.RequestInfo;
+import com.cheney.utils.httpclient.RequestInfo;
 import org.springframework.http.HttpEntity;
 
 public class MultiRequestException extends RuntimeException {

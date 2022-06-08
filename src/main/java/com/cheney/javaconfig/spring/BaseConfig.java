@@ -2,7 +2,7 @@ package com.cheney.javaconfig.spring;
 
 import com.cheney.system.databind.DateEditor;
 import com.cheney.system.databind.StringEditor;
-import com.cheney.utils.http.HttpUtils;
+import com.cheney.utils.httpclient.HttpUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

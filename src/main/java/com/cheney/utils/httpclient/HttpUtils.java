@@ -1,4 +1,4 @@
-package com.cheney.utils.http;
+package com.cheney.utils.httpclient;
 
 import com.cheney.exception.FailRCResponseException;
 import com.cheney.system.protocol.BaseResponse;

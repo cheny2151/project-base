@@ -1,4 +1,4 @@
-package com.cheney.utils.http;
+package com.cheney.utils.httpclient;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;

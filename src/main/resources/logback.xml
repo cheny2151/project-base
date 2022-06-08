@@ -77,7 +77,7 @@
 
     <!--root是默认的logger-->
     <root level="info">
-        <if condition='"${spring.profiles.active}" == "DEV"'>
+        <if condition='"${spring.profiles.active}" == "local"'>
             <then>
                 <appender-ref ref="stdout"/>
             </then>

@@ -1,4 +1,4 @@
-package com.cheney.utils.http;
+package com.cheney.utils.httpclient;
 
 import com.cheney.exception.FailHttpStatusResponseException;
 import com.cheney.exception.FailRCResponseException;
@@ -6,7 +6,7 @@ import com.cheney.system.protocol.BaseResponse;
 import com.cheney.system.protocol.ResponseCode;
 import com.cheney.utils.JsonUtils;
 import com.cheney.utils.URLUtils;
-import com.cheney.utils.http.interceptor.GZIPRequestInterceptor;
+import com.cheney.utils.httpclient.interceptor.GZIPRequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;

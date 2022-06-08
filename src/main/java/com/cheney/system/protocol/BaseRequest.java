@@ -1,7 +1,7 @@
 package com.cheney.system.protocol;
 
 import cn.cheny.toolbox.other.page.Pageable;
-import com.cheney.utils.RequestParamHolder;
+import com.cheney.utils.http.RequestParamHolder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

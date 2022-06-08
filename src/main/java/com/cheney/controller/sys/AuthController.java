@@ -6,7 +6,7 @@ import com.cheney.constants.RedisKey;
 import com.cheney.service.AuthUserService;
 import com.cheney.system.protocol.JsonMessage;
 import com.cheney.utils.CurrentUserHolder;
-import com.cheney.utils.RequestParamHolder;
+import com.cheney.utils.http.RequestParamHolder;
 import com.cheney.utils.jwt.JwtPrincipal;
 import com.cheney.utils.jwt.JwtUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
