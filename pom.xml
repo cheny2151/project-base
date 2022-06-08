@@ -163,11 +163,11 @@
             <version>${mybatis-spring.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
-            <version>${sharding.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>-->
+<!--            <version>${sharding.version}</version>-->
+<!--        </dependency>-->
 
         <!-- ehcache缓存 -->
         <dependency>
