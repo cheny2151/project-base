@@ -12,7 +12,7 @@
         <java.version>11</java.version>
         <!-- mysql驱动版本号 -->
         <mysql-driver.version>8.0.29</mysql-driver.version>
-        <spring-nacos.version>0.2.7</spring-nacos.version>
+        <spring-boot-nacos.version>0.2.7</spring-boot-nacos.version>
         <spring-boot-dubbo.version>2.7.8</spring-boot-dubbo.version>
         <!--spring cloud-->
         <spring.cloud.version>3.1.1</spring.cloud.version>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.alibaba.boot</groupId>
             <artifactId>nacos-discovery-spring-boot-starter</artifactId>
-            <version>${spring-nacos.version}</version>
+            <version>${spring-boot-nacos.version}</version>
         </dependency>
 
         <dependency>

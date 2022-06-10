@@ -38,7 +38,7 @@ spring:
 #  application:
 #    id: ${spring.application.name}
 #  registry:
-#    address: spring-cloud://localhost #采用spring cloud 注册中心
+#    address: spring-cloud://localhost #采用spring cloud 注册中心（2021.1版本待验证）
 #    address: nacos://localhost:8848 #直接指定nacos
 #  scan:
 #    base-packages: com.cheney.service
