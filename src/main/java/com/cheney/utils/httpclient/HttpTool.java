@@ -10,16 +10,8 @@ import com.cheney.utils.httpclient.interceptor.GZIPRequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -72,11 +64,6 @@ public class HttpTool {
      */
     private final RestTemplate restTemplate;
 
-    /**
-     * http client
-     */
-    private final HttpClient httpClient;
-
     public HttpTool() {
         this(HttpClientBuilderSupport.INSTANCE, null);
     }
@@ -107,7 +94,6 @@ public class HttpTool {
         requestFactory.setConnectTimeout(connectTimeout);
         requestFactory.setReadTimeout(connectionRequestTimeout);
         requestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
-        this.httpClient = client;
         RestTemplate template = new RestTemplate(requestFactory);
         this.restTemplate = template;
         // 设置额外拦截器
@@ -118,6 +104,10 @@ public class HttpTool {
             interceptors.addAll(addInterceptors);
             template.setInterceptors(interceptors);
         }
+    }
+
+    public HttpTool(RestTemplate template) {
+        this.restTemplate = template;
     }
 
     /**
@@ -472,51 +462,6 @@ public class HttpTool {
     }
 
     /**
-     * 发送简单的post请求
-     *
-     * @param url 请求url
-     */
-    public String simpleGet(String url) {
-        HttpGet httpGet = new HttpGet(url);
-        return simpleExecute(url, httpGet);
-    }
-
-    /**
-     * 发送简单的post请求
-     *
-     * @param url         请求url
-     * @param requestBody 请求数据
-     * @param contentType content-type
-     */
-    public String simplePost(String url, Object requestBody, ContentType contentType) {
-        HttpPost httpPost = new HttpPost(url);
-        StringEntity stringEntity = new StringEntity(JsonUtils.toJson(requestBody), contentType);
-        httpPost.setEntity(stringEntity);
-        return simpleExecute(url, httpPost);
-    }
-
-    /**
-     * 简单的请求,返回字符串
-     *
-     * @param url         请求url
-     * @param httpRequest 请求实体
-     * @return 报文
-     */
-    public String simpleExecute(String url, HttpRequestBase httpRequest) {
-        HttpHeaders httpHeaders = getHeader();
-        if (!CollectionUtils.isEmpty(httpHeaders)) {
-            httpHeaders.forEach((k, v) -> httpRequest.addHeader(k, String.valueOf(v)));
-        }
-        try {
-            HttpResponse response = httpClient.execute(httpRequest);
-            return EntityUtils.toString(response.getEntity());
-        } catch (Exception e) {
-            log.error("url->{}请求异常，msg->{}", url, e.getMessage());
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    /**
      * 下载文件
      *
      * @param fileUrl 目标文件地址
@@ -637,10 +582,6 @@ public class HttpTool {
 
     public RestTemplate getTemplate() {
         return restTemplate;
-    }
-
-    public HttpClient getClient() {
-        return httpClient;
     }
 
     /**

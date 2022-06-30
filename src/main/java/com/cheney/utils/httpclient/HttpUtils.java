@@ -307,37 +307,6 @@ public class HttpUtils {
     }
 
     /**
-     * CloseableHttpClient发送简单的post请求
-     *
-     * @param url 请求url
-     */
-    public static String simpleGet(String url) {
-        return HTTP_TOOL.simpleGet(url);
-    }
-
-    /**
-     * CloseableHttpClient发送简单的post请求
-     *
-     * @param url         请求url
-     * @param requestBody 请求数据
-     * @param contentType content-type
-     */
-    public static String simplePost(String url, Object requestBody, ContentType contentType) {
-        return HTTP_TOOL.simplePost(url, requestBody, contentType);
-    }
-
-    /**
-     * 简单的请求,返回字符串
-     *
-     * @param url         请求url
-     * @param httpRequest 请求实体
-     * @return 报文
-     */
-    public String simpleExecute(String url, HttpRequestBase httpRequest) {
-        return HTTP_TOOL.simpleExecute(url, httpRequest);
-    }
-
-    /**
      * 下载文件
      *
      * @param fileUrl 目标文件地址
