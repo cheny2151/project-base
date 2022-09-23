@@ -15,6 +15,27 @@ spring:
       validation-timeout: 3000
       max-lifetime: 30000
       maximum-pool-size: 20
+     # druid
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      initialSize: 50
+#      maxActive: 100
+#      maxWait: 5000
+#      minEvictableIdleTimeMillis: 300000
+#      minIdle: 50
+#      name: ${spring.application.name}
+#      testOnBorrow: false
+#      testOnReturn: false
+#      testWhileIdle: true
+#      timeBetweenEvictionRunsMillis: 60000
+#      validConnectionCheckerClassName: com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker
+#      validationQuery: select 1
+#      validationQueryTimeout: 2
+#      filter:
+#        stat:
+#          enabled: true
+#          log-slow-sql: true
+#          slow-sql-millis: 1000
   # jackson
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"

@@ -23,6 +23,7 @@
         <apollo.version>1.8.0</apollo.version>
         <fastjson.version>2.0.3</fastjson.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
+        <druid-start.version>1.2.12</druid-start.version>
     </properties>
 
     <parent>
@@ -64,6 +65,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid-start.version}</version>
+        </dependency>
         <!-- alibaba -->
 
         <!-- 如果单纯使用nacos，也建议用spring-cloud-starter-alibaba-nacos-discovery而不是boot -->
