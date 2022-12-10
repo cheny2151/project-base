@@ -10,7 +10,7 @@
 
     <properties>
         <!-- Spring版本号 -->
-        <spring.version>5.0.4.RELEASE</spring.version>
+        <spring.version>6.0.0</spring.version>
         <!-- Spring Security 版本号-->
         <spring.security>5.0.3.RELEASE</spring.security>
 
