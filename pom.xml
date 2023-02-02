@@ -17,7 +17,7 @@
         <!--spring cloud-->
         <spring.cloud.version>3.1.1</spring.cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
-        <toolbox.version>2.2.22-jdk8</toolbox.version>
+        <toolbox.version>2.3.5-jdk8</toolbox.version>
         <mybatis-spring.version>2.2.2</mybatis-spring.version>
         <sharding.version>4.1.1</sharding.version>
         <apollo.version>1.8.0</apollo.version>

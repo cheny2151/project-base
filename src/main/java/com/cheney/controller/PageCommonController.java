@@ -3,11 +3,15 @@ package com.cheney.controller;
 import cn.cheny.toolbox.entityCache.holder.EntityBufferHolder;
 import cn.cheny.toolbox.redis.client.impl.JsonRedisClient;
 import cn.cheny.toolbox.redis.clustertask.pub.ClusterTaskPublisher;
+import cn.cheny.toolbox.spring.SpringUtils;
 import com.cheney.entity.AuthUser;
 import com.cheney.entity.Role;
+import com.cheney.javaconfig.registrar.Bean2Register;
 import com.cheney.service.RoleService;
 import com.cheney.system.protocol.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,11 +61,15 @@ public class PageCommonController {
         return JsonMessage.success("123");
     }
 
-    @RequestMapping("/test2")
+    @RequestMapping("/registryBean")
     @ResponseBody
     public void test2() {
-//        Role test = roleService.getByCache("test3");
-//        System.out.println(test);
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(Bean2Register.class);
+        beanDefinitionBuilder.addPropertyValue("property", "fail");
+        // 根据类型自动装配
+        beanDefinitionBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        Bean2Register bean2Register = (Bean2Register) SpringUtils.forceRegisterBean(Bean2Register.BEAN_NAME, beanDefinitionBuilder);
+        System.out.println(bean2Register);
     }
 
     @RequestMapping("/test3")
