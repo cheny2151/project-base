@@ -35,9 +35,9 @@ public class HttpClientBuilderSupport {
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_IDLE_TIMEOUT_SECONDS = 30;
     public static final int DEFAULT_KEEP_ALIVE_DURATION = 30 * 1000;
-    public static final int DEFAULT_CONNECT_TIMEOUT = 5 * 1000;
+    public static final int DEFAULT_CONNECT_TIMEOUT = 3 * 1000;
     public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
-    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 3 * 1000;
     public static final int DEFAULT_RETRY_TIME = 3;
 
     private Integer maxTotal;
